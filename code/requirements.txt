@@ -19,4 +19,4 @@ aiohttp>=3.9.1
 pyyaml>=6.0.1
 feedparser>=6.0.1
 httpx>=0.28.1
-
+sentence-transformers>=4.1.0

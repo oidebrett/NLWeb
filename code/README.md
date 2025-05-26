@@ -33,6 +33,7 @@ code/
 |   ├── embedding.py              #
 |   ├── gemini_embedding.py       #
 |   ├── openai_embedding.py       #
+|   ├── sentence_transformer_embedding.py    # 
 |   ├── snowflake_embedding.py    #
 ├── llm/
 |   ├── anthropic.py              #

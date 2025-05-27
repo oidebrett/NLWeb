@@ -8,9 +8,9 @@ WARNING: This code is under development and may undergo changes in future releas
 Backwards compatibility is not guaranteed at this time.
 """
 
-import os
 import threading
 from typing import List, Optional
+import asyncio
 
 from sentence_transformers import SentenceTransformer
 
@@ -27,19 +27,20 @@ def get_model_name() -> str:
     """
     Retrieve the embedding model name from configuration or default.
     """
-    provider_config = CONFIG.get_embedding_provider("sentence_transformer")
+    provider_config = CONFIG.get_embedding_provider("sentence_transformers")
     if provider_config and provider_config.model:
         return provider_config.model
     return "all-MiniLM-L6-v2"  # Default lightweight model
 
-def get_embedding_model() -> SentenceTransformer:
+def get_embedding_model(model_override: Optional[str] = None) -> SentenceTransformer:
     """
     Load and return a singleton SentenceTransformer model.
     """
     global embedding_model
     with _model_lock:
         if embedding_model is None:
-            model_name = get_model_name()
+            # Use override model if provided, otherwise use configured model
+            model_name = model_override or get_model_name()
             try:
                 embedding_model = SentenceTransformer(model_name)
                 logger.info(f"Loaded SentenceTransformer model: {model_name}")
@@ -65,8 +66,15 @@ async def get_sentence_transformer_embedding(
         Embedding vector as list of floats.
     """
     try:
-        model_instance = get_embedding_model()
-        embedding = model_instance.encode(text.replace("\n", " "), convert_to_numpy=True).tolist()
+        model_instance = get_embedding_model(model)
+
+        # Run the blocking encode operation in a thread pool
+        loop = asyncio.get_running_loop()
+        embedding = await loop.run_in_executor(
+            None,
+            lambda: model_instance.encode(text.replace("\n", " "), convert_to_numpy=True).tolist()
+        )
+
         logger.debug(f"Generated embedding (dim={len(embedding)})")
         return embedding
     except Exception as e:
@@ -92,7 +100,14 @@ async def get_sentence_transformer_batch_embeddings(
     try:
         model_instance = get_embedding_model()
         cleaned_texts = [t.replace("\n", " ") for t in texts]
-        embeddings = model_instance.encode(cleaned_texts, convert_to_numpy=True).tolist()
+
+        # Run the blocking encode operation in a thread pool
+        loop = asyncio.get_running_loop()
+        embeddings = await loop.run_in_executor(
+            None,
+            lambda: model_instance.encode(cleaned_texts, convert_to_numpy=True).tolist()
+        )
+
         logger.debug(f"Generated {len(embeddings)} embeddings (dim={len(embeddings[0])})")
         return embeddings
     except Exception as e:

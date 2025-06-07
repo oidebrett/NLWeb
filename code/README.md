@@ -41,6 +41,7 @@ code/
 |   ├── azure_llama.py                      #
 |   ├── azure_oai.py                        #
 |   ├── gemini.py                           #
+|   ├── huggingface.py                      #
 |   ├── inception.py                        #
 |   ├── llm_provider.py                     #
 |   ├── llm.py                              #

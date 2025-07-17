@@ -24,7 +24,37 @@ from mcp.types import (
 DEFAULT_SERVER_URL = "http://localhost:8000"
 DEFAULT_ENDPOINT = "/mcp"
 
-MAX_TOOL_OUTPUT_LENGTH = 4000 # Maximum characters for tool output to prevent exceeding Claude's limits
+MAX_TOOL_OUTPUT_LENGTH = 40000 # Maximum characters for tool output to prevent exceeding Claude's limits
+
+def truncate_preserving_early_entries(data: Any, max_length: int = MAX_TOOL_OUTPUT_LENGTH) -> Any:
+    if not isinstance(data, dict) or "content" not in data or not isinstance(data["content"], list):
+        return {"content": [{"type": "text", "text": "... (truncated)"}]}
+
+    output = {"content": []}
+    base_size = len(json.dumps(output))
+    
+    for item in data["content"]:
+        if not isinstance(item, dict) or "text" not in item:
+            continue
+        
+        item_json = json.dumps(item)
+        next_size = len(json.dumps(output["content"] + [item]))
+        
+        if next_size <= max_length:
+            output["content"].append(item)
+        else:
+            # If it's the first item, we still want to show part of it
+            if not output["content"]:
+                available_space = max_length - base_size - len(json.dumps({k: v for k, v in item.items() if k != "text"})) - 20
+                truncated_text = item["text"][:available_space] + "... (truncated)"
+                new_item = dict(item)
+                new_item["text"] = truncated_text
+                output["content"].append(new_item)
+            else:
+                output["content"].append({"type": "text", "text": "... (truncated)"})
+            break
+
+    return output
 
 async def forward_to_nlweb(method: str, params: Dict[str, Any], server_url: str, endpoint: str) -> Dict[str, Any]:
     """Forward a request to the NLWeb MCP endpoint"""
@@ -194,16 +224,14 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
         # Extract response from the result
         try:
             response_data = result.get("response", {})
-            # Convert to string if it's not already
+            
+            # Truncate the JSON response if it's too long
             if isinstance(response_data, (dict, list)):
-                response_text = json.dumps(response_data, indent=2)
-            else:
-                response_text = str(response_data)
-                # Truncate long responses
-                if len(response_text) > MAX_TOOL_OUTPUT_LENGTH:
-                    original_length = len(response_text)
-                    response_text = response_text[:MAX_TOOL_OUTPUT_LENGTH] + f"\n... (truncated from {original_length} characters)"
-                    return [TextContent(type="text", text=response_text)]
+                response_data = truncate_preserving_early_entries(response_data, MAX_TOOL_OUTPUT_LENGTH)
+
+            response_text = json.dumps(response_data, indent=2)
+            
+            return [TextContent(type="text", text=response_text)]
         except Exception as e:
             print(f"Error processing tool response: {str(e)}", file=sys.stderr)
             return [TextContent(type="text", text=f"Error processing response: {str(e)}")]

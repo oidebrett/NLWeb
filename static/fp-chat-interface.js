@@ -46,6 +46,9 @@ class ModernChatInterface {
       sendButton: document.getElementById('send-button'),
       rightSidebarSiteList: document.getElementById('right-sidebar-site-list'),
       newSiteBtn: document.getElementById('new-site-btn'), // New element
+      newSiteModal: document.getElementById('new-site-modal'),
+      newSiteForm: document.getElementById('new-site-form'),
+      cancelAddSite: document.getElementById('cancel-add-site'),
     };
     
     // Debug mode state
@@ -139,8 +142,20 @@ class ModernChatInterface {
     // New site button
     if (this.elements.newSiteBtn) {
       this.elements.newSiteBtn.addEventListener('click', () => {
-        console.log('Add new site button clicked!');
-        // TODO: Implement logic to add a new site
+        this.elements.newSiteModal.style.display = 'block';
+      });
+    }
+
+    if (this.elements.cancelAddSite) {
+      this.elements.cancelAddSite.addEventListener('click', () => {
+        this.elements.newSiteModal.style.display = 'none';
+      });
+    }
+
+    if (this.elements.newSiteForm) {
+      this.elements.newSiteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSite();
       });
     }
     
@@ -1987,9 +2002,79 @@ class ModernChatInterface {
     sitesToDisplay.forEach(site => {
       const siteDiv = document.createElement('div');
       siteDiv.className = 'site-list-item';
-      siteDiv.textContent = site;
+
+      const siteName = document.createElement('span');
+      siteName.textContent = site;
+      siteDiv.appendChild(siteName);
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-site-btn';
+      deleteBtn.innerHTML = '&times;';
+      deleteBtn.title = `Delete ${site}`;
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.deleteSite(site);
+      });
+      siteDiv.appendChild(deleteBtn);
+
       this.elements.rightSidebarSiteList.appendChild(siteDiv);
     });
+  }
+
+  async addNewSite() {
+    const siteUrl = document.getElementById('new-site-url').value.trim();
+    const siteName = document.getElementById('new-site-name').value.trim();
+
+    if (!siteUrl || !siteName) {
+      alert('Please enter both a URL and a name for the site.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/sites/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: siteUrl, name: siteName }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      this.elements.newSiteModal.style.display = 'none';
+      this.elements.newSiteForm.reset();
+      this.loadSites(); // Reload the site list
+    } catch (error) {
+      console.error('Error adding new site:', error);
+      alert('Failed to add new site. Please check the console for details.');
+    }
+  }
+
+  async deleteSite(siteName) {
+    if (!confirm(`Are you sure you want to delete the site "${siteName}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/sites/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: siteName }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      this.loadSites(); // Reload the site list
+    } catch (error) {
+      console.error('Error deleting site:', error);
+      alert('Failed to delete site. Please check the console for details.');
+    }
   }
 }
 

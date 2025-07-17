@@ -135,6 +135,21 @@
     </button>    
   </div>
 
+  <!-- Add Site Modal -->
+  <div id="new-site-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="cancel-add-site">&times;</span>
+      <h2>Add a New Site</h2>
+      <form id="new-site-form">
+        <label for="new-site-name">Name:</label>
+        <input type="text" id="new-site-name" name="name" required>
+        <label for="new-site-url">URL:</label>
+        <input type="url" id="new-site-url" name="url" required>
+        <button type="submit">Add Site</button>
+      </form>
+    </div>
+  </div>
+
   <!-- OAuth Login Popup -->
   <div class="oauth-popup-overlay" id="oauthPopupOverlay" style="display: none;">
     <div class="oauth-popup">

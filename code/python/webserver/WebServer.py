@@ -29,6 +29,8 @@ from core.config import CONFIG
 from core.baseHandler import NLWebHandler
 from misc.logger.logging_config_helper import get_configured_logger
 from core.retriever import get_vector_db_client
+import os
+import subprocess
 
 # Initialize module logger
 logger = get_configured_logger("webserver")
@@ -664,6 +666,91 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
             await send_response(200, {'Content-Type': 'application/json'})
             await send_chunk(json.dumps(retval), end_response=True)
             return
+        elif path == "/api/sites/add":
+            if method != "POST":
+                await send_response(405, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"error": "Method not allowed"}), end_response=True)
+                return
+
+            if not body:
+                await send_response(400, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"error": "Missing request body"}), end_response=True)
+                return
+
+            try:
+                data = json.loads(body.decode('utf-8'))
+                rss_url = data.get("url")
+                site_name = data.get("name")
+
+                if not rss_url or not site_name:
+                    await send_response(400, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"error": "Missing url or name"}), end_response=True)
+                    return
+
+                # Run the CLI as subprocess
+                command = ["python", "-m", "data_loading.db_load", rss_url, site_name]
+                proc = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    preexec_fn=os.setsid  # run in separate process group (Unix only)
+                )
+                stdout, stderr = proc.communicate()
+
+                if proc.returncode == 0:
+                    await send_response(200, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"status": "success", "output": stdout}), end_response=True)
+                else:
+                    await send_response(500, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"status": "error", "error": stderr}), end_response=True)
+
+            except Exception as e:
+                logger.error(f"Failed to add site: {e}")
+                await send_response(500, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"error": "Internal server error"}), end_response=True)
+        elif path == "/api/sites/delete":
+            if method != "POST":
+                await send_response(405, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"error": "Method not allowed"}), end_response=True)
+                return
+
+            if not body:
+                await send_response(400, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"error": "Missing request body"}), end_response=True)
+                return
+
+            try:
+                data = json.loads(body.decode('utf-8'))
+                site_name = data.get("name")
+
+                if not site_name:
+                    await send_response(400, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"error": "Missing site name"}), end_response=True)
+                    return
+
+                # Command to delete the site
+                command = ["python", "-m", "data_loading.db_load", "--only-delete", site_name]
+                proc = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    preexec_fn=os.setsid  # run in separate process group (Unix only)
+                )
+                stdout, stderr = proc.communicate()
+
+                if proc.returncode == 0:
+                    await send_response(200, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"status": "success", "output": stdout}), end_response=True)
+                else:
+                    await send_response(500, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"status": "error", "error": stderr}), end_response=True)
+
+            except Exception as e:
+                logger.error(f"Failed to delete site: {e}")
+                await send_response(500, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"error": "Internal server error"}), end_response=True)
         elif (path.find("sites") != -1):
             # Handle /sites endpoint
             try:

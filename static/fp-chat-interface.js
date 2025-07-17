@@ -43,7 +43,9 @@ class ModernChatInterface {
       messagesContainer: document.getElementById('messages-container'),
       chatMessages: document.getElementById('chat-messages'),
       chatInput: document.getElementById('chat-input'),
-      sendButton: document.getElementById('send-button')
+      sendButton: document.getElementById('send-button'),
+      rightSidebarSiteList: document.getElementById('right-sidebar-site-list'),
+      newSiteBtn: document.getElementById('new-site-btn'), // New element
     };
     
     // Debug mode state
@@ -134,6 +136,13 @@ class ModernChatInterface {
     // New chat button
     this.elements.newChatBtn.addEventListener('click', () => this.createNewChat());
     
+    // New site button
+    if (this.elements.newSiteBtn) {
+      this.elements.newSiteBtn.addEventListener('click', () => {
+        console.log('Add new site button clicked!');
+        // TODO: Implement logic to add a new site
+      });
+    }
     
     // Send button
     this.elements.sendButton.addEventListener('click', () => this.sendMessage());
@@ -1927,6 +1936,9 @@ class ModernChatInterface {
         if (this.siteDropdownItems) {
           this.populateSiteDropdown();
         }
+
+        // Populate the right sidebar site list
+        this.populateRightSidebarSiteList();
       }
     } catch (error) {
       console.error('Error loading sites:', error);
@@ -1950,7 +1962,34 @@ class ModernChatInterface {
       if (this.siteDropdownItems) {
         this.populateSiteDropdown();
       }
+
+      // Populate the right sidebar site list
+      this.populateRightSidebarSiteList();
     }
+  }
+
+  populateRightSidebarSiteList() {
+    if (!this.elements.rightSidebarSiteList) return;
+
+    this.elements.rightSidebarSiteList.innerHTML = ''; // Clear existing content
+
+    // Filter out 'all' site for display in the right sidebar
+    const sitesToDisplay = this.sites ? this.sites.filter(site => site !== 'all') : [];
+
+    if (sitesToDisplay.length === 0) {
+      const noSitesMessage = document.createElement('p');
+      noSitesMessage.className = 'no-sites-message';
+      noSitesMessage.textContent = 'No sites configured. Please add sites to the system.';
+      this.elements.rightSidebarSiteList.appendChild(noSitesMessage);
+      return;
+    }
+
+    sitesToDisplay.forEach(site => {
+      const siteDiv = document.createElement('div');
+      siteDiv.className = 'site-list-item';
+      siteDiv.textContent = site;
+      this.elements.rightSidebarSiteList.appendChild(siteDiv);
+    });
   }
 }
 

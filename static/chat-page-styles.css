@@ -27,6 +27,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 16px;
 }
 
 .login-button, .logout-button {

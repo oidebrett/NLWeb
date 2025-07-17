@@ -31,7 +31,7 @@ Assumes you have [Claude for Desktop](https://claude.ai/download). This works on
     "ask_nlw": {
       "command": "/Users/yourname/NLWeb/myenv/bin/python",
       "args": [
-        "/Users/yourname/NLWeb/code/chatbot_interface.py",
+        "/Users/yourname/NLWeb/code/python/chatbot_interface.py",
         "--server",
         "http://localhost:8000",
         "--endpoint",
@@ -51,7 +51,7 @@ Assumes you have [Claude for Desktop](https://claude.ai/download). This works on
     "ask_nlw": {
       "command": "C:\\Users\\yourusername\\NLWeb\\myenv\\Scripts\\python",
       "args": [
-        "C:\\Users\\yourusername\\NLWeb\\code\\chatbot_interface.py",
+        "C:\\Users\\yourusername\\NLWeb\\code\\python\\chatbot_interface.py",
         "--server",
         "http://localhost:8000",
         "--endpoint",

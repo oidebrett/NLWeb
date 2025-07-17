@@ -70,15 +70,13 @@ class MCPHandler:
                 else:
                     return  # No response for notifications
             elif method == "tools/list":
-                # Temporarily disable initialization check for debugging
-                # if not self.initialized:
-                #     raise Exception("Server not initialized")
                 logger.info(f"tools/list called, initialized={self.initialized}")
                 result = await self.handle_tools_list(params)
+            elif method == "tools/list_prompts":
+                logger.info(f"tools/list_prompts called, initialized={self.initialized}")
+                result = await self.handle_tools_list_prompts(params)
             elif method == "tools/call":
                 print(f"=== TOOLS/CALL: initialized={self.initialized} ===")
-                if not self.initialized:
-                    raise Exception("Server not initialized")
                 result = await self.handle_tools_call(params, query_params)
             else:
                 # Unknown method
@@ -171,7 +169,7 @@ class MCPHandler:
         # TODO: Add additional NLWeb tools here when router integration is ready
         
         return {"tools": available_tools}
-    
+
     async def handle_tools_call(self, params, query_params):
         """Handle tools/call request"""
         tool_name = params.get("name")

@@ -3,7 +3,7 @@
     "ask_nlw": {
 	"command": "<path to python>",
       "args": [
-        "/Users/guha/NLWeb/code/chatbot_interface.py",
+        "/Users/guha/NLWeb/code/python/chatbot_interface.py",
         "--server",
         "http://localhost:8000",
         "--endpoint",

@@ -24,20 +24,19 @@ from mcp.types import (
 DEFAULT_SERVER_URL = "http://localhost:8000"
 DEFAULT_ENDPOINT = "/mcp"
 
-async def forward_to_nlweb(function_name: str, arguments: Dict[str, Any], server_url: str, endpoint: str) -> Dict[str, Any]:
+async def forward_to_nlweb(method: str, params: Dict[str, Any], server_url: str, endpoint: str) -> Dict[str, Any]:
     """Forward a request to the NLWeb MCP endpoint"""
     nlweb_mcp_url = f"{server_url}{endpoint}"
     try:
-        # Format the request in MCP format
+        # Format the request in MCP JSON-RPC 2.0 format
         payload = {
-            "function_call": {
-                "name": function_name,
-                "arguments": json.dumps(arguments)
-            }
+            "jsonrpc": "2.0",
+            "id": 1, # Use a dummy ID as the mcp.server library manages the actual IDs
+            "method": method,
+            "params": params
         }
         
-        # Print some debug info to stderr (won't interfere with stdio protocol)
-        print(f"Forwarding to {nlweb_mcp_url}: {function_name}", file=sys.stderr)
+        print(f"Forwarding to {nlweb_mcp_url}: method={method}", file=sys.stderr)
         
         async with httpx.AsyncClient() as client:
             response = await client.post(
@@ -47,20 +46,25 @@ async def forward_to_nlweb(function_name: str, arguments: Dict[str, Any], server
                 timeout=30
             )
             
-            if response.status_code != 200:
-                print(f"Error from server: {response.status_code} - {response.text}", file=sys.stderr)
-                return {
-                    "error": f"Server error: {response.status_code} - {response.text}"
-                }
+            response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
             
             result = response.json()
-            return result
             
-    except Exception as e:
+            if "error" in result:
+                print(f"MCP error response: {result["error"]}", file=sys.stderr)
+                return {"error": result["error"].get("message", "Unknown MCP error")}
+            
+            return {"response": result.get("result")}
+            
+    except httpx.HTTPStatusError as e:
+        print(f"HTTP error occurred: {e.response.status_code} - {e.response.text}", file=sys.stderr)
+        return {"error": f"HTTP error: {e.response.status_code} - {e.response.text}"}
+    except httpx.RequestError as e:
         print(f"Request failed: {str(e)}", file=sys.stderr)
-        return {
-            "error": f"Request failed: {str(e)}"
-        }
+        return {"error": f"Request failed: {str(e)}"}
+    except Exception as e:
+        print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
+        return {"error": f"An unexpected error occurred: {str(e)}"}
 
 async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_ENDPOINT) -> None:
     """
@@ -76,7 +80,7 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
     @server.list_tools()
     async def list_tools() -> list[Tool]:
         """Forward list_tools request to NLWeb"""
-        result = await forward_to_nlweb("list_tools", {}, server_url, endpoint)
+        result = await forward_to_nlweb("tools/list", {}, server_url, endpoint)
         
         if "error" in result:
             # Fallback to default if server is unavailable
@@ -103,7 +107,7 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
             return [Tool(
                 name=tool["name"],
                 description=tool["description"],
-                inputSchema=tool["parameters"]
+                inputSchema=tool["inputSchema"]
             ) for tool in tools]
         except (KeyError, TypeError) as e:
             print(f"Error processing tools: {str(e)}", file=sys.stderr)
@@ -128,7 +132,7 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
     @server.list_prompts()
     async def list_prompts() -> list[Prompt]:
         """Forward list_prompts request to NLWeb"""
-        result = await forward_to_nlweb("list_prompts", {}, server_url, endpoint)
+        result = await forward_to_nlweb("tools/list_prompts", {}, server_url, endpoint)
         
         if "error" in result:
             # Fallback to default if server is unavailable
@@ -180,7 +184,7 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
     @server.call_tool()
     async def call_tool(name: str, arguments: dict) -> list[TextContent]:
         """Forward tool calls to NLWeb"""
-        result = await forward_to_nlweb(name, arguments, server_url, endpoint)
+        result = await forward_to_nlweb("tools/call", {"name": name, "arguments": arguments}, server_url, endpoint)
         
         if "error" in result:
             return [TextContent(type="text", text=f"Error: {result['error']}")]
@@ -209,7 +213,7 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
         if "prompt_id" not in arguments:
             arguments["prompt_id"] = name
         
-        result = await forward_to_nlweb("get_prompt", arguments, server_url, endpoint)
+        result = await forward_to_nlweb("tools/get_prompt", {"name": name, "arguments": arguments}, server_url, endpoint)
         
         if "error" in result:
             return GetPromptResult(

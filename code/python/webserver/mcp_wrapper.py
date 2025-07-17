@@ -70,11 +70,11 @@ class MCPHandler:
                 else:
                     return  # No response for notifications
             elif method == "tools/list":
-                # Temporarily disable initialization check for debugging
-                # if not self.initialized:
-                #     raise Exception("Server not initialized")
                 logger.info(f"tools/list called, initialized={self.initialized}")
                 result = await self.handle_tools_list(params)
+            elif method == "tools/list_prompts":
+                logger.info(f"tools/list_prompts called, initialized={self.initialized}")
+                result = await self.handle_tools_list_prompts(params)
             elif method == "tools/call":
                 print(f"=== TOOLS/CALL: initialized={self.initialized} ===")
                 # Remove the initialization check - MCP clients might not send initialize first

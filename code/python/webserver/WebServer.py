@@ -803,16 +803,13 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
                 await send_chunk(json.dumps({"status": "ok"}), end_response=True)
                 return
 
-            # Parse POST body if present
-            if method == "POST":
-                query_params = parse_post_body(body, query_params)
-                
-            # Check if streaming should be used from query parameters
+            # For MCP requests, the body is a JSON-RPC payload, so we pass it directly
+            # The mcp_wrapper will parse it.
             use_streaming = False
             if ("streaming" in query_params):
                 strval = get_param(query_params, "streaming", str, "False")
                 use_streaming = strval not in ["False", "false", "0"]
-                
+
             # Handle MCP requests with streaming parameter
             logger.info(f"Routing to MCP handler (streaming={use_streaming})")
             await handle_mcp_request(query_params, body, send_response, send_chunk, streaming=use_streaming)

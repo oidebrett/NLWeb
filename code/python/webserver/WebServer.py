@@ -18,6 +18,7 @@ import urllib.parse
 import secrets
 import hashlib
 import httpx
+import io
 from typing import Dict, Optional
 from methods.whoHandler import WhoHandler
 from webserver.mcp_wrapper import handle_mcp_request
@@ -692,7 +693,13 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
                     return
 
                 async with db_lock:
-                    await loadJsonToDB(rss_url, site_name)
+                    # Temporarily redirect stdin to prevent interactive prompts
+                    original_stdin = sys.stdin
+                    sys.stdin = io.StringIO('n\n')
+                    try:
+                        await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                    finally:
+                        sys.stdin = original_stdin
 
                 await send_response(200, {'Content-Type': 'application/json'})
                 await send_chunk(json.dumps({"status": "success"}), end_response=True)

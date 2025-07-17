@@ -2024,11 +2024,15 @@ class ModernChatInterface {
   async addNewSite() {
     const siteUrl = document.getElementById('new-site-url').value.trim();
     const siteName = document.getElementById('new-site-name').value.trim();
+    const submitButton = document.getElementById('add-site-btn');
 
     if (!siteUrl || !siteName) {
       alert('Please enter both a URL and a name for the site.');
       return;
     }
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Adding...';
 
     try {
       const response = await fetch('/api/sites/add', {
@@ -2049,6 +2053,9 @@ class ModernChatInterface {
     } catch (error) {
       console.error('Error adding new site:', error);
       alert('Failed to add new site. Please check the console for details.');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Add Site';
     }
   }
 

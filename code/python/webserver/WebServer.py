@@ -697,12 +697,16 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
                     original_stdin = sys.stdin
                     sys.stdin = io.StringIO('n\n')
                     try:
-                        await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                        documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
                     finally:
                         sys.stdin = original_stdin
 
-                await send_response(200, {'Content-Type': 'application/json'})
-                await send_chunk(json.dumps({"status": "success"}), end_response=True)
+                if documents_added > 0:
+                    await send_response(200, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"status": "success"}), end_response=True)
+                else:
+                    await send_response(400, {'Content-Type': 'application/json'})
+                    await send_chunk(json.dumps({"status": "error", "message": "No documents could be extracted from the provided URL."}), end_response=True)
 
             except Exception as e:
                 logger.error(f"Failed to add site: {e}")

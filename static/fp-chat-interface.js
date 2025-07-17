@@ -2044,7 +2044,8 @@ class ModernChatInterface {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Unknown error');
       }
 
       this.elements.newSiteModal.style.display = 'none';
@@ -2052,7 +2053,7 @@ class ModernChatInterface {
       this.loadSites(); // Reload the site list
     } catch (error) {
       console.error('Error adding new site:', error);
-      alert('Failed to add new site. Please check the console for details.');
+      alert(`Failed to add new site: ${error.message}`);
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = 'Add Site';

@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="/static/favicon.png">
   <link rel="stylesheet" href="/static/common-chat-styles.css">
   <link rel="stylesheet" href="/static/chat-page-styles.css">
+  <link rel="stylesheet" href="/static/right-sidebar.css">
 </head>
 <body>
   <div class="app-container">
@@ -104,6 +105,34 @@
         </div>
       </div>
     </main>
+  <!-- Right Sidebar -->
+    <aside class="right-sidebar" id="right-sidebar" aria-label="Right sidebar" aria-hidden="true">
+      <div class="right-sidebar-content">
+        <div class="right-sidebar-header">
+          <h2 class="right-sidebar-title">Sites</h2>
+          <button class="new-site-btn" id="new-site-btn" title="Add new site">
+            <span class="plus-icon">+</span>
+          </button>
+        </div>
+        <div class="right-sidebar-section">
+          <h3>Configured Sites</h3>
+          <div id="right-sidebar-site-list" class="site-list-container">
+            <!-- Site list will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Sidebar Toggle Button -->
+    <button class="right-sidebar-toggle" id="right-sidebar-toggle" 
+            title="Toggle right sidebar" 
+            aria-expanded="false" 
+            aria-controls="right-sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span class="sr-only">Toggle right sidebar</span>
+    </button>    
   </div>
 
   <!-- OAuth Login Popup -->
@@ -153,5 +182,6 @@
 
   <script type="module" src="/static/fp-chat-interface.js"></script>
   <script src="/static/oauth-login.js"></script>
+  <script src="/static/right-sidebar.js"></script>  
 </body>
 </html>

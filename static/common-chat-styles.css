@@ -30,6 +30,13 @@ body {
   color: var(--text-primary);
 }
 
+/* App Container - Flexbox for main layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden; /* Prevent body scroll when sidebars are open */
+}
+
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;

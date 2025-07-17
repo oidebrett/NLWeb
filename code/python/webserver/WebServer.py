@@ -29,11 +29,15 @@ from core.config import CONFIG
 from core.baseHandler import NLWebHandler
 from misc.logger.logging_config_helper import get_configured_logger
 from core.retriever import get_vector_db_client
+from data_loading.db_load import loadJsonToDB, delete_site
 import os
 import subprocess
 
 # Initialize module logger
 logger = get_configured_logger("webserver")
+
+# Create a lock to serialize database operations
+db_lock = asyncio.Lock()
 
 async def handle_client(reader, writer, fulfill_request):
     """Handle a client connection by parsing the HTTP request and passing it to fulfill_request."""
@@ -687,23 +691,11 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
                     await send_chunk(json.dumps({"error": "Missing url or name"}), end_response=True)
                     return
 
-                # Run the CLI as subprocess
-                command = ["python", "-m", "data_loading.db_load", rss_url, site_name]
-                proc = subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    preexec_fn=os.setsid  # run in separate process group (Unix only)
-                )
-                stdout, stderr = proc.communicate()
+                async with db_lock:
+                    await loadJsonToDB(rss_url, site_name)
 
-                if proc.returncode == 0:
-                    await send_response(200, {'Content-Type': 'application/json'})
-                    await send_chunk(json.dumps({"status": "success", "output": stdout}), end_response=True)
-                else:
-                    await send_response(500, {'Content-Type': 'application/json'})
-                    await send_chunk(json.dumps({"status": "error", "error": stderr}), end_response=True)
+                await send_response(200, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"status": "success"}), end_response=True)
 
             except Exception as e:
                 logger.error(f"Failed to add site: {e}")
@@ -729,23 +721,11 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
                     await send_chunk(json.dumps({"error": "Missing site name"}), end_response=True)
                     return
 
-                # Command to delete the site
-                command = ["python", "-m", "data_loading.db_load", "--only-delete", site_name]
-                proc = subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    preexec_fn=os.setsid  # run in separate process group (Unix only)
-                )
-                stdout, stderr = proc.communicate()
+                async with db_lock:
+                    await delete_site(site_name)
 
-                if proc.returncode == 0:
-                    await send_response(200, {'Content-Type': 'application/json'})
-                    await send_chunk(json.dumps({"status": "success", "output": stdout}), end_response=True)
-                else:
-                    await send_response(500, {'Content-Type': 'application/json'})
-                    await send_chunk(json.dumps({"status": "error", "error": stderr}), end_response=True)
+                await send_response(200, {'Content-Type': 'application/json'})
+                await send_chunk(json.dumps({"status": "success"}), end_response=True)
 
             except Exception as e:
                 logger.error(f"Failed to delete site: {e}")

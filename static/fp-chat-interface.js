@@ -2007,6 +2007,33 @@ class ModernChatInterface {
       siteName.textContent = site;
       siteDiv.appendChild(siteName);
 
+      // Add click listener to select the site
+      siteDiv.addEventListener('click', () => {
+        this.selectedSite = site;
+        
+        // Update site selector icon title
+        if (this.siteSelectorIcon) {
+          this.siteSelectorIcon.title = `Site: ${site}`;
+        }
+        
+        // Update the header site info
+        if (this.elements.chatSiteInfo) {
+          this.elements.chatSiteInfo.textContent = `Asking ${site}`;
+        }
+        
+        // Update the current conversation's site if it exists
+        const conversation = this.conversationManager.findConversation(this.currentConversationId);
+        if (conversation) {
+          conversation.site = site;
+          this.conversationManager.saveConversations();
+        }
+        
+        // Update the site dropdown to reflect the new selection
+        if (this.siteDropdownItems) {
+          this.populateSiteDropdown();
+        }
+      });
+
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'delete-site-btn';
       deleteBtn.innerHTML = '&times;';

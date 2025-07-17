@@ -24,6 +24,8 @@ from mcp.types import (
 DEFAULT_SERVER_URL = "http://localhost:8000"
 DEFAULT_ENDPOINT = "/mcp"
 
+MAX_TOOL_OUTPUT_LENGTH = 4000 # Maximum characters for tool output to prevent exceeding Claude's limits
+
 async def forward_to_nlweb(method: str, params: Dict[str, Any], server_url: str, endpoint: str) -> Dict[str, Any]:
     """Forward a request to the NLWeb MCP endpoint"""
     nlweb_mcp_url = f"{server_url}{endpoint}"
@@ -197,8 +199,11 @@ async def serve(server_url: str = DEFAULT_SERVER_URL, endpoint: str = DEFAULT_EN
                 response_text = json.dumps(response_data, indent=2)
             else:
                 response_text = str(response_data)
-            
-            return [TextContent(type="text", text=response_text)]
+                # Truncate long responses
+                if len(response_text) > MAX_TOOL_OUTPUT_LENGTH:
+                    original_length = len(response_text)
+                    response_text = response_text[:MAX_TOOL_OUTPUT_LENGTH] + f"\n... (truncated from {original_length} characters)"
+                    return [TextContent(type="text", text=response_text)]
         except Exception as e:
             print(f"Error processing tool response: {str(e)}", file=sys.stderr)
             return [TextContent(type="text", text=f"Error processing response: {str(e)}")]

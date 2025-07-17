@@ -691,6 +691,7 @@ body {
 
 .delete-site-btn {
   background: none;
+  padding: 5px;
   border: none;
   color: var(--text-secondary);
   cursor: pointer;

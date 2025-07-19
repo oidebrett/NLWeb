@@ -62,6 +62,7 @@ class OAuthManager {
         
         // Setup OAuth provider buttons
         const providers = ['google', 'facebook', 'microsoft', 'github'];
+        let anyProviderEnabled = false;
         providers.forEach(provider => {
             const btn = document.getElementById(`${provider}LoginBtn`);
             if (btn) {
@@ -70,11 +71,18 @@ class OAuthManager {
                 // Show/hide based on configuration
                 if (this.config && this.config[provider] && this.config[provider].enabled) {
                     btn.style.display = 'flex';
+                    anyProviderEnabled = true;
                 } else {
                     btn.style.display = 'none';
                 }
             }
         });
+
+        // Hide login controls if no providers are enabled
+        const chatHeaderRight = document.querySelector('.chat-header-right');
+        if (chatHeaderRight && !anyProviderEnabled) {
+            chatHeaderRight.style.display = 'none';
+        }
         
         // Setup popup close button
         const closeBtn = document.querySelector('.oauth-popup-close');

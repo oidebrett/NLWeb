@@ -18,6 +18,16 @@ def main():
     # Load environment variables from .env file
     load_dotenv()
     
+    # Suppress verbose HTTP client logging from OpenAI SDK
+    import logging
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("openai").setLevel(logging.WARNING)
+    
+    # Suppress Azure SDK HTTP logging
+    logging.getLogger("azure.core.pipeline.policies.http_logging_policy").setLevel(logging.WARNING)
+    logging.getLogger("azure").setLevel(logging.WARNING)
+    
     # Initialize router
     import core.router as router
     router.init()

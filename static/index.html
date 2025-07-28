@@ -140,13 +140,28 @@
     <div class="modal-content">
       <span class="close" id="cancel-add-site">&times;</span>
       <h2>Add a New Site</h2>
-      <form id="new-site-form">
-        <label for="new-site-name">Name:</label>
-        <input type="text" id="new-site-name" name="name" required>
-        <label for="new-site-url">Url (only RSS supported for now):</label>
-        <input type="url" id="new-site-url" name="url" required>
-        <button type="submit" id="add-site-btn">Add Site</button>
-      </form>
+      <div class="tab-container">
+        <button class="tab-link active" onclick="openTab(event, 'url-tab')">From URL</button>
+        <button class="tab-link" onclick="openTab(event, 'dir-tab')">From Directory</button>
+      </div>
+      <div id="url-tab" class="tab-content" style="display: block;">
+        <form id="new-site-form-url">
+          <label for="new-site-name-url">Name:</label>
+          <input type="text" id="new-site-name-url" name="name" required>
+          <label for="new-site-url">Url (only RSS supported for now):</label>
+          <input type="url" id="new-site-url" name="url" required>
+          <button type="submit" id="add-site-btn-url">Add Site</button>
+        </form>
+      </div>
+      <div id="dir-tab" class="tab-content">
+        <form id="new-site-form-dir">
+          <label for="new-site-name-dir">Name:</label>
+          <input type="text" id="new-site-name-dir" name="name" required>
+          <label for="new-site-dir">Directory Path:</label>
+          <input type="text" id="new-site-dir" name="directory" required>
+          <button type="submit" id="add-site-btn-dir">Add Site</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -198,5 +213,20 @@
   <script type="module" src="/static/fp-chat-interface.js"></script>
   <script src="/static/oauth-login.js"></script>
   <script src="/static/right-sidebar.js"></script>  
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tab-link");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
 </body>
 </html>

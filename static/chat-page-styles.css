@@ -666,12 +666,12 @@ body {
   cursor: pointer;
 }
 
-#new-site-form label {
+#new-site-form-url label, #new-site-form-dir label {
   display: block;
   margin-top: 10px;
 }
 
-#new-site-form input {
+#new-site-form-url input, #new-site-form-dir input {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -679,7 +679,7 @@ body {
   border: 1px solid #ccc;
 }
 
-#new-site-form button {
+#new-site-form-url button, #new-site-form-dir button {
   margin-top: 15px;
   padding: 10px 15px;
   border: none;
@@ -687,6 +687,37 @@ body {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.tab-container {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.tab-container button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+.tab-container button:hover {
+  background-color: #ddd;
+}
+
+.tab-container button.active {
+  background-color: #ccc;
+}
+
+.tab-content {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
 }
 
 .delete-site-btn {

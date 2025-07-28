@@ -47,7 +47,8 @@ class ModernChatInterface {
       rightSidebarSiteList: document.getElementById('right-sidebar-site-list'),
       newSiteBtn: document.getElementById('new-site-btn'), // New element
       newSiteModal: document.getElementById('new-site-modal'),
-      newSiteForm: document.getElementById('new-site-form'),
+      newSiteFormUrl: document.getElementById('new-site-form-url'),
+      newSiteFormDir: document.getElementById('new-site-form-dir'),
       cancelAddSite: document.getElementById('cancel-add-site'),
     };
     
@@ -152,10 +153,17 @@ class ModernChatInterface {
       });
     }
 
-    if (this.elements.newSiteForm) {
-      this.elements.newSiteForm.addEventListener('submit', (e) => {
+    if (this.elements.newSiteFormUrl) {
+      this.elements.newSiteFormUrl.addEventListener('submit', (e) => {
         e.preventDefault();
-        this.addNewSite();
+        this.addNewSiteUrl();
+      });
+    }
+
+    if (this.elements.newSiteFormDir) {
+      this.elements.newSiteFormDir.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSiteDir();
       });
     }
     
@@ -660,6 +668,22 @@ class ModernChatInterface {
             console.log('API key message not for google_maps or no value');
             console.log('key_name:', data.key_name, 'has value?', !!data.key_value);
           }
+          
+        } else if (data.message_type === 'nlws') {
+          // Handle NLWS message type (Natural Language Web Search synthesized response)
+          
+          // Update the answer if provided
+          if (data.answer && typeof data.answer === 'string') {
+            messageContent = data.answer + '\n\n';
+          }
+          
+          // Update the items if provided
+          if (data.items && Array.isArray(data.items)) {
+            allResults = data.items;
+          }
+          
+          // Always update the display with current answer and items
+          textDiv.innerHTML = messageContent + this.renderItems(allResults);
           
         } else if (data.message_type === 'chart_result') {
           // Handle chart result (web components)
@@ -1802,7 +1826,77 @@ class ModernChatInterface {
       this.siteDropdownItems.appendChild(item);
     });
   }
-  
+
+  async addNewSite(type) {
+    //this add new site is not being called
+    const formId = `new-site-form-${type}`;
+    const nameInputId = `new-site-name-${type}`;
+    const valueInputId = `new-site-${type}`; // 'url' or 'dir'
+    const buttonId = `add-site-btn-${type}`;
+
+    const form = document.getElementById(formId);
+    const nameInput = document.getElementById(nameInputId);
+    const valueInput = document.getElementById(valueInputId);
+    const addButton = document.getElementById(buttonId);
+
+    if (!form || !nameInput || !valueInput || !addButton) {
+      console.error(`Could not find all elements for site type '${type}'`);
+      return;
+    }
+
+    const siteName = nameInput.value.trim();
+    const siteValue = valueInput.value.trim();
+
+    if (!siteName || !siteValue) {
+      alert('Please fill in both name and ' + (type === 'url' ? 'URL' : 'directory') + '.');
+      return;
+    }
+
+    const originalButtonText = addButton.textContent;
+    addButton.disabled = true;
+    addButton.textContent = 'Adding...';
+
+    try {
+      const baseUrl = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
+      const response = await fetch(`${baseUrl}/api/sites/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: siteName,
+          [type]: siteValue,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        alert('Site added successfully!');
+        // Close modal
+        this.elements.newSiteModal.style.display = 'none';
+        form.reset();
+        this.loadSites(); // Refresh the site list
+      } else {
+        alert(`Error adding site: ${result.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error adding site:', error);
+      form.reset();
+      alert('An error occurred while adding the site.');
+    } finally {
+      addButton.disabled = false;
+      addButton.textContent = originalButtonText;
+    }
+  }
+
+  addNewSiteUrl() {
+    this.addNewSite('url');
+  }
+
+  addNewSiteDir() {
+    this.addNewSite('dir');
+  }
   
   addRememberedItem(item) {
     if (!item || this.rememberedItems.includes(item)) return;
@@ -2048,43 +2142,12 @@ class ModernChatInterface {
     });
   }
 
-  async addNewSite() {
-    const siteUrl = document.getElementById('new-site-url').value.trim();
-    const siteName = document.getElementById('new-site-name').value.trim();
-    const submitButton = document.getElementById('add-site-btn');
+  async addNewSiteUrl() {
+    await this.addNewSite('url');
+  }
 
-    if (!siteUrl || !siteName) {
-      alert('Please enter both a URL and a name for the site.');
-      return;
-    }
-
-    submitButton.disabled = true;
-    submitButton.textContent = 'Adding...';
-
-    try {
-      const response = await fetch('/api/sites/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: siteUrl, name: siteName }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Unknown error');
-      }
-
-      this.elements.newSiteModal.style.display = 'none';
-      this.elements.newSiteForm.reset();
-      this.loadSites(); // Reload the site list
-    } catch (error) {
-      console.error('Error adding new site:', error);
-      alert(`Failed to add new site: ${error.message}`);
-    } finally {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Add Site';
-    }
+  async addNewSiteDir() {
+    await this.addNewSite('dir');
   }
 
   async deleteSite(siteName) {

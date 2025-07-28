@@ -30,7 +30,7 @@ from core.config import CONFIG
 from core.baseHandler import NLWebHandler
 from misc.logger.logging_config_helper import get_configured_logger
 from core.retriever import get_vector_db_client
-from data_loading.db_load import loadJsonToDB, delete_site
+from data_loading.db_load import loadJsonToDB, delete_site, process_normal_path
 import os
 import subprocess
 
@@ -684,20 +684,37 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
 
             try:
                 data = json.loads(body.decode('utf-8'))
-                rss_url = data.get("url")
                 site_name = data.get("name")
+                url = data.get("url")
+                dir = data.get("dir")
 
-                if not rss_url or not site_name:
+                if not site_name or not (url or dir):
                     await send_response(400, {'Content-Type': 'application/json'})
-                    await send_chunk(json.dumps({"error": "Missing url or name"}), end_response=True)
+                    await send_chunk(json.dumps({"error": "Missing name or url/dir"}), end_response=True)
                     return
 
+                documents_added = 0
                 async with db_lock:
                     # Temporarily redirect stdin to prevent interactive prompts
                     original_stdin = sys.stdin
                     sys.stdin = io.StringIO('n\n')
                     try:
-                        documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                        if url:
+                            documents_added = await loadJsonToDB(url, site_name, force_recompute=False)
+                        elif dir:
+                            if not os.path.isdir(dir):
+                                await send_response(400, {'Content-Type': 'application/json'})
+                                await send_chunk(json.dumps({"error": f"Directory not found: {dir}"}), end_response=True)
+                                return
+                            
+                            # Replicate logic from db_load.py main() for directories
+                            for filename in os.listdir(dir):
+                                file_path = os.path.join(dir, filename)
+                                if os.path.isfile(file_path):
+                                    logger.info(f"Processing file: {file_path}")
+                                    await process_normal_path(file_path, site_name)
+                            # Since process_normal_path doesn't return a count, we'll assume success if no exceptions.
+                            documents_added = 1 # Assume success
                     finally:
                         sys.stdin = original_stdin
 
@@ -706,7 +723,7 @@ async def fulfill_request(method, path, headers, query_params, body, send_respon
                     await send_chunk(json.dumps({"status": "success"}), end_response=True)
                 else:
                     await send_response(400, {'Content-Type': 'application/json'})
-                    await send_chunk(json.dumps({"status": "error", "message": "No documents could be extracted from the provided URL."}), end_response=True)
+                    await send_chunk(json.dumps({"status": "error", "message": "No documents could be extracted."}), end_response=True)
 
             except Exception as e:
                 logger.error(f"Failed to add site: {e}")

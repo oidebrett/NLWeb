@@ -53,7 +53,7 @@ class MCPHandler:
         is_notification = request_id is None
         
         logger.info(f"MCP request: method={method}, id={request_id}, is_notification={is_notification}")
-        print(f"=== MCP REQUEST: method={method}, id={request_id}, initialized={self.initialized} ===")
+        print(f"=== MCP REQUEST: method={method}, id={request_id}, initialized={self.initialized}, handler_id={id(self)} ===")
         
         try:
             # Route based on method
@@ -70,14 +70,35 @@ class MCPHandler:
                 else:
                     return  # No response for notifications
             elif method == "tools/list":
+                # Temporarily disable initialization check for debugging
+                # if not self.initialized:
+                #     raise Exception("Server not initialized")
                 logger.info(f"tools/list called, initialized={self.initialized}")
                 result = await self.handle_tools_list(params)
-            elif method == "tools/list_prompts":
-                logger.info(f"tools/list_prompts called, initialized={self.initialized}")
-                result = await self.handle_tools_list_prompts(params)
             elif method == "tools/call":
                 print(f"=== TOOLS/CALL: initialized={self.initialized} ===")
-                result = await self.handle_tools_call(params, query_params)
+                # Remove the initialization check - MCP clients might not send initialize first
+                # if not self.initialized:
+                #     raise Exception("Server not initialized")
+                
+                # Check if this is a streaming request
+                is_streaming = (
+                    query_params.get('streaming') == ['true'] and 
+                    params.get("arguments", {}).get("streaming", False)
+                )
+                
+                if is_streaming:
+                    # Handle streaming request with SSE
+                    await self.handle_streaming_tools_call(params, query_params, send_response, send_chunk)
+                    return
+                else:
+                    # Handle regular request
+                    result = await self.handle_tools_call(params, query_params)
+            elif method == "notifications/cancelled":
+                # Handle cancellation notification
+                logger.info(f"Received cancellation for request {params.get('requestId')}: {params.get('reason')}")
+                # For notifications, we don't send a response
+                return
             else:
                 # Unknown method
                 raise Exception(f"Method not found: {method}")
@@ -131,7 +152,7 @@ class MCPHandler:
         
         # Add the main ask/query tool
         available_tools.append({
-            "name": "ask_nlweb",
+            "name": "ask",
             "description": "Query NLWeb to search and analyze information from configured data sources",
             "inputSchema": {
                 "type": "object",
@@ -169,6 +190,84 @@ class MCPHandler:
         # TODO: Add additional NLWeb tools here when router integration is ready
         
         return {"tools": available_tools}
+    
+    async def handle_streaming_tools_call(self, params, query_params, send_response, send_chunk):
+        """Handle streaming tools/call request with SSE"""
+        tool_name = params.get("name", "")
+        arguments = params.get("arguments", {})
+        
+        logger.info(f"MCP streaming tool call: {tool_name}")
+        
+        if tool_name == "ask":
+            # Set SSE headers
+            await send_response(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive'
+            })
+            
+            # Handle the main query tool with streaming
+            query = arguments.get("query", "")
+            sites = arguments.get("site", [])
+            generate_mode = arguments.get("generate_mode", "list")
+            
+            # Update query params
+            query_params["query"] = [query] if query else []
+            if sites:
+                query_params["site"] = sites if isinstance(sites, list) else [sites]
+            query_params["generate_mode"] = [generate_mode] if generate_mode else ["list"]
+            
+            # Create a streaming wrapper that sends SSE events
+            class SSEStreamer:
+                async def write_stream(self, data, end_response=False):
+                    # Convert data to streaming event
+                    if isinstance(data, dict):
+                        chunk = json.dumps(data)
+                    elif isinstance(data, bytes):
+                        chunk = data.decode('utf-8')
+                    else:
+                        chunk = str(data)
+                    
+                    # Send as SSE event
+                    event_data = {
+                        "type": "function_stream_event",
+                        "content": {"partial_response": chunk}
+                    }
+                    sse_data = f"data: {json.dumps(event_data)}\n\n"
+                    await send_chunk(sse_data.encode('utf-8'), end_response=False)
+            
+            stream_chunk = SSEStreamer()
+            
+            try:
+                # Process the query using NLWebHandler
+                handler = NLWebHandler(query_params, stream_chunk)
+                await handler.runQuery()
+                
+                # Send final event
+                final_event = {
+                    "type": "function_stream_end",
+                    "status": "success"
+                }
+                sse_data = f"data: {json.dumps(final_event)}\n\n"
+                await send_chunk(sse_data.encode('utf-8'), end_response=False)
+                
+            except Exception as e:
+                # Send error event
+                error_event = {
+                    "type": "function_stream_end",
+                    "status": "error",
+                    "error": str(e)
+                }
+                sse_data = f"data: {json.dumps(error_event)}\n\n"
+                await send_chunk(sse_data.encode('utf-8'), end_response=False)
+            
+            # End the stream
+            await send_chunk(b"", end_response=True)
+        else:
+            # Other tools not supported for streaming
+            await send_response(400, {'Content-Type': 'application/json'})
+            error_response = {"error": "Streaming not supported for this tool"}
+            await send_chunk(json.dumps(error_response).encode('utf-8'), end_response=True)
 
     async def handle_tools_call(self, params, query_params):
         """Handle tools/call request"""
@@ -179,9 +278,11 @@ class MCPHandler:
         print(f"=== TOOL CALL: {tool_name} ===")
         print(f"Arguments: {json.dumps(arguments, indent=2)}")
         
-        if tool_name == "ask_nlweb":
+        if tool_name == "ask":
             # Handle the main query tool
             query = arguments.get("query", "")
+            print(f"=== PROCESSING ASK TOOL ===")
+            print(f"Query: {query}")
             sites = arguments.get("site", [])
             generate_mode = arguments.get("generate_mode", "list")
             
@@ -212,9 +313,26 @@ class MCPHandler:
             
             capture_chunk = ChunkCapture()
             
-            # Process the query using NLWebHandler
+            # Process the query using NLWebHandler with a timeout
+            print(f"=== CREATING NLWebHandler ===")
+            print(f"Query params: {query_params}")
             handler = NLWebHandler(query_params, capture_chunk)
-            result = await handler.runQuery()
+            try:
+                print(f"=== CALLING handler.runQuery() ===")
+                # Add a 10-second timeout for MCP requests
+                result = await asyncio.wait_for(handler.runQuery(), timeout=10.0)
+                print(f"=== HANDLER RETURNED: {result} ===")
+            except asyncio.TimeoutError:
+                logger.warning("MCP tool call timed out after 10 seconds")
+                return {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Request timed out. The query is taking longer than expected. Please try a simpler query or specify a more specific site."
+                        }
+                    ],
+                    "isError": True
+                }
             
             # Join all chunks
             full_response = ''.join(response_content)
@@ -226,7 +344,8 @@ class MCPHandler:
                         "type": "text",
                         "text": full_response
                     }
-                ]
+                ],
+                "isError": False
             }
         
         elif tool_name == "list_sites":
@@ -247,7 +366,8 @@ class MCPHandler:
                             "type": "text",
                             "text": json.dumps({"sites": sites}, indent=2)
                         }
-                    ]
+                    ],
+                    "isError": False
                 }
             except Exception as e:
                 logger.error(f"Error getting sites: {str(e)}")
@@ -257,7 +377,8 @@ class MCPHandler:
                             "type": "text",
                             "text": f"Error retrieving sites: {str(e)}"
                         }
-                    ]
+                    ],
+                    "isError": True
                 }
         
         else:
@@ -266,6 +387,7 @@ class MCPHandler:
 
 # Global MCP handler instance
 mcp_handler = MCPHandler()
+print(f"=== GLOBAL MCP HANDLER CREATED: id={id(mcp_handler)} ===")
 
 async def handle_mcp_request(query_params, body, send_response, send_chunk, streaming=False):
     """

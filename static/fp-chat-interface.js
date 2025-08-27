@@ -47,7 +47,8 @@ class ModernChatInterface {
       rightSidebarSiteList: document.getElementById('right-sidebar-site-list'),
       newSiteBtn: document.getElementById('new-site-btn'), // New element
       newSiteModal: document.getElementById('new-site-modal'),
-      newSiteForm: document.getElementById('new-site-form'),
+      newSiteFormUrl: document.getElementById('new-site-form-url'),
+      newSiteFormDir: document.getElementById('new-site-form-dir'),
       cancelAddSite: document.getElementById('cancel-add-site'),
     };
     
@@ -152,10 +153,17 @@ class ModernChatInterface {
       });
     }
 
-    if (this.elements.newSiteForm) {
-      this.elements.newSiteForm.addEventListener('submit', (e) => {
+    if (this.elements.newSiteFormUrl) {
+      this.elements.newSiteFormUrl.addEventListener('submit', (e) => {
         e.preventDefault();
-        this.addNewSite();
+        this.addNewSite('url');
+      });
+    }
+
+    if (this.elements.newSiteFormDir) {
+      this.elements.newSiteFormDir.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSite('directory');
       });
     }
     
@@ -2072,13 +2080,21 @@ class ModernChatInterface {
     });
   }
 
-  async addNewSite() {
-    const siteUrl = document.getElementById('new-site-url').value.trim();
-    const siteName = document.getElementById('new-site-name').value.trim();
-    const submitButton = document.getElementById('add-site-btn');
+  async addNewSite(type = 'url') {
+    let siteName, siteValue, submitButton;
 
-    if (!siteUrl || !siteName) {
-      alert('Please enter both a URL and a name for the site.');
+    if (type === 'url') {
+      siteName = document.getElementById('new-site-name-url').value.trim();
+      siteValue = document.getElementById('new-site-url').value.trim();
+      submitButton = document.getElementById('add-site-btn-url');
+    } else {
+      siteName = document.getElementById('new-site-name-dir').value.trim();
+      siteValue = document.getElementById('new-site-dir').value.trim();
+      submitButton = document.getElementById('add-site-btn-dir');
+    }
+
+    if (!siteName || !siteValue) {
+      alert('Please fill in both name and ' + (type === 'url' ? 'URL' : 'directory') + '.');
       return;
     }
 
@@ -2086,22 +2102,45 @@ class ModernChatInterface {
     submitButton.textContent = 'Adding...';
 
     try {
+      const requestBody = { name: siteName };
+      if (type === 'url') {
+        requestBody.url = siteValue;
+      } else {
+        requestBody.directory = siteValue;
+      }
+
       const response = await fetch('/api/sites/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: siteUrl, name: siteName }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Unknown error');
+        throw new Error(errorData.message || errorData.error || 'Unknown error');
       }
 
+      const result = await response.json();
+      console.log('Site added successfully:', result);
+
       this.elements.newSiteModal.style.display = 'none';
-      this.elements.newSiteForm.reset();
+
+      // Reset both forms
+      if (this.elements.newSiteFormUrl) {
+        this.elements.newSiteFormUrl.reset();
+      }
+      if (this.elements.newSiteFormDir) {
+        this.elements.newSiteFormDir.reset();
+      }
+
       this.loadSites(); // Reload the site list
+
+      // Show success message
+      const sourceType = type === 'url' ? 'URL' : 'directory';
+      alert(`Successfully added site "${siteName}" from ${sourceType} with ${result.documents_added || 0} documents.`);
+
     } catch (error) {
       console.error('Error adding new site:', error);
       alert(`Failed to add new site: ${error.message}`);
@@ -2138,6 +2177,28 @@ class ModernChatInterface {
 }
 
 // Export the class for use in other modules
+// Tab switching function for the add site modal
+function openTab(evt, tabName) {
+  // Hide all tab content
+  const tabContents = document.getElementsByClassName('tab-content');
+  for (let i = 0; i < tabContents.length; i++) {
+    tabContents[i].style.display = 'none';
+  }
+
+  // Remove active class from all tab links
+  const tabLinks = document.getElementsByClassName('tab-link');
+  for (let i = 0; i < tabLinks.length; i++) {
+    tabLinks[i].classList.remove('active');
+  }
+
+  // Show the selected tab content and mark the button as active
+  document.getElementById(tabName).style.display = 'block';
+  evt.currentTarget.classList.add('active');
+}
+
+// Make openTab available globally
+window.openTab = openTab;
+
 export { ModernChatInterface };
 
 // Initialize when DOM is ready (only if not imported as module)

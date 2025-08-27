@@ -232,6 +232,9 @@
     <Prompt ref="SynthesizePromptForGenerate">
       <promptString>
         Given the following items, synthesize an answer to the user's question. 
+        Your answer should be very short. One or two short sentences is all that is needed.
+        Its a very technical user so they should be able to handle short answers.
+        The answers should be helpful like try this, look at that, etc
         You do not need to include all the items, but you should include the most relevant ones.
         For each of the items included in the answer, provide the URL of the item in 
         the 'urls' field of the structured output. Make sure to include 

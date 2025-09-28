@@ -34,7 +34,15 @@ class ItemDetailsHandler():
         self.item_url = ""
         self.found_items = []
         self.sent_message = False
-    
+
+    def normalize_schema_object(self, data):
+        if isinstance(data, (dict, list)):
+            # already parsed JSON (object or array)
+            return data
+        else:
+            # assume it's a JSON string (or bytes/bytearray)
+            return json.loads(data)
+
     async def do(self):
         """Main entry point following NLWeb module pattern."""
         try:
@@ -143,7 +151,7 @@ class ItemDetailsHandler():
                         "explanation": explanation,
                         "url": url,
                         "site": site,
-                        "schema_object": json.loads(json_str)
+                        "schema_object": self.normalize_schema_object(json_str)
                     }
                 else:
                     return
@@ -192,7 +200,7 @@ class ItemDetailsHandler():
                         "details": trim_json(json_str),
                         "url": url,
                         "site": site,
-                        "schema_object": json.loads(json_str)
+                        "schema_object": self.normalize_schema_object(json_str)
                     }
                     await self.handler.send_message(message)
                     return
@@ -214,7 +222,7 @@ class ItemDetailsHandler():
                         "additional_context": response.get("additional_context", ""),
                         "url": url,
                         "site": site,
-                        "schema_object": json.loads(json_str)
+                        "schema_object": self.normalize_schema_object(json_str)
                     }
                     await self.handler.send_message(message)
                     logger.info(f"Sent item details for URL: {self.item_url}")

@@ -9,9 +9,17 @@ from methods.generate_answer import GenerateAnswer
 from webserver.aiohttp_streaming_wrapper import AioHttpStreamingWrapper
 from core.retriever import get_vector_db_client
 from core.utils.utils import get_param
+from data_loading.db_load import loadJsonToDB, delete_site
+import json
+import asyncio
+import sys
+import io
+import os
 
 logger = logging.getLogger(__name__)
 
+# Create a lock to serialize database operations
+db_lock = asyncio.Lock()
 
 def setup_api_routes(app: web.Application):
     """Setup core API routes"""
@@ -23,6 +31,9 @@ def setup_api_routes(app: web.Application):
     app.router.add_get('/who', who_handler)
     app.router.add_get('/sites', sites_handler)
 
+    # Site management endpoints
+    app.router.add_post('/api/sites/add', add_site_handler)
+    app.router.add_post('/api/sites/delete', delete_site_handler)
 
 async def ask_handler(request: web.Request) -> web.Response:
     """Handle /ask endpoint for generating answers"""
@@ -196,3 +207,138 @@ async def sites_handler(request: web.Request) -> web.Response:
         return web.json_response(error_data, status=500)
 
 
+async def add_site_handler(request: web.Request) -> web.Response:
+    """Handle /api/sites/add endpoint for adding new sites from URL or directory"""
+
+    try:
+        # Parse request body
+        try:
+            data = await request.json()
+        except Exception as e:
+            logger.warning(f"Failed to parse JSON body: {e}")
+            return web.json_response({
+                "error": "Invalid JSON in request body"
+            }, status=400)
+
+        # Extract parameters
+        site_name = data.get("name")
+        rss_url = data.get("url")
+        directory_path = data.get("dir")
+
+        # Validate that we have a site name and either URL or directory
+        if not site_name:
+            return web.json_response({
+                "error": "Missing site name"
+            }, status=400)
+
+        if not rss_url and not directory_path:
+            return web.json_response({
+                "error": "Missing url or directory"
+            }, status=400)
+
+        if rss_url and directory_path:
+            return web.json_response({
+                "error": "Please provide either url or directory, not both"
+            }, status=400)
+
+        # Add site to database with lock for thread safety
+        async with db_lock:
+            # Temporarily redirect stdin to prevent interactive prompts
+            original_stdin = sys.stdin
+            sys.stdin = io.StringIO('n\n')
+            try:
+                if rss_url:
+                    # Handle URL-based loading
+                    documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                else:
+                    # Handle directory-based loading
+                    documents_added = await load_directory_to_db(directory_path, site_name)
+            finally:
+                sys.stdin = original_stdin
+
+        if documents_added > 0:
+            source_type = "URL" if rss_url else "directory"
+            source_value = rss_url if rss_url else directory_path
+            logger.info(f"Successfully added site '{site_name}' from {source_type} '{source_value}' with {documents_added} documents")
+            return web.json_response({
+                "status": "success",
+                "documents_added": documents_added,
+                "source_type": source_type
+            })
+        else:
+            source_type = "URL" if rss_url else "directory"
+            source_value = rss_url if rss_url else directory_path
+            logger.warning(f"No documents could be extracted from {source_type}: {source_value}")
+            return web.json_response({
+                "status": "error",
+                "message": f"No documents could be extracted from the provided {source_type}."
+            }, status=400)
+
+    except Exception as e:
+        logger.error(f"Failed to add site: {e}", exc_info=True)
+        return web.json_response({
+            "error": "Internal server error"
+        }, status=500)
+
+
+async def delete_site_handler(request: web.Request) -> web.Response:
+    """Handle /api/sites/delete endpoint for deleting sites"""
+
+    try:
+        # Parse request body
+        try:
+            data = await request.json()
+        except Exception as e:
+            logger.warning(f"Failed to parse JSON body: {e}")
+            return web.json_response({
+                "error": "Invalid JSON in request body"
+            }, status=400)
+
+        # Extract required parameter
+        site_name = data.get("name")
+
+        if not site_name:
+            return web.json_response({
+                "error": "Missing site name"
+            }, status=400)
+
+        # Delete site from database with lock for thread safety
+        async with db_lock:
+            await delete_site(site_name)
+
+        logger.info(f"Successfully deleted site '{site_name}'")
+        return web.json_response({
+            "status": "success"
+        })
+
+    except Exception as e:
+        logger.error(f"Failed to delete site: {e}", exc_info=True)
+        return web.json_response({
+            "error": "Internal server error"
+        }, status=500)
+
+async def load_directory_to_db(directory_path: str, site_name: str) -> int:
+    """
+    Load all files from a directory into the database.
+    Returns the total number of documents added.
+    """
+    if not os.path.isdir(directory_path):
+        raise ValueError(f"'{directory_path}' is not a valid directory")
+
+    total_documents = 0
+
+    # List all files in the directory
+    for filename in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, filename)
+        if os.path.isfile(file_path):
+            logger.info(f"Processing file: {file_path}")
+            try:
+                documents_added = await loadJsonToDB(file_path, site_name, force_recompute=False)
+                total_documents += documents_added
+                logger.info(f"Added {documents_added} documents from {file_path}")
+            except Exception as e:
+                logger.error(f"Error processing file {file_path}: {e}")
+                # Continue processing other files even if one fails
+                continue
+
+    return total_documents

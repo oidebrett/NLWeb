@@ -1,0 +1,45 @@
+[33me04951e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmanage-sites-ui-and-api-experimental[m[33m, [m[1;31morigin/manage-sites-ui-and-api[m[33m, [m[1;32mmanage-sites-ui-and-api[m[33m)[m HEAD@{0}: checkout: moving from manage-sites-ui-and-api to manage-sites-ui-and-api-experimental
+[33me04951e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmanage-sites-ui-and-api-experimental[m[33m, [m[1;31morigin/manage-sites-ui-and-api[m[33m, [m[1;32mmanage-sites-ui-and-api[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33me04951e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmanage-sites-ui-and-api-experimental[m[33m, [m[1;31morigin/manage-sites-ui-and-api[m[33m, [m[1;32mmanage-sites-ui-and-api[m[33m)[m HEAD@{2}: checkout: moving from manage-sites-ui-and-api-experimental to manage-sites-ui-and-api
+[33me04951e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmanage-sites-ui-and-api-experimental[m[33m, [m[1;31morigin/manage-sites-ui-and-api[m[33m, [m[1;32mmanage-sites-ui-and-api[m[33m)[m HEAD@{3}: checkout: moving from manage-sites-ui-and-api to manage-sites-ui-and-api-experimental
+[33me04951e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmanage-sites-ui-and-api-experimental[m[33m, [m[1;31morigin/manage-sites-ui-and-api[m[33m, [m[1;32mmanage-sites-ui-and-api[m[33m)[m HEAD@{4}: checkout: moving from manage-sites-ui-and-api to manage-sites-ui-and-api
+[33me04951e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmanage-sites-ui-and-api-experimental[m[33m, [m[1;31morigin/manage-sites-ui-and-api[m[33m, [m[1;32mmanage-sites-ui-and-api[m[33m)[m HEAD@{5}: commit: refactored with latest NLWeb
+[33ma6a3cb9[m HEAD@{6}: rebase (finish): returning to refs/heads/manage-sites-ui-and-api
+[33ma6a3cb9[m HEAD@{7}: rebase (pick): hide login button if not provider shown
+[33me8c7574[m HEAD@{8}: rebase (pick): moved streamable into new file
+[33m48ef80c[m HEAD@{9}: rebase (pick): udpated
+[33m6f6e904[m HEAD@{10}: rebase (pick): working bridge for claude
+[33m55c9ded[m HEAD@{11}: rebase (continue): working bridge for claude
+[33mdc614ac[m HEAD@{12}: rebase (pick): wording
+[33m818848d[m HEAD@{13}: rebase (pick): fixed error when cant add site
+[33m39777fb[m HEAD@{14}: rebase (pick): fixed issue adding same site
+[33m2c1323b[m HEAD@{15}: rebase (pick): adding and deleting sites
+[33m45f3d9f[m HEAD@{16}: rebase (pick): added feature to add and delete - requires cleanup
+[33ma09cad5[m HEAD@{17}: rebase (continue): right sidebar and api
+[33meab4f31[m[33m ([m[1;32mmain[m[33m)[m HEAD@{18}: rebase (start): checkout main
+[33m6396095[m HEAD@{19}: checkout: moving from main to manage-sites-ui-and-api
+[33meab4f31[m[33m ([m[1;32mmain[m[33m)[m HEAD@{20}: pull upstream main: Fast-forward
+[33mf57a4b6[m HEAD@{21}: checkout: moving from manage-sites-ui-and-api to main
+[33m6396095[m HEAD@{22}: commit (merge): added facility to add sites and directories
+[33m3468b3d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{23}: commit: hide login button if not provider shown
+[33ma0208c7[m HEAD@{24}: commit: moved streamable into new file
+[33m5068431[m HEAD@{25}: commit: udpated
+[33m74bb6df[m HEAD@{26}: commit: working bridge for claude
+[33mb28a023[m HEAD@{27}: commit: working bridge for claude
+[33med0eb33[m HEAD@{28}: commit: wording
+[33m70d6e30[m HEAD@{29}: commit: fixed error when cant add site
+[33mc992c9b[m HEAD@{30}: commit: fixed issue adding same site
+[33m60f5fb5[m HEAD@{31}: commit: adding and deleting sites
+[33m653a812[m HEAD@{32}: commit: added feature to add and delete - requires cleanup
+[33m956cf88[m HEAD@{33}: commit: right sidebar and api
+[33mf57a4b6[m HEAD@{34}: checkout: moving from main to manage-sites-ui-and-api
+[33mf57a4b6[m HEAD@{35}: pull upstream main: Fast-forward
+[33mb999753[m HEAD@{36}: checkout: moving from add-sentencetransformers-embeddings to main
+[33mc6da554[m[33m ([m[1;31morigin/add-sentencetransformers-embeddings[m[33m, [m[1;32madd-sentencetransformers-embeddings[m[33m)[m HEAD@{37}: commit (merge): fixed merged conflicts in requirements.txt and code/README - was missing items that were added since raising PR
+[33m843b7f0[m HEAD@{38}: checkout: moving from add-sentencetransformers-embeddings to add-sentencetransformers-embeddings
+[33m843b7f0[m HEAD@{39}: commit: changes from copilot PR review
+[33mc36a4e8[m HEAD@{40}: checkout: moving from main to add-sentencetransformers-embeddings
+[33mb999753[m HEAD@{41}: checkout: moving from add-sentencetransformers-embeddings to main
+[33mc36a4e8[m HEAD@{42}: commit: Add Sentence Transformers for embeddings
+[33mb999753[m HEAD@{43}: checkout: moving from main to add-sentencetransformers-embeddings
+[33mb999753[m HEAD@{44}: clone: from https://github.com/oidebrett/NLWeb.git

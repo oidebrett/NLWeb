@@ -1,16 +1,18 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
-
-        {
-            "name": "Python Debugger: Current File",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        }
-    ]
-}
+     "configurations": [
+         {
+             "name": "NLWeb",
+             "type": "python",
+             "request": "launch",
+             "program": "app-file.py",
+             "console": "integratedTerminal",
+             "justMyCode": true,
+             "args": [
+                 ""
+             ],
+            "cwd": "/home/ivob/Projects/NLWebProjects/dev/NLWeb/code/python",
+            "python": "/home/ivob/Projects/NLWebProjects/dev/NLWeb/myenv/bin/python"
+         }
+     ]
+ }

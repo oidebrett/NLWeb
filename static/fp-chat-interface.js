@@ -43,7 +43,13 @@ class ModernChatInterface {
       messagesContainer: document.getElementById('messages-container'),
       chatMessages: document.getElementById('chat-messages'),
       chatInput: document.getElementById('chat-input'),
-      sendButton: document.getElementById('send-button')
+      sendButton: document.getElementById('send-button'),
+      rightSidebarSiteList: document.getElementById('right-sidebar-site-list'),
+      newSiteBtn: document.getElementById('new-site-btn'), // New element
+      newSiteModal: document.getElementById('new-site-modal'),
+      newSiteFormUrl: document.getElementById('new-site-form-url'),
+      newSiteFormDir: document.getElementById('new-site-form-dir'),
+      cancelAddSite: document.getElementById('cancel-add-site'),
     };
     
     // Debug mode state
@@ -134,6 +140,32 @@ class ModernChatInterface {
     // New chat button
     this.elements.newChatBtn.addEventListener('click', () => this.createNewChat());
     
+    // New site button
+    if (this.elements.newSiteBtn) {
+      this.elements.newSiteBtn.addEventListener('click', () => {
+        this.elements.newSiteModal.style.display = 'block';
+      });
+    }
+
+    if (this.elements.cancelAddSite) {
+      this.elements.cancelAddSite.addEventListener('click', () => {
+        this.elements.newSiteModal.style.display = 'none';
+      });
+    }
+
+    if (this.elements.newSiteFormUrl) {
+      this.elements.newSiteFormUrl.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSiteUrl();
+      });
+    }
+
+    if (this.elements.newSiteFormDir) {
+      this.elements.newSiteFormDir.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSiteDir();
+      });
+    }
     
     // Send button
     this.elements.sendButton.addEventListener('click', () => this.sendMessage());
@@ -1622,7 +1654,7 @@ class ModernChatInterface {
       // Restore original HTML content
       const originalContent = messageText.getAttribute('data-original-content');
       if (originalContent) {
-        messageText.innerHTML = originalContent;
+        messageText.textContent = originalContent;
         messageText.classList.remove('showing-debug');
         messageText.style.cssText = ''; // Reset inline styles
       }
@@ -1794,7 +1826,77 @@ class ModernChatInterface {
       this.siteDropdownItems.appendChild(item);
     });
   }
-  
+
+  async addNewSite(type) {
+    //this add new site is not being called
+    const formId = `new-site-form-${type}`;
+    const nameInputId = `new-site-name-${type}`;
+    const valueInputId = `new-site-${type}`; // 'url' or 'dir'
+    const buttonId = `add-site-btn-${type}`;
+
+    const form = document.getElementById(formId);
+    const nameInput = document.getElementById(nameInputId);
+    const valueInput = document.getElementById(valueInputId);
+    const addButton = document.getElementById(buttonId);
+
+    if (!form || !nameInput || !valueInput || !addButton) {
+      console.error(`Could not find all elements for site type '${type}'`);
+      return;
+    }
+
+    const siteName = nameInput.value.trim();
+    const siteValue = valueInput.value.trim();
+
+    if (!siteName || !siteValue) {
+      alert('Please fill in both name and ' + (type === 'url' ? 'URL' : 'directory') + '.');
+      return;
+    }
+
+    const originalButtonText = addButton.textContent;
+    addButton.disabled = true;
+    addButton.textContent = 'Adding...';
+
+    try {
+      const baseUrl = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
+      const response = await fetch(`${baseUrl}/api/sites/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: siteName,
+          [type]: siteValue,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        alert('Site added successfully!');
+        // Close modal
+        this.elements.newSiteModal.style.display = 'none';
+        form.reset();
+        this.loadSites(); // Refresh the site list
+      } else {
+        alert(`Error adding site: ${result.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error adding site:', error);
+      form.reset();
+      alert('An error occurred while adding the site.');
+    } finally {
+      addButton.disabled = false;
+      addButton.textContent = originalButtonText;
+    }
+  }
+
+  addNewSiteUrl() {
+    this.addNewSite('url');
+  }
+
+  addNewSiteDir() {
+    this.addNewSite('dir');
+  }
   
   addRememberedItem(item) {
     if (!item || this.rememberedItems.includes(item)) return;
@@ -1829,14 +1931,6 @@ class ModernChatInterface {
   updateRememberedItemsList() {
     // Find or create remembered section
     let rememberedSection = document.getElementById('remembered-section');
-    
-    // Update sidebar class based on remembered items
-    if (this.rememberedItems.length > 0) {
-      this.elements.sidebar.classList.add('has-remembered');
-    } else {
-      this.elements.sidebar.classList.remove('has-remembered');
-    }
-    
     if (!rememberedSection && this.rememberedItems.length > 0) {
       // Create remembered section
       rememberedSection = document.createElement('div');
@@ -1951,6 +2045,9 @@ class ModernChatInterface {
         if (this.siteDropdownItems) {
           this.populateSiteDropdown();
         }
+
+        // Populate the right sidebar site list
+        this.populateRightSidebarSiteList();
       }
     } catch (error) {
       console.error('Error loading sites:', error);
@@ -1974,6 +2071,107 @@ class ModernChatInterface {
       if (this.siteDropdownItems) {
         this.populateSiteDropdown();
       }
+
+      // Populate the right sidebar site list
+      this.populateRightSidebarSiteList();
+    }
+  }
+
+  populateRightSidebarSiteList() {
+    if (!this.elements.rightSidebarSiteList) return;
+
+    this.elements.rightSidebarSiteList.innerHTML = ''; // Clear existing content
+
+    // Filter out 'all' site for display in the right sidebar
+    const sitesToDisplay = this.sites ? this.sites.filter(site => site !== 'all') : [];
+
+    if (sitesToDisplay.length === 0) {
+      const noSitesMessage = document.createElement('p');
+      noSitesMessage.className = 'no-sites-message';
+      noSitesMessage.textContent = 'No sites configured. Please add sites to the system.';
+      this.elements.rightSidebarSiteList.appendChild(noSitesMessage);
+      return;
+    }
+
+    sitesToDisplay.forEach(site => {
+      const siteDiv = document.createElement('div');
+      siteDiv.className = 'site-list-item';
+
+      const siteName = document.createElement('span');
+      siteName.textContent = site;
+      siteDiv.appendChild(siteName);
+
+      // Add click listener to select the site
+      siteDiv.addEventListener('click', () => {
+        this.selectedSite = site;
+        
+        // Update site selector icon title
+        if (this.siteSelectorIcon) {
+          this.siteSelectorIcon.title = `Site: ${site}`;
+        }
+        
+        // Update the header site info
+        if (this.elements.chatSiteInfo) {
+          this.elements.chatSiteInfo.textContent = `Asking ${site}`;
+        }
+        
+        // Update the current conversation's site if it exists
+        const conversation = this.conversationManager.findConversation(this.currentConversationId);
+        if (conversation) {
+          conversation.site = site;
+          this.conversationManager.saveConversations();
+        }
+        
+        // Update the site dropdown to reflect the new selection
+        if (this.siteDropdownItems) {
+          this.populateSiteDropdown();
+        }
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-site-btn';
+      deleteBtn.innerHTML = '&times;';
+      deleteBtn.title = `Delete ${site}`;
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.deleteSite(site);
+      });
+      siteDiv.appendChild(deleteBtn);
+
+      this.elements.rightSidebarSiteList.appendChild(siteDiv);
+    });
+  }
+
+  async addNewSiteUrl() {
+    await this.addNewSite('url');
+  }
+
+  async addNewSiteDir() {
+    await this.addNewSite('dir');
+  }
+
+  async deleteSite(siteName) {
+    if (!confirm(`Are you sure you want to delete the site "${siteName}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/sites/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: siteName }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      this.loadSites(); // Reload the site list
+    } catch (error) {
+      console.error('Error deleting site:', error);
+      alert('Failed to delete site. Please check the console for details.');
     }
   }
 }

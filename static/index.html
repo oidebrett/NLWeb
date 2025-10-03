@@ -106,7 +106,7 @@
       </div>
     </main>
   <!-- Right Sidebar -->
-    <aside class="right-sidebar" id="right-sidebar" aria-label="Right sidebar" aria-hidden="true">
+    <aside class="right-sidebar" id="right-sidebar" aria-label="Right sidebar" aria-hidden="true" style="display: none;" >
       <div class="right-sidebar-content">
         <div class="right-sidebar-header">
           <h2 class="right-sidebar-title">Sites</h2>
@@ -127,7 +127,8 @@
     <button class="right-sidebar-toggle" id="right-sidebar-toggle" 
             title="Toggle right sidebar" 
             aria-expanded="false" 
-            aria-controls="right-sidebar">
+            aria-controls="right-sidebar"
+            style="display: none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
@@ -141,8 +142,34 @@
       <span class="close" id="cancel-add-site">&times;</span>
       <h2>Add a New Site</h2>
       <div class="tab-container">
-        <button class="tab-link active" onclick="openTab(event, 'url-tab')">From URL</button>
-        <button class="tab-link" onclick="openTab(event, 'dir-tab')">From Directory</button>
+        <div class="tab-buttons">
+          <button class="tab-link active" onclick="openTab(event, 'url-tab')">From URL</button>
+          <button class="tab-link" onclick="openTab(event, 'dir-tab')">From JSON</button>
+        </div>
+<a id="crawler-link" href="#" target="_blank" class="crawler-link">Configure Crawler</a>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hostname = window.location.hostname; // e.g. "myapp.example.com" or "localhost"
+    let crawlerUrl;
+
+    if (hostname === "localhost" || hostname === "0.0.0.0") {
+      // Local dev case
+      crawlerUrl = `http://${hostname}:5000/`;
+    } else {
+      // Production/staging case
+      const baseDomain = hostname.split('.').slice(-2).join('.'); 
+      // e.g. "example.com" from "app.example.com"
+      crawlerUrl = `https://crawler.nlweb.${baseDomain}`;
+    }
+
+    // Apply to link
+    const link = document.getElementById("crawler-link");
+    if (link) {
+      link.href = crawlerUrl;
+    }
+  });
+</script>     
       </div>
       <div id="url-tab" class="tab-content" style="display: block;">
         <form id="new-site-form-url">
@@ -157,8 +184,8 @@
         <form id="new-site-form-dir">
           <label for="new-site-name-dir">Name:</label>
           <input type="text" id="new-site-name-dir" name="name" required>
-          <label for="new-site-dir">Directory Path:</label>
-          <input type="text" id="new-site-dir" name="directory" required>
+          <label for="new-site-dir">Upload Json:</label>
+          <input type="file" id="new-site-dir" name="zipfile" accept=".zip" required>
           <button type="submit" id="add-site-btn-dir">Add Site</button>
         </form>
       </div>

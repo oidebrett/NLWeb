@@ -1828,10 +1828,9 @@ class ModernChatInterface {
   }
 
   async addNewSite(type) {
-    //this add new site is not being called
     const formId = `new-site-form-${type}`;
     const nameInputId = `new-site-name-${type}`;
-    const valueInputId = `new-site-${type}`; // 'url' or 'dir'
+    const valueInputId = `new-site-${type}`; // 'url' or 'zip' depending on tab
     const buttonId = `add-site-btn-${type}`;
 
     const form = document.getElementById(formId);
@@ -1845,40 +1844,62 @@ class ModernChatInterface {
     }
 
     const siteName = nameInput.value.trim();
-    const siteValue = valueInput.value.trim();
+    let siteValue = type === 'url'
+      ? valueInput.value.trim()
+      : valueInput.files[0]; // file object for dir/zip
 
     if (!siteName || !siteValue) {
-      alert('Please fill in both name and ' + (type === 'url' ? 'URL' : 'directory') + '.');
+      alert(
+        'Please fill in both name and ' +
+        (type === 'url' ? 'URL' : 'choose a zip file') +
+        '.'
+      );
       return;
     }
 
     const originalButtonText = addButton.textContent;
     addButton.disabled = true;
-    addButton.textContent = 'Adding...';
+    addButton.textContent = type === 'url' ? 'Adding...' : 'Uploading...';
 
     try {
-      const baseUrl = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
-      const response = await fetch(`${baseUrl}/api/sites/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: siteName,
-          [type]: siteValue,
-        }),
-      });
+      const baseUrl =
+        window.location.origin === 'file://' ? 'http://localhost:8000' : '';
+
+      let response;
+
+      if (type === 'url') {
+        // JSON request for URL sites
+        response = await fetch(`${baseUrl}/api/sites/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: siteName,
+            url: siteValue,
+          }),
+        });
+      } else {
+        // FormData request for ZIP uploads
+        const formData = new FormData();
+        formData.append('name', siteName);
+        formData.append('zipfile', siteValue);
+
+        response = await fetch(`${baseUrl}/api/sites/add`, {
+          method: 'POST',
+          body: formData,
+        });
+      }
 
       const result = await response.json();
 
       if (response.ok && result.status === 'success') {
         alert('Site added successfully!');
-        // Close modal
         this.elements.newSiteModal.style.display = 'none';
         form.reset();
-        this.loadSites(); // Refresh the site list
+        this.loadSites();
       } else {
-        alert(`Error adding site: ${result.message || 'Unknown error'}`);
+        alert(`Error adding site: ${result.message || result.error || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error adding site:', error);

@@ -6,6 +6,7 @@ class RightSidebar {
   constructor(options = {}) {
     this.config = {
       width: options.width || 300,
+      uploadDocsEnabled: options.uploadDocsEnabled || false,
       defaultState: options.defaultState || 'closed',
       animationDuration: options.animationDuration || 300,
       breakpoint: options.breakpoint || 768,
@@ -16,14 +17,18 @@ class RightSidebar {
     this.isOpen = false;
     this.elements = {};
     this.isMobile = window.innerWidth < this.config.breakpoint;
-    
+    this.baseUrl = window.location.origin;
+
     this.init();
   }
 
   /**
    * Initialize the sidebar
    */
-  init() {
+  async init() {
+    // Load OAuth configuration
+    await this.loadConfig();
+
     try {
       this.findElements();
       this.createMobileBackdrop();
@@ -35,6 +40,20 @@ class RightSidebar {
     }
   }
 
+  async loadConfig() {
+    try {
+        const response = await fetch(`${this.baseUrl}/api/upload/config`);
+        if (response.ok) {
+            this.config.uploadDocsEnabled = await response.json();
+        } else {
+            this.config.uploadDocsEnabled = false;
+        }
+    } catch (error) {
+        console.error('Error loading Upload config:', error);
+        this.config = {};
+    }
+  }
+
   /**
    * Find required DOM elements
    */
@@ -42,9 +61,12 @@ class RightSidebar {
     this.elements.sidebar = document.getElementById('right-sidebar');
     this.elements.toggle = document.getElementById('right-sidebar-toggle');
     this.elements.appContainer = document.querySelector('.app-container');
-    
     if (!this.elements.sidebar || !this.elements.toggle) {
       throw new Error('Required sidebar elements not found');
+    }
+    if (this.config.uploadDocsEnabled) {
+      this.elements.sidebar.style.display = 'block';
+      this.elements.toggle.style.display = 'block';
     }
   }
 

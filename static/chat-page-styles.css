@@ -689,10 +689,15 @@ body {
 }
 
 .tab-container {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;                /* makes it stretch full width */
+  padding: 0 0px;            /* match modal-content’s padding */
+  border-bottom: 1px solid #ccc; /* optional, like a tab bar */
+  box-sizing: border-box;     /* ensure padding doesn’t break width */
 }
+
 
 .tab-container button {
   background-color: inherit;
@@ -732,4 +737,14 @@ body {
 
 .site-list-item:hover .delete-site-btn {
   opacity: 1;
+}
+
+.crawler-link {
+  font-size: 0.85em;
+  color: #0073e6;
+  text-decoration: none;
+  margin-left: 1rem;
+}
+.crawler-link:hover {
+  text-decoration: underline;
 }

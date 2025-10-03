@@ -35,9 +35,10 @@ RUN groupadd -r nlweb && \
 
 USER nlweb
 
-# Copy application code
-COPY code/ /app/
+# Copy application code and config maintaining directory structure
+COPY code/ /app/code/
 COPY static/ /app/static/
+COPY config/ /app/config/
 
 # Copy installed packages from builder stage
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
@@ -48,9 +49,9 @@ EXPOSE 8000
 
 # Set environment variables
 ENV NLWEB_OUTPUT_DIR=/app
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/code/python
 ENV PORT=8000
 ENV NLWEB_CONFIG_DIR=/app/config
 
 # Command to run the application
-CMD ["python", "python/app-file.py"]
+CMD ["python", "code/python/app-file.py"]

@@ -15,6 +15,10 @@ import asyncio
 import sys
 import io
 import os
+import tempfile
+import zipfile
+from pathlib import Path
+from core.config import CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +38,33 @@ def setup_api_routes(app: web.Application):
     # Site management endpoints
     app.router.add_post('/api/sites/add', add_site_handler)
     app.router.add_post('/api/sites/delete', delete_site_handler)
+    app.router.add_get('/api/upload/config', upload_config_handler)
+
+async def upload_config_handler(request: web.Request) -> web.Response:
+    """
+    Get OAuth configuration for enabled providers.
+    
+    Returns:
+        200: {
+            },
+            ...
+        }
+    """
+    try:
+        # Use the global CONFIG which has upload_docs_enabled flag
+        def str_to_bool(val) -> bool:
+            return str(val).lower() in ("1", "true", "yes", "on")
+
+        upload_docs_enabled = str_to_bool(getattr(CONFIG.nlweb, "upload_docs_enabled", "false"))
+        
+        # Build response with enabled providers and their config
+        response = upload_docs_enabled
+        logger.info(f"Upload config requested, returning: {response}")
+        return web.json_response(response)
+        
+    except Exception as e:
+        logger.error(f"Error getting upload config: {e}")
+        return web.json_response({})
 
 async def ask_handler(request: web.Request) -> web.Response:
     """Handle /ask endpoint for generating answers"""
@@ -208,77 +239,92 @@ async def sites_handler(request: web.Request) -> web.Response:
 
 
 async def add_site_handler(request: web.Request) -> web.Response:
-    """Handle /api/sites/add endpoint for adding new sites from URL or directory"""
+    """Handle /api/sites/add endpoint for adding new sites from URL or zip upload"""
 
     try:
-        # Parse request body
-        try:
-            data = await request.json()
-        except Exception as e:
-            logger.warning(f"Failed to parse JSON body: {e}")
-            return web.json_response({
-                "error": "Invalid JSON in request body"
-            }, status=400)
+        site_name = None
+        rss_url = None
+        zip_path = None
 
-        # Extract parameters
-        site_name = data.get("name")
-        rss_url = data.get("url")
-        directory_path = data.get("dir")
-
-        # Validate that we have a site name and either URL or directory
-        if not site_name:
-            return web.json_response({
-                "error": "Missing site name"
-            }, status=400)
-
-        if not rss_url and not directory_path:
-            return web.json_response({
-                "error": "Missing url or directory"
-            }, status=400)
-
-        if rss_url and directory_path:
-            return web.json_response({
-                "error": "Please provide either url or directory, not both"
-            }, status=400)
-
-        # Add site to database with lock for thread safety
-        async with db_lock:
-            # Temporarily redirect stdin to prevent interactive prompts
-            original_stdin = sys.stdin
-            sys.stdin = io.StringIO('n\n')
+        if request.content_type.startswith("application/json"):
+            # JSON payload (URL case)
             try:
-                if rss_url:
-                    # Handle URL-based loading
-                    documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
-                else:
-                    # Handle directory-based loading
-                    documents_added = await load_directory_to_db(directory_path, site_name)
-            finally:
-                sys.stdin = original_stdin
+                data = await request.json()
+            except Exception as e:
+                return web.json_response({"error": "Invalid JSON"}, status=400)
+
+            site_name = data.get("name")
+            rss_url = data.get("url")
+
+        elif request.content_type.startswith("multipart/"):
+            # File upload (ZIP case)
+            reader = await request.multipart()
+            field = await reader.next()
+
+            while field is not None:
+                if field.name == "name":
+                    site_name = await field.text()
+                elif field.name == "zipfile":
+                    import tempfile, os
+                    tmpdir = tempfile.mkdtemp()
+                    zip_path = os.path.join(tmpdir, field.filename)
+
+                    with open(zip_path, 'wb') as f:
+                        while True:
+                            chunk = await field.read_chunk()
+                            if not chunk:
+                                break
+                            f.write(chunk)
+                field = await reader.next()
+        else:
+            return web.json_response({"error": "Unsupported Content-Type"}, status=400)
+
+        # Validate inputs
+        if not site_name:
+            return web.json_response({"error": "Missing site name"}, status=400)
+
+        if not rss_url and not zip_path:
+            return web.json_response({"error": "Missing url or zipfile"}, status=400)
+
+        if rss_url and zip_path:
+            return web.json_response({"error": "Provide either url or zipfile, not both"}, status=400)
+
+        # Process
+        documents_added = 0
+        async with db_lock:
+            if rss_url:
+                documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+            else:
+                import zipfile, tempfile
+                extract_dir = tempfile.mkdtemp()
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(extract_dir)
+
+                # Detect "zip wrapped in a single directory" case
+                entries = os.listdir(extract_dir)
+                if len(entries) == 1:
+                    single_entry = os.path.join(extract_dir, entries[0])
+                    if os.path.isdir(single_entry):
+                        extract_dir = single_entry  # point into the actual root folder
+
+                documents_added = await load_directory_to_db(extract_dir, site_name)
 
         if documents_added > 0:
-            source_type = "URL" if rss_url else "directory"
-            source_value = rss_url if rss_url else directory_path
-            logger.info(f"Successfully added site '{site_name}' from {source_type} '{source_value}' with {documents_added} documents")
             return web.json_response({
                 "status": "success",
                 "documents_added": documents_added,
-                "source_type": source_type
+                "source_type": "url" if rss_url else "zipfile"
             })
         else:
-            source_type = "URL" if rss_url else "directory"
-            source_value = rss_url if rss_url else directory_path
-            logger.warning(f"No documents could be extracted from {source_type}: {source_value}")
             return web.json_response({
                 "status": "error",
-                "message": f"No documents could be extracted from the provided {source_type}."
+                "message": "No documents could be extracted"
             }, status=400)
 
     except Exception as e:
-        logger.error(f"Failed to add site: {e}", exc_info=True)
-        return web.json_response({
-            "error": "Internal server error"
-        }, status=500)
+        import traceback
+        traceback.print_exc()
+        return web.json_response({"error": "Internal server error"}, status=500)
 
 
 async def delete_site_handler(request: web.Request) -> web.Response:

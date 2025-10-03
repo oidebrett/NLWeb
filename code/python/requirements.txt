@@ -77,3 +77,8 @@ qdrant-client>=1.14.0
 # httpx>=0.28.1
 # cloudflare>=4.3.1
 # zon>=3.0.0
+
+# For PDF extraction and embeddings
+pdfplumber>=0.11.7
+pytesseract>=0.3.13
+pdf2image>=1.17.0

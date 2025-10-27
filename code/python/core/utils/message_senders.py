@@ -335,17 +335,15 @@ class MessageSender:
                 }
             }
 
-            # Include query_rewrite data if available
-            if hasattr(self.handler, '_chatgptapp_query_rewrite'):
-                meta_message["_meta"]["nlweb/queryRewrite"] = self.handler._chatgptapp_query_rewrite
-
-            # Include decontextualized_query if available
-            if hasattr(self.handler, 'decontextualized_query') and self.handler.decontextualized_query:
-                meta_message["_meta"]["nlweb/decontextualizedQuery"] = self.handler.decontextualized_query
-
-            # Include conversation_id if available
+            # Include conversation_id only if present and non-empty
             if conversation_id:
                 meta_message["_meta"]["nlweb/conversationId"] = conversation_id
+
+            # Include decontextualized_query only if it differs from original query
+            if hasattr(self.handler, 'decontextualized_query') and self.handler.decontextualized_query:
+                # Skip if same as original query
+                if self.handler.decontextualized_query != self.handler.query:
+                    meta_message["_meta"]["nlweb/decontextualizedQuery"] = self.handler.decontextualized_query
 
             try:
                 await self.handler.http_handler.write_stream(meta_message)
@@ -363,15 +361,6 @@ class MessageSender:
         # Check if chatgptapp format is requested
         if not hasattr(self.handler, 'output_format') or self.handler.output_format != 'chatgptapp':
             return message
-
-        # Capture query_rewrite message and skip sending it (will be included in _meta)
-        if message.get('message_type') == 'query_rewrite':
-            # Store the query_rewrite data for inclusion in _meta
-            self.handler._chatgptapp_query_rewrite = {
-                "original_query": message.get('original_query'),
-                "rewritten_queries": message.get('rewritten_queries')
-            }
-            return None
 
         # For chatgptapp format, only allow 'result' message_type
         # All other message types should be filtered out

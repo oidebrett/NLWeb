@@ -377,14 +377,53 @@ class MessageSender:
         if not content:
             return None
 
+        # Transform each item: flatten schema_object fields and convert to grounding
+        transformed_content = []
+        for item in content:
+            transformed_item = self._transform_item_for_chatgptapp(item)
+            transformed_content.append(transformed_item)
+
         # Transform content to resource format
         resource_content = {
             "content": [{
                 "type": "resource",
                 "resource": {
-                    "data": content
+                    "data": transformed_content
                 }
             }]
         }
 
         return resource_content
+
+    def _transform_item_for_chatgptapp(self, item):
+        """
+        Transform a single item for chatgptapp format:
+        - Flatten schema_object fields to top level
+        - Replace schema_object with grounding field containing the URL
+        """
+        if not isinstance(item, dict):
+            return item
+
+        # Create a copy to avoid modifying original
+        transformed = dict(item)
+
+        # Check if schema_object exists
+        if 'schema_object' in transformed:
+            schema_obj = transformed['schema_object']
+
+            if isinstance(schema_obj, dict):
+                # Extract the URL for grounding (use item's url field)
+                url = transformed.get('url', '')
+
+                # Flatten all fields from schema_object to top level
+                for key, value in schema_obj.items():
+                    # Only add if not already present at top level
+                    if key not in transformed:
+                        transformed[key] = value
+
+                # Replace schema_object with grounding
+                del transformed['schema_object']
+                if url:
+                    transformed['grounding'] = url
+
+        return transformed

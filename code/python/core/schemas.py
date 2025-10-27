@@ -470,5 +470,84 @@ def create_legacy_message(message_type: str, content: Any,
         message["conversation_id"] = conversation_id
     if sender_info:
         message["sender_info"] = sender_info
-        
+
     return message
+
+
+def format_response_to_chatgpt_spec(results: List[Dict[str, Any]],
+                                     conversation_id: Optional[str] = None,
+                                     text_description: Optional[str] = None,
+                                     version: str = "0.5",
+                                     additional_meta: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Format NLWeb results according to the ChatGPT App specification v0.5.
+
+    Args:
+        results: List of result items (each with @type, url, name, etc.)
+        conversation_id: Conversation identifier
+        text_description: Optional natural language description
+        version: API version number (default: "0.5")
+        additional_meta: Additional metadata fields (e.g., openai/outputTemplate)
+
+    Returns:
+        Dict formatted according to ChatGPT App spec with _meta and content fields
+
+    Example output:
+        {
+            "_meta": {
+                "conversation_id": "conv-123",
+                "version": "0.5"
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Found 3 restaurants..."
+                },
+                {
+                    "type": "resource",
+                    "resource": {
+                        "data": [
+                            {"@type": "Restaurant", "name": "...", ...}
+                        ]
+                    }
+                }
+            ]
+        }
+    """
+    # Build _meta object
+    meta = {"version": version}
+    if conversation_id:
+        meta["conversation_id"] = conversation_id
+    if additional_meta:
+        meta.update(additional_meta)
+
+    # Build content array
+    content = []
+
+    # Add text item if provided
+    if text_description:
+        content.append({
+            "type": "text",
+            "text": text_description
+        })
+
+    # Add resource item with data
+    if results:
+        # Determine if we have single or multiple results
+        if len(results) == 1:
+            data = results[0]
+        else:
+            data = results
+
+        resource_item = {
+            "type": "resource",
+            "resource": {
+                "data": data
+            }
+        }
+        content.append(resource_item)
+
+    return {
+        "_meta": meta,
+        "content": content
+    }

@@ -221,9 +221,9 @@
     // Parse ALL URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Extract connection mode
+    // Extract connection mode - default to SSE
     const mode = urlParams.get('mode') || urlParams.get('connection');
-    const connectionType = (mode === 'http' || mode === 'sse') ? 'sse' : 'websocket';
+    const connectionType = (mode === 'websocket') ? 'websocket' : 'sse';
     
     // Collect all additional parameters to pass to backend
     const additionalParams = {};

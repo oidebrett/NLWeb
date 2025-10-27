@@ -107,14 +107,18 @@ class MessageSender:
         """Send begin-nlweb-response message at the start of query processing."""
         if not (self.handler.streaming and self.handler.http_handler is not None):
             return
-            
+
+        # Skip for chatgptapp format
+        if hasattr(self.handler, 'output_format') and self.handler.output_format == 'chatgptapp':
+            return
+
         begin_message = {
             "message_type": "begin-nlweb-response",
             "conversation_id": self.handler.conversation_id,
             "query": self.handler.query,
             "timestamp": int(time.time() * 1000)
         }
-        
+
         try:
             await self.handler.http_handler.write_stream(begin_message)
         except Exception:
@@ -123,22 +127,26 @@ class MessageSender:
     async def send_end_response(self, error=False):
         """
         Send end-nlweb-response message at the end of query processing.
-        
+
         Args:
             error: If True, indicates the query ended with an error
         """
         if not (self.handler.streaming and self.handler.http_handler is not None):
             return
-            
+
+        # Skip for chatgptapp format
+        if hasattr(self.handler, 'output_format') and self.handler.output_format == 'chatgptapp':
+            return
+
         end_message = {
             "message_type": "end-nlweb-response",
             "conversation_id": self.handler.conversation_id,
             "timestamp": int(time.time() * 1000)
         }
-        
+
         if error:
             end_message["error"] = True
-        
+
         try:
             await self.handler.http_handler.write_stream(end_message)
         except Exception:
@@ -281,26 +289,110 @@ class MessageSender:
         message_type = message.get('message_type', 'unknown')
         # print(f"[MessageSender] Sending message type: {message_type}")
         message = self.add_message_metadata(message)
-            
+
         # Always store the message (for both streaming and non-streaming)
         self.store_message(message)
-            
+
         if (self.handler.streaming and self.handler.http_handler is not None):
                 # Streaming mode: also send via write_stream
-                
+
             # Check if this is the first result and add time-to-first-result header
             if message.get("message_type") == "result" and not self.handler.first_result_sent:
                 self.handler.first_result_sent = True
                 await self.send_time_to_first_result()
-                
+
             # Send headers if not already sent
             await self._send_headers_if_needed(is_streaming=True)
-                
+
             try:
-                await self.handler.http_handler.write_stream(message)
+                # For chatgptapp format, send _meta block first
+                if hasattr(self.handler, 'output_format') and self.handler.output_format == 'chatgptapp':
+                    if message.get('message_type') == 'result':
+                        await self._send_chatgptapp_meta_if_needed(message.get('conversation_id'))
+
+                # Transform to ChatGPT App format if requested
+                output_message = self._transform_to_output_format(message)
+
+                # Skip sending if transform returned None (e.g., for captured query_rewrite)
+                if output_message is not None:
+                    await self.handler.http_handler.write_stream(output_message)
             except Exception as e:
                 self.handler.connection_alive_event.clear()  # Use event instead of flag
         else:
             # Non-streaming mode: just store (already done above)
             # Send headers if not already sent
             await self._send_headers_if_needed(is_streaming=False)
+
+    async def _send_chatgptapp_meta_if_needed(self, conversation_id):
+        """Send _meta block once for chatgptapp format."""
+        if not hasattr(self.handler, '_chatgptapp_meta_sent') or not self.handler._chatgptapp_meta_sent:
+            self.handler._chatgptapp_meta_sent = True
+
+            meta_message = {
+                "_meta": {
+                    "conversation_id": conversation_id or '',
+                    "version": "0.5",
+                    "openai/outputTemplate": "ui://widget/list.html"
+                }
+            }
+
+            # Include query_rewrite data if available
+            if hasattr(self.handler, '_chatgptapp_query_rewrite'):
+                meta_message["_meta"]["query_rewrite"] = self.handler._chatgptapp_query_rewrite
+
+            # Include decontextualized_query if available
+            if hasattr(self.handler, 'decontextualized_query') and self.handler.decontextualized_query:
+                meta_message["_meta"]["decontextualized_query"] = self.handler.decontextualized_query
+
+            try:
+                await self.handler.http_handler.write_stream(meta_message)
+            except Exception as e:
+                self.handler.connection_alive_event.clear()
+                raise
+
+    def _transform_to_output_format(self, message):
+        """
+        Transform message to requested output format (e.g., chatgptapp).
+
+        For chatgptapp format, only _meta and content messages are allowed.
+        All other message types are filtered out.
+        """
+        # Check if chatgptapp format is requested
+        if not hasattr(self.handler, 'output_format') or self.handler.output_format != 'chatgptapp':
+            return message
+
+        # Capture query_rewrite message and skip sending it (will be included in _meta)
+        if message.get('message_type') == 'query_rewrite':
+            # Store the query_rewrite data for inclusion in _meta
+            self.handler._chatgptapp_query_rewrite = {
+                "original_query": message.get('original_query'),
+                "rewritten_queries": message.get('rewritten_queries')
+            }
+            return None
+
+        # For chatgptapp format, only allow 'result' message_type
+        # All other message types should be filtered out
+        message_type = message.get('message_type')
+        if message_type != 'result':
+            # Skip all non-result messages for chatgptapp format
+            # This includes: decontextualized_query, query_rewrite, asking_sites,
+            # site_querying, site_complete, site_error, intermediate_message,
+            # tool_selection, tool_routing, nlws, ensemble_result, etc.
+            return None
+
+        # Extract content (results array)
+        content = message.get('content', [])
+        if not content:
+            return None
+
+        # Transform content to resource format
+        resource_content = {
+            "content": [{
+                "type": "resource",
+                "resource": {
+                    "data": content
+                }
+            }]
+        }
+
+        return resource_content

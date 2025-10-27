@@ -172,6 +172,12 @@ class MCPHandler:
                         "enum": ["list", "generate", "summarize"],
                         "description": "The type of response to generate",
                         "default": "list"
+                    },
+                    "output_format": {
+                        "type": "string",
+                        "enum": ["default", "chatgptapp"],
+                        "description": "Output format for the response. Use 'chatgptapp' for ChatGPT App spec v0.5 format",
+                        "default": "chatgptapp"
                     }
                 },
                 "required": ["query"]
@@ -304,13 +310,15 @@ class MCPHandler:
             # print(f"Query: {query}")
             sites = arguments.get("site", [])
             generate_mode = arguments.get("generate_mode", "list")
-            
+            output_format = arguments.get("output_format", "chatgptapp")  # Default to chatgptapp for MCP
+
             # Update query params with MCP arguments
             # Make sure to format values as lists (like URL parameters)
             query_params["query"] = [query] if query else []
             if sites:
                 query_params["site"] = sites if isinstance(sites, list) else [sites]
             query_params["generate_mode"] = [generate_mode] if generate_mode else ["list"]
+            query_params["output_format"] = [output_format]
             # print(f"=== QUERY PARAMS BEING PASSED ===")
             # print(f"query_params: {query_params}")
 

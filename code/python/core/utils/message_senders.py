@@ -421,6 +421,10 @@ class MessageSender:
                     if key not in transformed:
                         transformed[key] = value
 
+                # If schema_object has @type and top level @type is "Item", replace with schema @type
+                if '@type' in schema_obj and transformed.get('@type') == 'Item':
+                    transformed['@type'] = schema_obj['@type']
+
                 # Replace schema_object with grounding
                 del transformed['schema_object']
                 if url:

@@ -330,19 +330,22 @@ class MessageSender:
 
             meta_message = {
                 "_meta": {
-                    "conversation_id": conversation_id or '',
-                    "version": "0.5",
-                    "openai/outputTemplate": "ui://widget/list.html"
+                    "openai/outputTemplate": "ui://widget/list.html",
+                    "nlweb/version": "0.5"
                 }
             }
 
             # Include query_rewrite data if available
             if hasattr(self.handler, '_chatgptapp_query_rewrite'):
-                meta_message["_meta"]["query_rewrite"] = self.handler._chatgptapp_query_rewrite
+                meta_message["_meta"]["nlweb/queryRewrite"] = self.handler._chatgptapp_query_rewrite
 
             # Include decontextualized_query if available
             if hasattr(self.handler, 'decontextualized_query') and self.handler.decontextualized_query:
-                meta_message["_meta"]["decontextualized_query"] = self.handler.decontextualized_query
+                meta_message["_meta"]["nlweb/decontextualizedQuery"] = self.handler.decontextualized_query
+
+            # Include conversation_id if available
+            if conversation_id:
+                meta_message["_meta"]["nlweb/conversationId"] = conversation_id
 
             try:
                 await self.handler.http_handler.write_stream(meta_message)

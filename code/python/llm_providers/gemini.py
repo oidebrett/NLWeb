@@ -16,7 +16,7 @@ import logging
 import asyncio
 from typing import Dict, Any, Optional
 
-from google import genai
+import google.generativeai as genai 
 from core.config import CONFIG
 import threading
 
@@ -35,8 +35,8 @@ class ConfigurationError(RuntimeError):
 class GeminiProvider(LLMProvider):
     """Implementation of LLMProvider for Google's Gemini API."""
     
+    _initialized = False
     _client_lock = threading.Lock()
-    _client = None
 
     @classmethod
     def get_api_key(cls) -> str:
@@ -63,25 +63,36 @@ class GeminiProvider(LLMProvider):
         return default_model
 
     @classmethod
-    def get_client(cls):
-        """Get or create the GenAI client."""
+    def configure_gemini(cls):
+        """Ensure Gemini API is configured."""
         with cls._client_lock:
-            if cls._client is None:
+            if not cls._initialized:
                 api_key = cls.get_api_key()
                 if not api_key:
                     # Try to use free tier without API key
                     logger.info("Gemini API key not found, attempting to use free tier")
                     try:
-                        cls._client = genai.Client()
-                        logger.info("Gemini client initialized with free tier (no API key)")
+                        genai.configure()  # Configure without API key
+                        cls._initialized = True
+                        logger.info("Gemini configured with free tier (no API key)")
                     except Exception as e:
-                        error_msg = f"Failed to initialize Gemini client without API key: {e}"
+                        error_msg = f"Failed to configure Gemini without API key: {e}"
                         logger.error(error_msg)
                         raise ConfigurationError(error_msg)
                 else:
-                    cls._client = genai.Client(api_key=api_key)
-                    logger.debug("Gemini client initialized successfully with API key")
-            return cls._client
+                    genai.configure(api_key=api_key)
+                    cls._initialized = True
+                    logger.debug("Gemini configured successfully with API key")
+        return True
+
+    @classmethod
+    def get_client(cls):
+        """
+        Implementation of abstract method from LLMProvider.
+        For Gemini, we don't use a client object, just ensure configuration.
+        """
+        cls.configure_gemini()
+        return None  # No client object needed for new Gemini API
 
     @classmethod
     def clean_response(cls, content: str) -> Dict[str, Any]:
@@ -141,17 +152,23 @@ class GeminiProvider(LLMProvider):
         """Async chat completion using Google GenAI."""
         # If model not provided, get it from config
         model_to_use = model if model else self.get_model_from_config(high_tier)
-        
-        # Get the GenAI client
-        client = self.get_client()
+
+        # Ensure Gemini is configured
+        self.configure_gemini()
 
         system_prompt = f"""Provide a response that matches this JSON schema: {json.dumps(schema)}"""
         
         logger.debug(f"Sending completion request to Gemini API with model: {model_to_use}")
         
+        # create the model
+        model_instance = genai.GenerativeModel(
+            model_to_use,
+            system_instruction=system_prompt
+        )
+
         config = {
             "temperature": temperature,
-            "system_instruction": system_prompt,
+            "max_output_tokens": max_tokens,
             # "response_mime_type": "application/json",
         }
         # logger.debug(f"\t\tRequest config: {config}")
@@ -166,10 +183,9 @@ class GeminiProvider(LLMProvider):
             
             response = await asyncio.wait_for(
                 asyncio.to_thread(
-                    lambda: client.models.generate_content(
-                        model=model_to_use,
-                        contents=prompt,
-                        config=config
+                    lambda: model_instance.generate_content(
+                        prompt,
+                        generation_config=config
                     )
                 ),
                 timeout=timeout

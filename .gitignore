@@ -457,3 +457,5 @@ static/.DS_Store
 *_deploy_*.zip
 nlwm_deploy_*.zip
 agentfinder_deploy_*.zip
+
+openai-apps-sdk-examples/

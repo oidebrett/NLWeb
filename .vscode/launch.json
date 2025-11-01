@@ -7,8 +7,7 @@
              "request": "launch",
              "program": "app-file.py",
              "console": "integratedTerminal",
-             "envFile": "${workspaceFolder}/.env"
-             "justMyCode": true,
+             "envFile": "${workspaceFolder}/.env",
              "args": [
                  ""
              ],

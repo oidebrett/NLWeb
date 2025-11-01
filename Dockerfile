@@ -42,8 +42,8 @@ WORKDIR /app
 RUN groupadd -r nlweb && \
     useradd -r -g nlweb -d /app -s /bin/bash nlweb
 
-# Copy application code
-COPY code/ /app/
+# Copy application code and config maintaining directory structure
+COPY code/ /app/code/
 COPY static/ /app/static/
 COPY config/ /app/config/
 
@@ -65,9 +65,9 @@ EXPOSE 8000
 
 # Set environment variables
 ENV NLWEB_OUTPUT_DIR=/app
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/code/python
 ENV PORT=8000
 ENV NLWEB_CONFIG_DIR=/app/config
 
 # Command to run the application
-CMD ["python", "python/app-file.py"]
+CMD ["python", "code/python/app-file.py"]

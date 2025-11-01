@@ -9,12 +9,11 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app
+      - PYTHONPATH=/app/code/python
       - PORT=8000
       - NLWEB_CONFIG_DIR=/app/config
     volumes:
       - ./data:/app/data
-      - ./config:/app/config:ro
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000')\""]
       interval: 30s

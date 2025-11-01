@@ -47,6 +47,9 @@ class OAuthManager {
     }
     
     setupUI() {
+        // Flag to catch any provider configured
+        let anyProviderConfigured = false;
+
         // Setup login button
         const loginBtn = document.getElementById('loginBtn');
         if (loginBtn) {
@@ -69,11 +72,16 @@ class OAuthManager {
                 // Show/hide based on configuration
                 if (this.config && this.config[provider] && this.config[provider].enabled) {
                     btn.style.display = 'flex';
+                    anyProviderConfigured = true; //if any provider is configured, show the login button
                 } else {
                     btn.style.display = 'none';
                 }
             }
         });
+
+        if (!anyProviderConfigured) {
+                loginBtn.style.display = 'none';
+        }   
         
         // Setup email login
         const emailLoginBtn = document.getElementById('emailLoginBtn');

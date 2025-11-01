@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/static/common-chat-styles.css">
   <link rel="stylesheet" href="/static/chat-page-styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js" integrity="sha512-H+rglffZ6f5gF7UJgvH4Naa+fGCgjrHKMgoFOGmcPTRwR6oILo5R+gtzNrpDp7iMV3udbymBVjkeZGNz1Em4rQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="/static/right-sidebar.css">
 </head>
 <body>
   <div class="app-container">
@@ -147,6 +148,91 @@
         </div>
       </div>
     </main>
+  <!-- Right Sidebar -->
+    <aside class="right-sidebar" id="right-sidebar" aria-label="Right sidebar" aria-hidden="true" style="display: none;" >
+      <div class="right-sidebar-content">
+        <div class="right-sidebar-header">
+          <h2 class="right-sidebar-title">Sites</h2>
+          <button class="new-site-btn" id="new-site-btn" title="Add new site">
+            <span class="plus-icon">+</span>
+          </button>
+        </div>
+        <div class="right-sidebar-section">
+          <h3>Configured Sites</h3>
+          <div id="right-sidebar-site-list" class="site-list-container">
+            <!-- Site list will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Sidebar Toggle Button -->
+    <button class="right-sidebar-toggle" id="right-sidebar-toggle" 
+            title="Toggle right sidebar" 
+            aria-expanded="false" 
+            aria-controls="right-sidebar"
+            style="display: none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span class="sr-only">Toggle right sidebar</span>
+    </button>    
+  </div>
+
+  <!-- Add Site Modal -->
+  <div id="new-site-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="cancel-add-site">&times;</span>
+      <h2>Add a New Site</h2>
+      <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-link active" onclick="openTab(event, 'url-tab')">From URL</button>
+          <button class="tab-link" onclick="openTab(event, 'dir-tab')">From JSON</button>
+        </div>
+<a id="crawler-link" href="#" target="_blank" class="crawler-link">Configure Crawler</a>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hostname = window.location.hostname; // e.g. "myapp.example.com" or "localhost"
+    let crawlerUrl;
+
+    if (hostname === "localhost" || hostname === "0.0.0.0") {
+      // Local dev case
+      crawlerUrl = `http://${hostname}:5000/`;
+    } else {
+      // Production/staging case
+      const baseDomain = hostname.split('.').slice(-2).join('.'); 
+      // e.g. "example.com" from "app.example.com"
+      crawlerUrl = `https://crawler.nlweb.${baseDomain}`;
+    }
+
+    // Apply to link
+    const link = document.getElementById("crawler-link");
+    if (link) {
+      link.href = crawlerUrl;
+    }
+  });
+</script>     
+      </div>
+      <div id="url-tab" class="tab-content" style="display: block;">
+        <form id="new-site-form-url">
+          <label for="new-site-name-url">Name:</label>
+          <input type="text" id="new-site-name-url" name="name" required>
+          <label for="new-site-url">Url (only RSS supported for now):</label>
+          <input type="url" id="new-site-url" name="url" required>
+          <button type="submit" id="add-site-btn-url">Add Site</button>
+        </form>
+      </div>
+      <div id="dir-tab" class="tab-content">
+        <form id="new-site-form-dir">
+          <label for="new-site-name-dir">Name:</label>
+          <input type="text" id="new-site-name-dir" name="name" required>
+          <label for="new-site-dir">Upload Json:</label>
+          <input type="file" id="new-site-dir" name="zipfile" accept=".zip" required>
+          <button type="submit" id="add-site-btn-dir">Add Site</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- OAuth Login Popup -->
@@ -243,5 +329,21 @@
     });
   </script>
   <script src="/static/oauth-login.js"></script>
+  <script src="/static/right-sidebar.js"></script>  
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tab-link");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
 </body>
 </html>

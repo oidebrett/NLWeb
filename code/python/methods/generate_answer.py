@@ -82,7 +82,15 @@ class GenerateAnswer(NLWebHandler):
             self.state.set_pre_checks_done()
             
         logger.info("Preparation phase completed")
-   
+
+    def normalize_schema_object(self, data):
+        if isinstance(data, (dict, list)):
+            # already parsed JSON (object or array)
+            return data
+        else:
+            # assume it's a JSON string (or bytes/bytearray)
+            return json.loads(data)
+       
     async def rankItem(self, url, json_str, name, site):
         if not self.connection_alive_event.is_set():
             logger.warning("Connection lost, skipping item ranking")
@@ -101,7 +109,7 @@ class GenerateAnswer(NLWebHandler):
                 'site': site,
                 'name': name,
                 'ranking': ranking,
-                'schema_object': json.loads(json_str),
+                'schema_object': self.normalize_schema_object(json_str),
                 'sent': False,
             }
             
@@ -218,7 +226,7 @@ class GenerateAnswer(NLWebHandler):
                             "name": name,
                             "description": description,
                             "site": site,
-                            "schema_object": json.loads(json_str),
+                            "schema_object": self.normalize_schema_object(json_str),
                         })
                         
                     # Update message with descriptions

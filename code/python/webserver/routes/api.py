@@ -348,7 +348,12 @@ async def add_site_handler(request: web.Request) -> web.Response:
         documents_added = 0
         async with db_lock:
             if rss_url:
-                documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                old_isatty = sys.stdin.isatty
+                sys.stdin.isatty = lambda: False
+                try:
+                    documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                finally:
+                    sys.stdin.isatty = old_isatty
             else:
                 import zipfile, tempfile
                 extract_dir = tempfile.mkdtemp()

@@ -1279,6 +1279,14 @@ async def websocket_handler(request: web.Request) -> web.WebSocketResponse:
                                         break
                             
                             if not has_ai_participant:
+
+                                # Fix to allow generate mode handler to be used
+                                content = data.get('content', {})
+                                generate_mode = content.get('mode', 'none')
+                                if generate_mode == 'generate':
+                                    from methods.generate_answer import GenerateAnswer
+                                    request.app['nlweb_handler']  = GenerateAnswer
+
                                 nlweb_handler = request.app.get('nlweb_handler')
                                 if nlweb_handler:
                                     config = ParticipantConfig(

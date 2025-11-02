@@ -47,17 +47,20 @@ class GenerateAnswer(NLWebHandler):
     async def runQuery(self):
         try:
             logger.info(f"Starting query execution for conversation_id: {self.conversation_id}")
+            # Begin the response (matches NLWebHandler)
+            await self.message_sender.send_begin_response()
             await self.prepare()
-            if (self.query_done):
-                logger.info("Query done prematurely")
-                return self.return_value
+            if self.query_done:
+                return [msg.to_dict() for msg in self.messages]
             await self.get_ranked_answers()
-            self.return_value["conversation_id"] = self.conversation_id
+            # End the response
+            await self.message_sender.send_end_response()
             logger.info(f"Query execution completed for conversation_id: {self.conversation_id}")
-            return self.return_value
+            return [msg.to_dict() for msg in self.messages]
+
         except Exception as e:
             logger.exception(f"Error in runQuery: {e}")
-            traceback.print_exc()
+            await self.message_sender.send_end_response(error=True)
             raise
     
     async def prepare(self):
@@ -80,7 +83,8 @@ class GenerateAnswer(NLWebHandler):
         finally:
             self.pre_checks_done_event.set()  # Signal completion regardless of errors
             self.state.set_pre_checks_done()
-            
+        
+        await super().prepare()
         logger.info("Preparation phase completed")
 
     def normalize_schema_object(self, data):
@@ -90,7 +94,8 @@ class GenerateAnswer(NLWebHandler):
         else:
             # assume it's a JSON string (or bytes/bytearray)
             return json.loads(data)
-       
+    
+    '''
     async def rankItem(self, url, json_str, name, site):
         if not self.connection_alive_event.is_set():
             logger.warning("Connection lost, skipping item ranking")
@@ -121,34 +126,20 @@ class GenerateAnswer(NLWebHandler):
         except Exception as e:
             logger.error(f"Error in rankItem: {e}")
             logger.debug("Full error trace: ", exc_info=True)
+    '''
 
     async def get_ranked_answers(self):
-        logger.info("Starting retrieval and ranking process")
+        logger.info("Starting retrieval and ranking process (GenerateAnswer)")
         try:
-            # Wait for retrieval to be done if not already
-            logger.info("Retrieving items for query")
-            top_embeddings = await search(
-                self.decontextualized_query, 
-                self.site,
-                query_params=self.query_params
-            )
-            self.items = top_embeddings  # Store all retrieved items
-            logger.debug(f"Retrieved {len(top_embeddings)} items from database")
-            # Rank each item
-            tasks = []
-            for url, json_str, name, site in top_embeddings:
-                tasks.append(asyncio.create_task(self.rankItem(url, json_str, name, site)))
+            # Use the base handler’s standard ranking flow
+            await super().get_ranked_answers()
             
-            
-            logger.debug(f"Running {len(tasks)} ranking tasks concurrently")
-            await asyncio.gather(*tasks, return_exceptions=True)
-            
-            # Synthesize the answer from ranked items
-            logger.info("Ranking completed, synthesizing answer")
+            # Once ranking is done, synthesize the answer using your prompt
+            logger.info("Ranking completed, now synthesizing answer")
             await self.synthesizeAnswer()
             
         except Exception as e:
-            logger.exception(f"Error in get_ranked_answers: {e}")
+            logger.exception(f"Error in get_ranked_answers (GenerateAnswer): {e}")
             raise
 
     async def getDescription(self, url, json_str, query, answer, name, site):

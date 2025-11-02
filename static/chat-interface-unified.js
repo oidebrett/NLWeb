@@ -90,7 +90,7 @@ export class UnifiedChatInterface {
       // Load sites from API (non-blocking - fire and forget)
       // Always load sites asynchronously without blocking
       // Commented out to reduce unnecessary sites requests
-      // this.loadSitesNonBlocking();
+      this.loadSitesNonBlocking();
       
       // Check URL parameters BEFORE initializing connection
       const urlParams = new URLSearchParams(window.location.search);
@@ -209,7 +209,45 @@ export class UnifiedChatInterface {
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebar = document.getElementById('sidebar');
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    
+
+    // === New Site Modal Handlers ===
+    const rightSidebarSiteList = document.getElementById('right-sidebar-site-list');
+    const newSiteBtn = document.getElementById('new-site-btn');
+    const newSiteModal = document.getElementById('new-site-modal');
+    const newSiteFormUrl = document.getElementById('new-site-form-url');
+    const newSiteFormDir = document.getElementById('new-site-form-dir');
+    const cancelAddSite = document.getElementById('cancel-add-site');
+
+    // Show the "Add Site" modal
+    if (newSiteBtn && newSiteModal) {
+      newSiteBtn.addEventListener('click', () => {
+        newSiteModal.style.display = 'block';
+      });
+    }
+
+    // Hide modal on cancel
+    if (cancelAddSite && newSiteModal) {
+      cancelAddSite.addEventListener('click', () => {
+        newSiteModal.style.display = 'none';
+      });
+    }
+
+    // Handle URL-based site addition
+    if (newSiteFormUrl) {
+      newSiteFormUrl.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSiteUrl();
+      });
+    }
+
+    // Handle Directory-based site addition
+    if (newSiteFormDir) {
+      newSiteFormDir.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.addNewSiteDir();
+      });
+    }
+
     if (sidebarToggle && sidebar) {
       // Restore sidebar state from localStorage
       const isCollapsed = localStorage.getItem('nlweb-sidebar-collapsed') === 'true';
@@ -1771,8 +1809,11 @@ export class UnifiedChatInterface {
         this.state.selectedSite = 'all';
       }
     }
+
+    // Populate the right sidebar site list
+    this.populateRightSidebarSiteList();    
   }
-  
+
   processSitesData(sites) {
     // Sort sites alphabetically
     sites.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
@@ -1794,7 +1835,7 @@ export class UnifiedChatInterface {
     }
     
     // Don't automatically update dropdowns - they will be populated on-demand when clicked
-    // this.updateSiteDropdowns();
+    this.updateSiteDropdowns();
   }
   
   clearCachedSites() {
@@ -2312,6 +2353,248 @@ export class UnifiedChatInterface {
       });
     });
   }
+
+  //Start of changes for right sidebar
+  populateRightSidebarSiteList() {
+
+    const container =
+      document.getElementById('right-sidebar-site-list') ||
+      this.dom?.rightSidebarSiteList?.();
+
+    if (!container) {
+      console.warn('Right sidebar site list container not found');
+      return;
+    }
+
+    container.innerHTML = ''; // Clear existing content
+
+    // Filter out 'all' site for display in the right sidebar
+    const siteList = this.state?.sites || [];
+    const sitesToDisplay = siteList ? siteList.filter(site => site !== 'all') : [];
+
+    if (sitesToDisplay.length === 0) {
+      const noSitesMessage = document.createElement('p');
+      noSitesMessage.className = 'no-sites-message';
+      noSitesMessage.textContent = 'No sites configured. Please add sites to the system.';
+      container.appendChild(noSitesMessage);
+      return;
+    }
+
+    sitesToDisplay.forEach(site => {
+      const siteDiv = document.createElement('div');
+      siteDiv.className = 'site-list-item';
+
+      const siteName = document.createElement('span');
+      siteName.textContent = site;
+      siteDiv.appendChild(siteName);
+
+      // Add click listener to select the site
+      siteDiv.addEventListener('click', () => {
+        this.selectedSite = site;
+        
+        // Update site selector icon title
+        if (this.siteSelectorIcon) {
+          this.siteSelectorIcon.title = `Site: ${site}`;
+        }
+        
+        // Update the current conversation's site if it exists
+        const conversation = this.conversationManager.findConversation(this.currentConversationId);
+        if (conversation) {
+          conversation.site = site;
+          this.conversationManager.saveConversations();
+        }
+        
+        // Update the site dropdown to reflect the new selection
+        if (this.siteDropdownItems) {
+          this.updateSiteDropdowns();
+        }
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-site-btn';
+      deleteBtn.innerHTML = '&times;';
+      deleteBtn.title = `Delete ${site}`;
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.deleteSite(site);
+      });
+      siteDiv.appendChild(deleteBtn);
+
+      container.appendChild(siteDiv);
+    });
+  }
+
+  async addNewSiteUrl() {
+    await this.addNewSite('url');
+  }
+
+  async addNewSiteDir() {
+    await this.addNewSite('dir');
+  }
+
+  /**
+   * Generic add new site handler (mirrors original behavior)
+   * type = 'url' | 'dir'
+   */
+  async addNewSite(type) {
+    const formId = `new-site-form-${type}`;
+    const nameInputId = `new-site-name-${type}`;
+    const valueInputId = `new-site-${type}`; // 'url' or file input id
+    const buttonId = `add-site-btn-${type}`;
+
+    const form = document.getElementById(formId);
+    const nameInput = document.getElementById(nameInputId);
+    const valueInput = document.getElementById(valueInputId);
+    const addButton = document.getElementById(buttonId);
+
+    if (!form || !nameInput || !valueInput || !addButton) {
+      console.error(`Could not find all elements for site type '${type}'`);
+      return;
+    }
+
+    const siteName = nameInput.value.trim();
+    let siteValue = type === 'url' ? valueInput.value.trim() : (valueInput.files && valueInput.files[0]);
+
+    if (!siteName || !siteValue) {
+      alert(
+        'Please fill in both name and ' +
+        (type === 'url' ? 'URL' : 'choose a zip file') +
+        '.'
+      );
+      return;
+    }
+
+    // Show loading state on button
+    const originalButtonText = addButton.textContent;
+    addButton.disabled = true;
+    addButton.textContent = type === 'url' ? 'Adding...' : 'Uploading...';
+
+    try {
+      const baseUrl = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
+      let response;
+
+      if (type === 'url') {
+        // JSON request for URL sites
+        response = await fetch(`${baseUrl}/api/sites/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: siteName,
+            url: siteValue,
+          }),
+        });
+      } else {
+        // FormData request for ZIP uploads
+        const formData = new FormData();
+        formData.append('name', siteName);
+        formData.append('zipfile', siteValue);
+
+        response = await fetch(`${baseUrl}/api/sites/add`, {
+          method: 'POST',
+          body: formData,
+        });
+      }
+
+      // If server returns JSON, parse it (original expects { status: 'success' })
+      let result;
+      try {
+        result = await response.json();
+      } catch (err) {
+        // response may not be JSON: that's ok, still check ok status
+        result = null;
+      }
+
+      if (response.ok && (!result || result.status === 'success')) {
+        // Keep UX consistent with original:
+        alert('Site added successfully!');
+        // Close modal if present (original referenced this.elements.newSiteModal)
+        const modal = document.getElementById('new-site-modal');
+        if (modal) modal.style.display = 'none';
+        form.reset();
+
+        // === Update state manually ===
+        if (this.state && Array.isArray(this.state.sites)) {
+          // Avoid duplicates (case-insensitive match)
+          const exists = this.state.sites.some(
+            (s) => s.toLowerCase() === siteName.toLowerCase()
+          );
+          if (!exists) {
+            this.state.sites.push(siteName);
+          }
+        } else {
+          this.state = this.state || {};
+          this.state.sites = [siteName];
+        }
+
+        // === Re-render right sidebar ===
+        if (typeof this.populateRightSidebarSiteList === 'function') {
+          this.populateRightSidebarSiteList();
+        }
+
+        // Automatically update dropdowns
+        this.updateSiteDropdowns();
+
+        console.log(`✅ Added site: ${siteName}`);
+
+      } else {
+        const errMsg = (result && (result.message || result.error)) || `Server responded ${response.status}`;
+        alert(`Error adding site: ${errMsg}`);
+      }
+    } catch (error) {
+      console.error('Error adding site:', error);
+      form.reset();
+      alert('An error occurred while adding the site.');
+    } finally {
+      // Restore button
+      addButton.disabled = false;
+      addButton.textContent = originalButtonText;
+    }
+  }
+
+  async deleteSite(siteName) {
+    if (!confirm(`Are you sure you want to delete the site "${siteName}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/sites/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: siteName }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // === Update state manually ===
+      if (this.state && Array.isArray(this.state.sites)) {
+        this.state.sites = this.state.sites.filter(
+          (s) => s.toLowerCase() !== siteName.toLowerCase()
+        );
+      }
+
+      // === Re-render right sidebar ===
+      if (typeof this.populateRightSidebarSiteList === 'function') {
+        this.populateRightSidebarSiteList();
+      }
+
+      // Automatically update dropdowns
+      this.updateSiteDropdowns();
+
+      console.log(`✅ Deleted site: ${siteName}`);
+
+    } catch (error) {
+      console.error('Error deleting site:', error);
+      alert('Failed to delete site. Please check the console for details.');
+    }
+  }
+  //End of changes for right sidebar
+
 }
 
 // Export for use in HTML

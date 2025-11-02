@@ -12,6 +12,7 @@ services:
       - PYTHONPATH=/app/code/python
       - PORT=8000
       - NLWEB_CONFIG_DIR=/app/config
+      - QDRANT_URL=http://qdrant:6333      
     volumes:
       - ./data:/app/data
     healthcheck:
@@ -21,4 +22,4 @@ services:
       retries: 3
       start_period: 10s
     restart: unless-stopped
-    user: nlweb
+    user: root

@@ -354,6 +354,13 @@ class QdrantVectorClient(RetrievalClientBase):
             )
             return 0
 
+        # Create payload index for efficient filtering
+        await client.create_payload_index(
+            collection_name=collection_name,
+            field_name="site",
+            field_schema=models.PayloadSchemaType.KEYWORD
+        )
+
         filter_condition = models.Filter(
             must=[
                 models.FieldCondition(key="site", match=models.MatchValue(value=site))

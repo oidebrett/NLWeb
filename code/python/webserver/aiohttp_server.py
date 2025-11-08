@@ -245,9 +245,12 @@ class AioHTTPServer:
             
             # Set up NLWeb handler class for chat system
             try:
-                from core.baseHandler import NLWebHandler
-                app['nlweb_handler'] = NLWebHandler
-                logger.info("NLWebHandler configured for chat system")
+                #from core.baseHandler import NLWebHandler
+                #app['nlweb_handler'] = NLWebHandler
+                #logger.info("NLWebHandler configured for chat system")
+                from methods.NLWebFgaHandler import NLWebFgaHandler
+                app['nlweb_handler'] = NLWebFgaHandler
+                logger.info("NLWebFgaHandler configured for chat system")
             except ImportError as e:
                 logger.error(f"Failed to import NLWebHandler: {e}")
                 app['nlweb_handler'] = None

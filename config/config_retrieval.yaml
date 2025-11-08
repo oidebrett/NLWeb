@@ -27,7 +27,7 @@ endpoints:
 
   # Bing Web Search API for real-time web search
   bing_search:
-    enabled: true
+    enabled: false
     # API key for Bing Web Search API
     api_key_env: BING_API_KEY
     # Bing API endpoint (optional, defaults to standard Bing API)
@@ -134,9 +134,21 @@ endpoints:
     # Specify the database type
     db_type: qdrant
 
+  # Option 3: Remote Qdrant server with FGA
+  qdrant_fga:
+    enabled: false
+    # Connect to a Qdrant server at a specific URL
+    api_endpoint_env: QDRANT_URL
+    # Optional API key for authentication
+    api_key_env: QDRANT_API_KEY
+    # Set the collection name to use
+    index_name: nlweb_collection
+    # Specify the database type
+    db_type: qdrant_fga
+
   # Shopify MCP endpoint for product search across Shopify stores
   shopify:
-    enabled: true
+    enabled: false
     db_type: shopify_mcp
     # Note: mcp_endpoint will be dynamically set based on the site being queried
     name: Shopify MCP Search

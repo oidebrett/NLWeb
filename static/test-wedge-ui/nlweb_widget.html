@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NLWeb AppSDK Widget</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 16px;
+        background: #f9fafb;
+        color: #0f172a;
+      }
+      .block {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .block-header {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .block-title {
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+      .meta-row {
+        margin-top: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        background: #f1f5f9;
+        color: #475569;
+      }
+      .muted {
+        color: #64748b;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="muted">Loading visualizations…</div>
+    <script>
+      function renderWidget(data) {
+        const root = document.getElementById("root");
+        const results = Array.isArray(data.results) ? data.results : [];
+
+        if (!results.length) {
+          root.textContent = "No visualizations returned.";
+          return;
+        }
+
+        root.classList.remove("muted");
+        root.textContent = "";
+
+        const loadedScripts = new Set();
+
+        const embedScript = (rawScript) => {
+          if (typeof rawScript !== "string" || !rawScript.includes("<script")) {
+            return;
+          }
+          const srcMatch = rawScript.match(/<script[^>]*src=["']([^"']+)["']/i);
+          const inlineMatch = rawScript.match(/<script[^>]*>([\s\S]*)<\/script>/i);
+
+          if (srcMatch) {
+            const src = srcMatch[1];
+
+            if (!loadedScripts.has(src)) {
+              const script = document.createElement("script");
+              script.src = src;
+              script.async = true;
+              document.head.appendChild(script);
+              loadedScripts.add(src);
+            }
+          } else if (inlineMatch) {
+            const inlineScript = document.createElement("script");
+            inlineScript.textContent = inlineMatch[1];
+            document.head.appendChild(inlineScript);
+          }
+        };
+
+        results.forEach((res, index) => {
+          const block = document.createElement("section");
+          block.className = "block";
+
+          const header = document.createElement("div");
+          header.className = "block-header";
+
+          const title = document.createElement("div");
+          title.className = "block-title";
+          const typeLabel = res.visualizationType || res["@type"] || "Visualization";
+          title.textContent = `${typeLabel} #${index + 1}`;
+          header.appendChild(title);
+
+          if (res["@type"]) {
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = res["@type"];
+            header.appendChild(badge);
+          }
+
+          block.appendChild(header);
+
+          const infoSection = document.createElement("div");
+          infoSection.style.marginBottom = "12px";
+
+          if (res.name || res.url) {
+            const nameLink = document.createElement("a");
+            nameLink.className = "block-name";
+            nameLink.textContent = res.name || res.url;
+            nameLink.href = res.url || "#";
+            if (res.url) {
+              nameLink.target = "_blank";
+              nameLink.rel = "noopener noreferrer";
+            }
+            nameLink.style.display = "inline-block";
+            nameLink.style.fontWeight = "600";
+            nameLink.style.fontSize = "15px";
+            nameLink.style.color = "#1d4ed8";
+            infoSection.appendChild(nameLink);
+          }
+
+          if (typeof res.description === "string" && res.description.trim()) {
+            const desc = document.createElement("p");
+            desc.textContent = res.description.trim();
+            desc.style.margin = "6px 0 0 0";
+            desc.style.color = "#334155";
+            desc.style.lineHeight = "1.45";
+            infoSection.appendChild(desc);
+          }
+
+          if (infoSection.children.length > 0) {
+            block.appendChild(infoSection);
+          }
+
+          const container = document.createElement("div");
+          container.innerHTML = res.html || "";
+          block.appendChild(container);
+
+          if (res.script) {
+            embedScript(res.script);
+          }
+
+          const meta = document.createElement("div");
+          meta.className = "meta-row";
+
+          const appendChips = (values, label) => {
+            if (!Array.isArray(values) || !values.length) {
+              return;
+            }
+            const fragment = document.createDocumentFragment();
+            values.forEach((value) => {
+              const chip = document.createElement("span");
+              chip.className = "chip";
+              chip.textContent = `${label}: ${value}`;
+              fragment.appendChild(chip);
+            });
+            meta.appendChild(fragment);
+          };
+
+          appendChips(res.places, "Place");
+          appendChips(res.variables, "Variable");
+
+          if (typeof res.embed_instructions === "string" && res.embed_instructions.trim()) {
+            const instructions = document.createElement("div");
+            instructions.className = "chip";
+            instructions.textContent = `Embed: ${res.embed_instructions}`;
+            meta.appendChild(instructions);
+          }
+
+          if (meta.children.length > 0) {
+            block.appendChild(meta);
+          }
+
+          root.appendChild(block);
+        });
+
+        window.parent?.postMessage({ type: "widgetRendered" }, "*");
+      }
+
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "setStructuredContent") {
+          renderWidget(event.data.payload || {});
+        }
+      });
+
+      if (window.structuredContent) {
+        renderWidget(window.structuredContent);
+      } else {
+        window.parent?.postMessage({ type: "widgetReady" }, "*");
+      }
+    </script>
+  </body>
+</html>

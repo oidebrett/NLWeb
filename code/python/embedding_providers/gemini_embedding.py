@@ -14,17 +14,31 @@ import threading
 from typing import List, Optional
 import time
 
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from core.config import CONFIG
 
 from misc.logger.logging_config_helper import get_configured_logger, LogLevel
 logger = get_configured_logger("gemini_embedding")
 
 # Add lock for thread-safe client initialization
+_initialized = False
 _client_lock = threading.Lock()
-_client = None
 
+def configure_gemini():
+    """Ensure Gemini API is configured"""
+    global _initialized
+    with _client_lock:
+        if not _initialized:
+            api_key = get_api_key()
+            if not api_key:
+                error_msg = "Gemini API key not found in configuration"
+                logger.error(error_msg)
+                raise RuntimeError(error_msg)
+            
+            genai.configure(api_key=api_key)
+            _initialized = True
+            logger.debug("GenAI configured successfully")
+    return True
 
 def get_api_key() -> str:
     """
@@ -46,24 +60,6 @@ def get_api_key() -> str:
         raise ValueError(error_msg)
     
     return api_key
-
-
-def get_client():
-    """
-    Get or create the GenAI client for embeddings.
-    """
-    global _client
-    with _client_lock:
-        if _client is None:
-            api_key = get_api_key()
-            if not api_key:
-                error_msg = "Gemini API key not found in configuration"
-                logger.error(error_msg)
-                raise RuntimeError(error_msg)
-            _client = genai.Client(api_key=api_key)
-            logger.debug("GenAI client initialized successfully")
-        return _client
-
 
 async def get_gemini_embeddings(
     text: str,
@@ -97,29 +93,26 @@ async def get_gemini_embeddings(
     logger.debug(f"Generating Gemini embedding with model: {model}")
     logger.debug(f"Text length: {len(text)} chars")
     
-    # Get the GenAI client
-    client = get_client()
+    # Get Gemini to ensure configured
+    configure_gemini()
     
     while True:
         try:
-            # Create embedding config
-            config = types.EmbedContentConfig(task_type=task_type)
-            
             # Use asyncio.to_thread to make the synchronous GenAI call
             # non-blocking
             result = await asyncio.wait_for(
                 asyncio.to_thread(
-                    lambda: client.models.embed_content(
+                    lambda t=text: genai.embed_content(
                         model=model,
-                        contents=text,
-                        config=config
+                        content=t,
+                        task_type=task_type
                     )
                 ),
                 timeout=timeout
             )
             
             # Extract the embedding values from the response
-            embedding = result.embeddings[0].values
+            embedding = result['embedding']
             logger.debug(
                 f"Gemini embedding generated, dimension: {len(embedding)}"
             )
@@ -179,12 +172,9 @@ async def get_gemini_batch_embeddings(
     logger.debug(f"Generating Gemini batch embeddings with model: {model}")
     logger.debug(f"Batch size: {len(texts)} texts")
     
-    # Get the GenAI client
-    client = get_client()
+    # Call Gemini to ensure configured
+    configure_gemini()
     embeddings = []
-
-    # Create embedding config
-    config = types.EmbedContentConfig(task_type=task_type)
     
     # Process each text individually
     for i, text in enumerate(texts):
@@ -197,18 +187,17 @@ async def get_gemini_batch_embeddings(
                 # Attempt to get the embedding
                 result = await asyncio.wait_for(
                     asyncio.to_thread(
-                        lambda t=text: client.models.embed_content(
+                        lambda t=text: genai.embed_content(
                             model=model,
-                            contents=t,
-                            config=config
+                            content=t,
+                            task_type=task_type
                         )
                     ),
                     timeout=timeout
                 )
 
                 # Extract the embedding values from the response
-                embedding = result.embeddings[0].values
-                embeddings.append(embedding)
+                embeddings.append(result['embedding'])
                 break
             except Exception as e:
                 error_message = str(e)

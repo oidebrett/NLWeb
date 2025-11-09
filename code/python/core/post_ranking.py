@@ -1,4 +1,5 @@
 from core.state import NLWebHandlerState
+import asyncio
 from core.prompts import PromptRunner
 from misc.logger.logging_config_helper import get_configured_logger
 
@@ -101,6 +102,7 @@ class PostRanking:
                 # Send the map message
                 map_message = {
                     'message_type': 'results_map',
+                    '@type': 'LocationMap',
                     'locations': results_with_addresses
                 }
                 
@@ -108,7 +110,7 @@ class PostRanking:
                 logger.info(f"Map message content: {map_message}")
                 
                 try:
-                    await self.handler.send_message(map_message)
+                    asyncio.create_task(self.handler.send_message(map_message))
                     logger.info("results_map message sent successfully")
                 except Exception as e:
                     logger.error(f"Failed to send results_map message: {str(e)}", exc_info=True)
@@ -135,7 +137,7 @@ class SummarizeResults(PromptRunner):
         if (not response):
             return
         self.handler.summary = response["summary"]
-        message = {"message_type": "summary", "message": self.handler.summary}
-        await self.handler.send_message(message)
+        message = {"message_type": "result", "@type": "Summary", "content": self.handler.summary}
+        asyncio.create_task(self.handler.send_message(message))
         # Use proper state update
         await self.handler.state.precheck_step_done("post_ranking")

@@ -9,6 +9,7 @@ Backwards compatibility is not guaranteed at this time.
 """
 
 import core.retriever as retriever
+import asyncio
 from core.utils.trim import trim_json
 import json
 from core.prompts import PromptRunner
@@ -58,7 +59,7 @@ class PrevQueryDecontextualizer(NoOpDecontextualizer):
             return
         
         response = await self.run_prompt(self.DECONTEXTUALIZE_QUERY_PROMPT_NAME, 
-                                         level="high", verbose=False)
+                                         level="high", verbose=True)
         logger.info(f"response: {response}")
         if response is None:
             logger.info("No response from decontextualizer")
@@ -88,11 +89,17 @@ class PrevQueryDecontextualizer(NoOpDecontextualizer):
                 "original_query": self.handler.query
             }
             logger.info(f"Sending decontextualized query: {self.handler.decontextualized_query}")
-            await self.handler.send_message(message)
+            asyncio.create_task(self.handler.send_message(message))
         else:
             logger.info("No decontextualization required despite previous query")
+            message = {
+                "message_type": "decontextualized_query",
+                "decontextualized_query": self.handler.decontextualized_query,
+                "original_query": self.handler.query
+            }
             self.handler.decontextualized_query = self.handler.query
             await self.handler.state.precheck_step_done(self.STEP_NAME)
+            asyncio.create_task(self.handler.send_message(message))
         return
 
 class ContextUrlDecontextualizer(PrevQueryDecontextualizer):
@@ -145,7 +152,7 @@ class ContextUrlDecontextualizer(PrevQueryDecontextualizer):
                     "original_query": self.handler.query
                 }
                 logger.info(f"Sending decontextualized query: {self.handler.decontextualized_query}")
-                await self.handler.send_message(message)
+                asyncio.create_task(self.handler.send_message(message))
             return
 
 class FullDecontextualizer(ContextUrlDecontextualizer):

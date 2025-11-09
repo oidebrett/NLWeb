@@ -1,0 +1,3135 @@
+{
+  "structuredContent": {
+    "messages": [
+      {
+        "type": "text",
+        "text": "Found 15 visualizations for \"spicy crunchy snacks\"."
+      }
+    ],
+    "results": [
+      {
+        "@type": "Item",
+        "url": "https://realwayfood.myshopify.com/products/chamoy-pickle-kit-1",
+        "name": "Chamoy Pickle Kit",
+        "site": "realwayfood.myshopify.com",
+        "score": 85,
+        "description": "The Chamoy Pickle Kit includes Takis, which are known for their spicy and crunchy texture, making it a fitting choice for those seeking spicy crunchy snacks. The kit also offers a variety of tangy and spicy pickled vegetables and seasonings that complement the spicy snack experience.",
+        "schema_object": {
+          "description": "Enjoy a deliciously tangy and spicy treat with the Chamoy Pickle Kit! This 7 piece kit includes everything you need to create your own pickled vegetables with a twist.\u2022 Big Tex Pickle: A hearty and juicy cucumber pickle\u2022 Gushers: Small, sweet and sour pickled candies for an extra kick of flavor\u2022 Takis: Crunchy corn tortilla chips with a spicy kick\u2022 Lucas:A zesty lime powder seasoning to add some brightness to your pickle creations\u2022 < strong> Fruit: A variety of dried fruit for added sweetness. Made by Barcel, this kit is crafted in the US using fresh cucumbers as its primary ingredient. You can enjoy this delicious snack without any age restrictions or carcinogens or reproductive chemicals as per CA Prop 65 standards. Gather your friends and family together for an unforgettable snack experience with the Chamoy Pickle Kit!\u2022 Seller information\u2022 Business name: Brilliant Buzz Inc\u2022 Business address: Delaware, United States",
+          "name": "Chamoy Pickle Kit",
+          "productID": "gid://shopify/Product/7637473886278",
+          "tags": [
+            "snack",
+            "snack",
+            "snack"
+          ],
+          "category": "snack",
+          "url": "https://realwayfood.myshopify.com/products/chamoy-pickle-kit-1",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-022441_pixian_ai.png?v=1722938736",
+          "@type": "Product",
+          "offers": [
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211742278",
+              "title": "Big Tex 7 Pieces With Takis 1 Set",
+              "price": "16.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211775046",
+              "title": "Big Tex 7 Pieces With Takis 2 Set",
+              "price": "31.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211807814",
+              "title": "MINI Tex 7 Pieces With Takis 1 Set",
+              "price": "14.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211840582",
+              "title": "MINI Tex 7 Pieces With Takis 2 Set",
+              "price": "27.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211873350",
+              "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+              "price": "16.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211906118",
+              "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+              "price": "14.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211742278",
+              "title": "Big Tex 7 Pieces With Takis 1 Set",
+              "price": "16.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211775046",
+              "title": "Big Tex 7 Pieces With Takis 2 Set",
+              "price": "31.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211807814",
+              "title": "MINI Tex 7 Pieces With Takis 1 Set",
+              "price": "14.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211840582",
+              "title": "MINI Tex 7 Pieces With Takis 2 Set",
+              "price": "27.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211873350",
+              "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+              "price": "16.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211906118",
+              "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+              "price": "14.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211742278",
+              "title": "Big Tex 7 Pieces With Takis 1 Set",
+              "price": "16.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211775046",
+              "title": "Big Tex 7 Pieces With Takis 2 Set",
+              "price": "31.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211807814",
+              "title": "MINI Tex 7 Pieces With Takis 1 Set",
+              "price": "14.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211840582",
+              "title": "MINI Tex 7 Pieces With Takis 2 Set",
+              "price": "27.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211873350",
+              "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+              "price": "16.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41941211906118",
+              "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+              "price": "14.99",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+              "available": true
+            }
+          ]
+        },
+        "source_site_name": "My Store",
+        "source_site_score": 85
+      },
+      {
+        "@type": "Item",
+        "url": "https://realwayfood.myshopify.com/products/nong-shim-shrimp-crackers-pack-of-2-crispy-snack-spicy-savory-crunchy",
+        "name": "Nong Shim Shrimp Crackers",
+        "site": "realwayfood.myshopify.com",
+        "score": 90,
+        "description": "Nong Shim Shrimp Crackers are spicy and crunchy snacks made with enriched wheat flour, offering a fiery hot flavor and a satisfying crunch. They are a popular snack choice for those seeking a spicy and savory treat.",
+        "schema_object": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "productID": "gid://shopify/Product/7638006890566",
+          "name": "Nong Shim Shrimp Crackers",
+          "description": "DescriptionIndulge in the spicy and savoury taste of Nong Shim Shrimp Crackers, now available in a pack of 2. These crackers are perfect for satisfying your snack cravings anytime, anywhere.\u2022 Flavour: Shim Hot\u2022 Weight: 75 gm\u2022 Main Ingredient: Enriched Wheat Flour\u2022 Made By:Nong Shim - a renowned name in the food industry.\u2022 Made In:Korea - ensuring top quality and authenticity.\u2022 The Nong Shim Shrimp Crackers are fiery hot flavoured crackers that pack a punch with every bite. Made with enriched wheat flour, these crackers are light and airy with just the right amount of crunch. The pack contains two individual servings that make it easy to carry along wherever you go. Whether you're at work or on-the-go, these shrimp crackers will definitely become your go-to snack option. Elevate your snacking experience to the next level with Nong Shim's spicy shrimp cracker! \u2022 Seller information\u2022 Business name: Brilliant Buzz Inc\u2022 Business address: Delaware, United States",
+          "url": "https://realwayfood.myshopify.com/products/nong-shim-shrimp-crackers-pack-of-2-crispy-snack-spicy-savory-crunchy",
+          "image": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_02032_pixian_ai.png?v=1722938468",
+          "offers": [
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41943221633094",
+              "title": "NS Shrimp Cracker (Hot & Spicy)",
+              "price": "8.91",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_0203_2.jpg?v=1720582489",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/41943221665862",
+              "title": "NS Shrimp Cracker",
+              "price": "8.91",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_0204_2.jpg?v=1720582492",
+              "available": true
+            }
+          ],
+          "category": "snack",
+          "tags": [
+            "snack"
+          ]
+        },
+        "source_site_name": "My Store",
+        "source_site_score": 85
+      },
+      {
+        "@type": "Item",
+        "url": "https://schneider-farms-llc.myshopify.com/products/jalapeno-cheddar-snack-sticks",
+        "name": "Jalape\u00f1o Cheddar Snack Sticks",
+        "site": "schneider-farms-llc.myshopify.com",
+        "score": 95,
+        "description": "Jalape\u00f1o Cheddar Snack Sticks are a spicy snack option made from meat, fully cooked and shelf-stable until opened, making them convenient and flavorful.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/39694344847424",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39694344847424",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39694344847424",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+              "available": true
+            }
+          ],
+          "description": "4 oz package of our delicious Jalape\u00f1o Cheddar snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+          "name": "Jalape\u00f1o Cheddar Snack Sticks",
+          "productID": "gid://shopify/Product/6689572782144",
+          "tags": [],
+          "url": "https://schneider-farms-llc.myshopify.com/products/jalapeno-cheddar-snack-sticks",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 7.0,
+            "lowPrice": 7.0,
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD"
+          }
+        },
+        "source_site_name": "Schneider Farms LLC Hermann, MO",
+        "source_site_score": 80
+      },
+      {
+        "@type": "Item",
+        "url": "https://schneider-farms-llc.myshopify.com/products/pepperoni-mozzarella-snack-sticks",
+        "name": "Pepperoni Mozzarella Snack Sticks",
+        "site": "schneider-farms-llc.myshopify.com",
+        "score": 85,
+        "description": "Pepperoni Mozzarella Snack Sticks are a fully cooked, shelf-stable meat snack made from farm-raised meat, offering a convenient and flavorful option for those seeking spicy snack sticks.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/39694340653120",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39694340653120",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39694340653120",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+              "available": true
+            }
+          ],
+          "description": "4 oz package of our delicious Pepperoni Mozzarella snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+          "name": "Pepperoni Mozzarella Snack Sticks",
+          "productID": "gid://shopify/Product/6689572552768",
+          "tags": [],
+          "url": "https://schneider-farms-llc.myshopify.com/products/pepperoni-mozzarella-snack-sticks",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 7.0,
+            "lowPrice": 7.0,
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD"
+          }
+        },
+        "source_site_name": "Schneider Farms LLC Hermann, MO",
+        "source_site_score": 80
+      },
+      {
+        "@type": "Item",
+        "url": "https://chinitos-chimichurris.myshopify.com/products/gushers",
+        "name": "Gushers",
+        "site": "chinitos-chimichurris.myshopify.com",
+        "score": 85,
+        "description": "CHINITOS CHIMICHURRIS Gushers Spicy Candy offers a spicy and tangy flavor with a chewy texture, making it a suitable choice for those seeking spicy crunchy snacks. The candy contains chamoy and chili powder, providing a unique spicy taste experience while being safe to consume under CA Prop65 regulations.",
+        "schema_object": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "productID": "gid://shopify/Product/7694134509796",
+          "name": "Gushers",
+          "description": "Indulge in the spicy and tangy flavor of CHINITOS CHIMICHURRIS Gushers Spicy Candy - the perfect snack for spice lovers. Deliciously spicy/sweet Tangy and chewy texture 1 Individual bag Weighs 12 Oz per bag Made in the US by Chinito's Chimichurris, this candy is a must-try for those looking for a unique taste experience. Satisfy your cravings anytime with this fun snack that's perfect on-the-go or as a quick treat. Each bite of these gushers is bursting with flavor that will leave you wanting more. This candy contains Chamoy and Chili Powder as its main ingredient and it is not no too spicy or contain carcinogens or reproductive chemicals under CA Prop65, making it safe to enjoy.",
+          "url": "https://chinitos-chimichurris.myshopify.com/products/gushers",
+          "image": "https://cdn.shopify.com/s/files/1/0649/6799/9716/files/Untitleddesign_45.png?v=1706481864",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD",
+            "lowPrice": 16.0,
+            "highPrice": 16.0
+          },
+          "tags": [],
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/43060176322788",
+              "title": "12 Oz",
+              "price": "16.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0649/6799/9716/files/Untitleddesign_45.png?v=1706481864",
+              "available": true
+            }
+          ]
+        },
+        "source_site_name": "Chinitos Chimichurris",
+        "source_site_score": 95
+      },
+      {
+        "@type": "Item",
+        "url": "https://schneider-farms-llc.myshopify.com/products/sweet-bologna-with-jalapeno-snack-sticks",
+        "name": "Sweet Bologna with Jalapeno Snack Sticks",
+        "site": "schneider-farms-llc.myshopify.com",
+        "score": 90,
+        "description": "Sweet Bologna with Jalapeno Snack Sticks are a spicy snack option made from meat and include jalapeno for heat. They are fully cooked, shelf-stable until opened, and USDA inspected, making them a convenient and flavorful snack choice.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/39351724703808",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39351724703808",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39351724703808",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+              "available": true
+            }
+          ],
+          "description": "4 oz package of our delicious Sweet Bologna with Jalapeno snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+          "name": "Sweet Bologna with Jalapeno Snack Sticks",
+          "productID": "gid://shopify/Product/6578056331328",
+          "tags": [],
+          "url": "https://schneider-farms-llc.myshopify.com/products/sweet-bologna-with-jalapeno-snack-sticks",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 7.0,
+            "lowPrice": 7.0,
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD"
+          }
+        },
+        "source_site_name": "Schneider Farms LLC Hermann, MO",
+        "source_site_score": 80
+      },
+      {
+        "@type": "Item",
+        "url": "https://schneider-farms-llc.myshopify.com/products/pepperjack-snack-sticks",
+        "name": "Pepperjack Snack Sticks",
+        "site": "schneider-farms-llc.myshopify.com",
+        "score": 85,
+        "description": "Pepperjack Snack Sticks are a type of fully cooked meat snack that comes in a 4 oz package. They are made from meat raised on a family farm and do not require refrigeration until opened, making them convenient for snacking. The name 'Pepperjack' suggests a spicy flavor profile, aligning well with the concept of spicy snack sticks.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/39351724802112",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39351724802112",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/39351724802112",
+              "title": "Default Title",
+              "price": "7.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+              "available": true
+            }
+          ],
+          "description": "4 oz package of our delicious Pepperjack snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+          "name": "Pepperjack Snack Sticks",
+          "productID": "gid://shopify/Product/6578056364096",
+          "tags": [],
+          "url": "https://schneider-farms-llc.myshopify.com/products/pepperjack-snack-sticks",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 7.0,
+            "lowPrice": 7.0,
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD"
+          }
+        },
+        "source_site_name": "Schneider Farms LLC Hermann, MO",
+        "source_site_score": 80
+      },
+      {
+        "@type": "Item",
+        "url": "https://eatatlas.myshopify.com/products/eat-atlas-ema-datshi-with-lavash-chips-bhutanese-dip-cheesy-spicy-paired-with-crispy-lavash-chips-ready-to-eat-paired-combo-200-gms-dip-150-gms-lavash",
+        "name": "Bhutan's Ema Datshi (Cheesy + Spicy) Gourmet Dip With Baked Lavash Chips (Combo) (100+85gms)",
+        "site": "eatatlas.myshopify.com",
+        "score": 85,
+        "description": "This product features a spicy and flavorful Bhutanese dip made with fresh green chilies and local cheese, paired with crispy Lavash crackers that provide a crunchy texture. It offers a combination of spicy heat and crunch, making it a suitable choice for those seeking bold and savory snack options.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/46373142364386",
+              "title": "Default Title",
+              "price": "338.0",
+              "currency": "INR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/46373142364386",
+              "title": "Default Title",
+              "price": "338.0",
+              "currency": "INR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/46373142364386",
+              "title": "Default Title",
+              "price": "338.0",
+              "currency": "INR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/46373142364386",
+              "title": "Default Title",
+              "price": "338.0",
+              "currency": "INR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+              "available": true
+            }
+          ],
+          "description": "\"A rush of smoky heat from green chilies, the rich melt of Bhutanese cheese, and the perfect crunch of Lavash Crackers. One bite, and you're in the heart of the Himalayas.\" - Authentic Bhutanese Recipe: Crafted with traditional Bhutanese ingredients like fresh chilies and local cheese. - Spicy & Flavorful: Experience the perfect balance of spicy heat and creamy cheese in every bite. - Crispy Lavash Chips: Paired with light and crunchy Lavash chips for the perfect texture contrast. - Convenient & Ready to Serve: Quick, easy to enjoy as a snack, appetizer, or side dish. - Perfect for Spice Lovers: Ideal for those who crave bold, spicy, and savory flavors.",
+          "name": "Bhutan's Ema Datshi (Cheesy + Spicy) Gourmet Dip With Baked Lavash Chips (Combo) (100+85gms)",
+          "productID": "gid://shopify/Product/8833501069538",
+          "tags": [
+            "Chip N Dip",
+            "Combo",
+            "Chip N Dip",
+            "Combo",
+            "Chip N Dip",
+            "Combo",
+            "Chip N Dip",
+            "Combo"
+          ],
+          "category": "Chip N Dip Combo",
+          "url": "https://eatatlas.myshopify.com/products/eat-atlas-ema-datshi-with-lavash-chips-bhutanese-dip-cheesy-spicy-paired-with-crispy-lavash-chips-ready-to-eat-paired-combo-200-gms-dip-150-gms-lavash",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 338.0,
+            "lowPrice": 338.0,
+            "@type": "AggregateOffer",
+            "priceCurrency": "INR"
+          }
+        },
+        "source_site_name": "Eat Atlas",
+        "source_site_score": 85
+      },
+      {
+        "@type": "Item",
+        "url": "https://en.chiliklaus.dk/products/hot-box-red",
+        "name": "HOT BOX RED",
+        "site": "chili-klaus-int.myshopify.com",
+        "score": 85,
+        "description": "HOT BOX RED is a spicy snack gift box containing chili chips and spicy nuts among other hot items, making it a suitable choice for those seeking spicy crunchy snacks.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/43752686059754",
+              "title": "Default Title",
+              "price": "69.0",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/43752686059754",
+              "title": "Default Title",
+              "price": "69.0",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/43752686059754",
+              "title": "Default Title",
+              "price": "69.0",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/43752686059754",
+              "title": "Default Title",
+              "price": "69.0",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+              "available": true
+            }
+          ],
+          "description": "If the Hot Box Black is the man, this stunning red Hot Box Red is the woman. Mild and friendly, but don\u2019t be mistaken. Inside the box, you\u2019ll find both a Reaper Uppercut and Spicy Red candies withlots of power and heat. %%% Hot Box Red contains:Hot Sauce Reaper Uppercut, windforce 12Chili Chips, windforce 4Chili Dip, windforce 3Chili Nuts, windforce 4Hot Rub Fajita, windforce 8Chili Balls, windforce 6Spicy Red, Rhubarb & Strawberry, windforce 12Hot Chocolate, dark 70%, windforce 4Packed in a beautiful red gift box with print and window.",
+          "name": "HOT BOX RED",
+          "productID": "gid://shopify/Product/8010065740010",
+          "tags": [
+            "gaveide",
+            "jul23",
+            "new",
+            "vindstyrke:3-12",
+            "gaveide",
+            "jul23",
+            "new",
+            "vindstyrke:3-12",
+            "gaveide",
+            "jul23",
+            "new",
+            "vindstyrke:3-12",
+            "gaveide",
+            "jul23",
+            "new",
+            "vindstyrke:3-12"
+          ],
+          "url": "https://en.chiliklaus.dk/products/hot-box-red",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 69.0,
+            "lowPrice": 69.0,
+            "@type": "AggregateOffer",
+            "priceCurrency": "EUR"
+          }
+        },
+        "source_site_name": "Chili Klaus",
+        "source_site_score": 90
+      },
+      {
+        "@type": "Item",
+        "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-vindstyrke-8",
+        "name": "Chili Klaus Chili Chips wind force 8",
+        "site": "chili-klaus-int.myshopify.com",
+        "score": 95,
+        "description": "Chili Klaus Chili Chips wind force 8 are spicy chips flavored with Trinidad Scorpion Butch T., known for their intense heat level, making them a fitting choice for those seeking spicy crunchy snacks.",
+        "schema_object": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "productID": "gid://shopify/Product/7498527670506",
+          "name": "Chili Klaus Chili Chips wind force 8",
+          "description": "In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. %%% DESCRIPTION 1 bag of Chili Chips, wind force 8. In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. The wind force sneaks up at 8 - a hard wind - which means you can start to feel what chili can do! Net weight: 1 x 150 gram",
+          "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-vindstyrke-8",
+          "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8.jpg?v=1638867839",
+          "imageAltText": "chips wind force 8",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "EUR",
+            "lowPrice": 4.75,
+            "highPrice": 4.75
+          },
+          "category": "Chips",
+          "tags": [
+            "bestseller",
+            "snacks",
+            "vindstyrke:8"
+          ],
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893047018",
+              "title": "Default Title",
+              "price": "4.75",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8.jpg?v=1638867839",
+              "available": false
+            }
+          ]
+        },
+        "source_site_name": "Chili Klaus",
+        "source_site_score": 90
+      },
+      {
+        "@type": "Item",
+        "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-wind-force-4",
+        "name": "Chili Klaus Chili Chips wind force 4",
+        "site": "chili-klaus-int.myshopify.com",
+        "score": 90,
+        "description": "Chili Klaus Chili Chips are crispy potato chips flavored with tomato, onion, paprika, and the Trinidad Scorpion chili, offering a moderately spicy taste. This product fits well within the category of spicy crunchy snacks, making it a suitable option for those seeking chili-flavored chips.",
+        "schema_object": {
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893014250",
+              "title": "Default Title",
+              "price": "4.75",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893014250",
+              "title": "Default Title",
+              "price": "4.75",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893014250",
+              "title": "Default Title",
+              "price": "4.75",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+              "available": true
+            },
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893014250",
+              "title": "Default Title",
+              "price": "4.75",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+              "available": true
+            }
+          ],
+          "description": "1 bag of Chili Chips crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. %%% DESCRIPTION 1 bag of Chili Chips crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. The wind force is just a moderate breeze, so it can be enjoyed by everyone! Net weight: 1 x 150 gram",
+          "imageAltText": "chips vindstyrke: 4",
+          "name": "Chili Klaus Chili Chips wind force 4",
+          "productID": "gid://shopify/Product/7498527637738",
+          "tags": [
+            "snacks",
+            "vindstyrke:4",
+            "snacks",
+            "vindstyrke:4",
+            "snacks",
+            "vindstyrke:4",
+            "snacks",
+            "vindstyrke:4"
+          ],
+          "category": "Chips",
+          "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-wind-force-4",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+          "@type": "Product",
+          "offers": {
+            "highPrice": 4.75,
+            "lowPrice": 4.75,
+            "@type": "AggregateOffer",
+            "priceCurrency": "EUR"
+          }
+        },
+        "source_site_name": "Chili Klaus",
+        "source_site_score": 90
+      },
+      {
+        "@type": "Item",
+        "url": "https://en.chiliklaus.dk/products/4-sachets-of-chili-chips",
+        "name": "4 bags of Chili Klaus Chili Chips",
+        "site": "chili-klaus-int.myshopify.com",
+        "score": 95,
+        "description": "This product consists of chili-flavored potato chips with varying levels of spiciness, including the Trinidad Scorpion chili, making it a fitting example of spicy crunchy snacks.",
+        "schema_object": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "productID": "gid://shopify/Product/7498527703274",
+          "name": "4 bags of Chili Klaus Chili Chips",
+          "description": "4 Bags of crispy and coarse potato chips flavored with aromatic chili from Trinidad. %%% DESCRIPTION 2 bags of Chili Chips, wind force 4Crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. The wind force is just a moderate breeze, so it can be enjoyed by everyone! 2 bags of Chili Chips, wind force 8In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. The wind force sneaks up at 8 - a hard wind - which means you can start to feel what chili can do! Net weight: 4 x 150 grams Wind force 4 and 8",
+          "url": "https://en.chiliklaus.dk/products/4-sachets-of-chili-chips",
+          "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/4packchips.jpg?v=1638797681",
+          "imageAltText": "chili chips",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "EUR",
+            "lowPrice": 17.5,
+            "highPrice": 17.5
+          },
+          "category": "Slik og chokolade",
+          "tags": [
+            "snacks",
+            "vindstyrke:4%1",
+            "vindstyrke:8%2"
+          ],
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893079786",
+              "title": "Default Title",
+              "price": "17.5",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/4packchips.jpg?v=1638797681",
+              "available": false
+            }
+          ]
+        },
+        "source_site_name": "Chili Klaus",
+        "source_site_score": 90
+      },
+      {
+        "@type": "Item",
+        "url": "https://lesser-evil-copy.myshopify.com/products/spicy-salsa-power-curls",
+        "name": "Spicy Salsa",
+        "site": "lesser-evil-copy.myshopify.com",
+        "score": 85,
+        "description": "Power Curls are a protein-packed, savory snack with a spicy flavor profile, making them a suitable option for those seeking spicy crunchy snacks.",
+        "schema_object": {
+          "description": "This is what chips and salsa wish they could be. Salty, savory, and a little spicy, these protein-packed curls are a super satisfying snack. We recently rebranded our Egg White Curls to Power Curls. New look, but the same great snack. With this, packaging on your order may vary.",
+          "name": "Spicy Salsa",
+          "productID": "gid://shopify/Product/4859177500781",
+          "tags": [
+            "DN_certified-grain-free-gluten-free",
+            "DN_certified-paleo",
+            "DN_kosher",
+            "DN_non-gmo-project-verified",
+            "FL_savory",
+            "PS_full-size",
+            "PS_snack-size",
+            "DN_certified-grain-free-gluten-free",
+            "DN_certified-paleo",
+            "DN_kosher",
+            "DN_non-gmo-project-verified",
+            "FL_savory",
+            "PS_full-size",
+            "PS_snack-size"
+          ],
+          "category": "Power Curls",
+          "url": "https://lesser-evil-copy.myshopify.com/products/spicy-salsa-power-curls",
+          "@context": "https://schema.org",
+          "image": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+          "@type": "Product",
+          "offers": [
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/33201550950509",
+              "title": "Case of 6 / 4oz Bags",
+              "price": "24.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/33201550983277",
+              "title": "Case of 24 / 1.5 oz Bags (Packaging may vary)",
+              "price": "37.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/33201550950509",
+              "title": "Case of 6 / 4oz Bags",
+              "price": "24.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+              "available": true
+            },
+            {
+              "@type": "Offer",
+              "variant_id": "gid://shopify/ProductVariant/33201550983277",
+              "title": "Case of 24 / 1.5 oz Bags (Packaging may vary)",
+              "price": "37.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+              "available": true
+            }
+          ]
+        },
+        "source_site_name": "LesserEvil",
+        "source_site_score": 85
+      },
+      {
+        "@type": "Item",
+        "url": "https://en.chiliklaus.dk/products/4-boxes-of-spicy-nuts",
+        "name": "Chili Klaus Spicy Peanuts & Chili Nuts",
+        "site": "chili-klaus-int.myshopify.com",
+        "score": 90,
+        "description": "Chili Klaus Spicy Peanuts & Chili Nuts are crunchy nuts coated with chili seasoning, offering a spicy snack option. They come in different heat levels (wind force 4 and 6), making them suitable for those seeking spicy and crunchy snack choices.",
+        "schema_object": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "productID": "gid://shopify/Product/7498527736042",
+          "name": "Chili Klaus Spicy Peanuts & Chili Nuts",
+          "description": "2 cups of Chili Nuts, wind force 4 Chili Nuts are coated peanuts seasoned with chili. Enjoy the crispy Chili Nuts together with a drink or as an appetizer. 2 cups of Spicy Peanuts, wind force 6 Peanuts flavored with chili and spices. Goes perfect together with a cold beer and good company! %%% BESKRIVELSE 2 cups of Chili Nuts, wind force 4Chili Nuts are coated peanuts seasoned with chili. Enjoy the crispy Chili Nuts together with a drink or as an appetizer. 2 cups of Spicy Peanuts, wind force 6Peanuts flavored with chili and spices. Goes perfect together with a cold beer and good company! Spicy Peanuts and Chili Nuts are packed in fine cups with removable screw lids. You don't have to eat it all at once - if you can resist it! Net weight: 2 x 100 grams and 2 x 140 grams Wind force 4 and 6",
+          "url": "https://en.chiliklaus.dk/products/4-boxes-of-spicy-nuts",
+          "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/spicy_peanus_og_chili_nuts.jpg?v=1638879827",
+          "imageAltText": "chili nuts",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "EUR",
+            "lowPrice": 18.95,
+            "highPrice": 18.95
+          },
+          "category": "N\u00f8dder og kerner",
+          "tags": [
+            "bestseller",
+            "snacks",
+            "vindstyrke:4%1",
+            "vindstyrke:6%2"
+          ],
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/42168893112554",
+              "title": "Default Title",
+              "price": "18.95",
+              "currency": "EUR",
+              "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/spicy_peanus_og_chili_nuts.jpg?v=1638879827",
+              "available": false
+            }
+          ]
+        },
+        "source_site_name": "Chili Klaus",
+        "source_site_score": 90
+      },
+      {
+        "@type": "Item",
+        "url": "https://double-j-jerky.myshopify.com/products/cayenne-pepper",
+        "name": "(c) Cayenne pepper",
+        "site": "double-j-jerky.myshopify.com",
+        "score": 90,
+        "description": "This product is a cayenne pepper flavored jerky, which aligns well with the concept of spicy and crunchy jerky snacks. The use of cayenne pepper indicates a spicy flavor profile, and being a jerky product, it is inherently crunchy. This makes it a strong match for those seeking spicy crunchy jerky snacks.",
+        "schema_object": {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "productID": "gid://shopify/Product/193313669169",
+          "name": "(c) Cayenne pepper",
+          "description": "Cayenne Pepper Flavored Jerky",
+          "url": "https://double-j-jerky.myshopify.com/products/cayenne-pepper",
+          "image": "https://cdn.shopify.com/s/files/1/2894/0594/products/image_181358b4-c822-4a34-b60b-716f52014f68.jpg?v=1689025473",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD",
+            "lowPrice": 9.0,
+            "highPrice": 9.0
+          },
+          "category": "Jerky",
+          "tags": [
+            "beef jerky",
+            "flavor",
+            "food",
+            "jerky",
+            "locallymade",
+            "pepper",
+            "shopsmall",
+            "snacks",
+            "texas",
+            "texasjerky"
+          ],
+          "variants": [
+            {
+              "variant_id": "gid://shopify/ProductVariant/1737066086449",
+              "title": "Default Title",
+              "price": "9.0",
+              "currency": "USD",
+              "image_url": "https://cdn.shopify.com/s/files/1/2894/0594/products/image_181358b4-c822-4a34-b60b-716f52014f68.jpg?v=1689025473",
+              "available": true
+            }
+          ]
+        },
+        "source_site_name": "Double J Jerky",
+        "source_site_score": 85
+      }
+    ],
+    "metadata": {
+      "resultMessageIds": [],
+      "messageCount": 1
+    },
+    "query": "spicy crunchy snacks",
+    "legacyResponse": {
+      "structuredContent": {
+        "messages": [
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#0",
+            "sender_type": "user",
+            "message_type": "query",
+            "timestamp": "2025-10-12T22:46:30.595848",
+            "content": {
+              "query": "spicy crunchy snacks",
+              "site": "all",
+              "mode": "none",
+              "prev_queries": []
+            },
+            "conversation_id": "",
+            "sender_info": {
+              "id": "",
+              "name": "User"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#2",
+            "sender_type": "user",
+            "message_type": "user_agent",
+            "timestamp": 1760309190596,
+            "content": {
+              "message": "NLWeb/1.0"
+            },
+            "conversation_id": ""
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#3",
+            "sender_type": "user",
+            "message_type": "data_retention",
+            "timestamp": 1760309190596,
+            "content": {
+              "message": "Data will be retained for 30 minutes"
+            },
+            "conversation_id": ""
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#4",
+            "sender_type": "user",
+            "message_type": "user_agent",
+            "timestamp": 1760309190596,
+            "content": "NLWeb/1.0",
+            "conversation_id": ""
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#5",
+            "sender_type": "user",
+            "message_type": "data_retention",
+            "timestamp": 1760309190596,
+            "content": "Data will be retained for 30 minutes",
+            "conversation_id": ""
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#18",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206049,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://realwayfood.myshopify.com/products/chamoy-pickle-kit-1",
+                "name": "Chamoy Pickle Kit",
+                "site": "realwayfood.myshopify.com",
+                "score": 85,
+                "description": "The Chamoy Pickle Kit includes Takis, which are known for their spicy and crunchy texture, making it a fitting choice for those seeking spicy crunchy snacks. The kit also offers a variety of tangy and spicy pickled vegetables and seasonings that complement the spicy snack experience.",
+                "schema_object": {
+                  "description": "Enjoy a deliciously tangy and spicy treat with the Chamoy Pickle Kit! This 7 piece kit includes everything you need to create your own pickled vegetables with a twist.\u2022 Big Tex Pickle: A hearty and juicy cucumber pickle\u2022 Gushers: Small, sweet and sour pickled candies for an extra kick of flavor\u2022 Takis: Crunchy corn tortilla chips with a spicy kick\u2022 Lucas:A zesty lime powder seasoning to add some brightness to your pickle creations\u2022 < strong> Fruit: A variety of dried fruit for added sweetness. Made by Barcel, this kit is crafted in the US using fresh cucumbers as its primary ingredient. You can enjoy this delicious snack without any age restrictions or carcinogens or reproductive chemicals as per CA Prop 65 standards. Gather your friends and family together for an unforgettable snack experience with the Chamoy Pickle Kit!\u2022 Seller information\u2022 Business name: Brilliant Buzz Inc\u2022 Business address: Delaware, United States",
+                  "name": "Chamoy Pickle Kit",
+                  "productID": "gid://shopify/Product/7637473886278",
+                  "tags": [
+                    "snack",
+                    "snack",
+                    "snack"
+                  ],
+                  "category": "snack",
+                  "url": "https://realwayfood.myshopify.com/products/chamoy-pickle-kit-1",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-022441_pixian_ai.png?v=1722938736",
+                  "@type": "Product",
+                  "offers": [
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211742278",
+                      "title": "Big Tex 7 Pieces With Takis 1 Set",
+                      "price": "16.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211775046",
+                      "title": "Big Tex 7 Pieces With Takis 2 Set",
+                      "price": "31.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211807814",
+                      "title": "MINI Tex 7 Pieces With Takis 1 Set",
+                      "price": "14.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211840582",
+                      "title": "MINI Tex 7 Pieces With Takis 2 Set",
+                      "price": "27.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211873350",
+                      "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+                      "price": "16.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211906118",
+                      "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+                      "price": "14.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211742278",
+                      "title": "Big Tex 7 Pieces With Takis 1 Set",
+                      "price": "16.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211775046",
+                      "title": "Big Tex 7 Pieces With Takis 2 Set",
+                      "price": "31.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211807814",
+                      "title": "MINI Tex 7 Pieces With Takis 1 Set",
+                      "price": "14.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211840582",
+                      "title": "MINI Tex 7 Pieces With Takis 2 Set",
+                      "price": "27.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211873350",
+                      "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+                      "price": "16.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211906118",
+                      "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+                      "price": "14.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211742278",
+                      "title": "Big Tex 7 Pieces With Takis 1 Set",
+                      "price": "16.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211775046",
+                      "title": "Big Tex 7 Pieces With Takis 2 Set",
+                      "price": "31.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211807814",
+                      "title": "MINI Tex 7 Pieces With Takis 1 Set",
+                      "price": "14.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211840582",
+                      "title": "MINI Tex 7 Pieces With Takis 2 Set",
+                      "price": "27.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211873350",
+                      "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+                      "price": "16.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41941211906118",
+                      "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+                      "price": "14.99",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+                      "available": true
+                    }
+                  ]
+                },
+                "source_site_name": "My Store",
+                "source_site_score": 85
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#19",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206242,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://realwayfood.myshopify.com/products/nong-shim-shrimp-crackers-pack-of-2-crispy-snack-spicy-savory-crunchy",
+                "name": "Nong Shim Shrimp Crackers",
+                "site": "realwayfood.myshopify.com",
+                "score": 90,
+                "description": "Nong Shim Shrimp Crackers are spicy and crunchy snacks made with enriched wheat flour, offering a fiery hot flavor and a satisfying crunch. They are a popular snack choice for those seeking a spicy and savory treat.",
+                "schema_object": {
+                  "@context": "https://schema.org",
+                  "@type": "Product",
+                  "productID": "gid://shopify/Product/7638006890566",
+                  "name": "Nong Shim Shrimp Crackers",
+                  "description": "DescriptionIndulge in the spicy and savoury taste of Nong Shim Shrimp Crackers, now available in a pack of 2. These crackers are perfect for satisfying your snack cravings anytime, anywhere.\u2022 Flavour: Shim Hot\u2022 Weight: 75 gm\u2022 Main Ingredient: Enriched Wheat Flour\u2022 Made By:Nong Shim - a renowned name in the food industry.\u2022 Made In:Korea - ensuring top quality and authenticity.\u2022 The Nong Shim Shrimp Crackers are fiery hot flavoured crackers that pack a punch with every bite. Made with enriched wheat flour, these crackers are light and airy with just the right amount of crunch. The pack contains two individual servings that make it easy to carry along wherever you go. Whether you're at work or on-the-go, these shrimp crackers will definitely become your go-to snack option. Elevate your snacking experience to the next level with Nong Shim's spicy shrimp cracker! \u2022 Seller information\u2022 Business name: Brilliant Buzz Inc\u2022 Business address: Delaware, United States",
+                  "url": "https://realwayfood.myshopify.com/products/nong-shim-shrimp-crackers-pack-of-2-crispy-snack-spicy-savory-crunchy",
+                  "image": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_02032_pixian_ai.png?v=1722938468",
+                  "offers": [
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41943221633094",
+                      "title": "NS Shrimp Cracker (Hot & Spicy)",
+                      "price": "8.91",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_0203_2.jpg?v=1720582489",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/41943221665862",
+                      "title": "NS Shrimp Cracker",
+                      "price": "8.91",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_0204_2.jpg?v=1720582492",
+                      "available": true
+                    }
+                  ],
+                  "category": "snack",
+                  "tags": [
+                    "snack"
+                  ]
+                },
+                "source_site_name": "My Store",
+                "source_site_score": 85
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#21",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206262,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://schneider-farms-llc.myshopify.com/products/jalapeno-cheddar-snack-sticks",
+                "name": "Jalape\u00f1o Cheddar Snack Sticks",
+                "site": "schneider-farms-llc.myshopify.com",
+                "score": 95,
+                "description": "Jalape\u00f1o Cheddar Snack Sticks are a spicy snack option made from meat, fully cooked and shelf-stable until opened, making them convenient and flavorful.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39694344847424",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39694344847424",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39694344847424",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                      "available": true
+                    }
+                  ],
+                  "description": "4 oz package of our delicious Jalape\u00f1o Cheddar snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+                  "name": "Jalape\u00f1o Cheddar Snack Sticks",
+                  "productID": "gid://shopify/Product/6689572782144",
+                  "tags": [],
+                  "url": "https://schneider-farms-llc.myshopify.com/products/jalapeno-cheddar-snack-sticks",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 7.0,
+                    "lowPrice": 7.0,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "USD"
+                  }
+                },
+                "source_site_name": "Schneider Farms LLC Hermann, MO",
+                "source_site_score": 80
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#22",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206365,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://schneider-farms-llc.myshopify.com/products/pepperoni-mozzarella-snack-sticks",
+                "name": "Pepperoni Mozzarella Snack Sticks",
+                "site": "schneider-farms-llc.myshopify.com",
+                "score": 85,
+                "description": "Pepperoni Mozzarella Snack Sticks are a fully cooked, shelf-stable meat snack made from farm-raised meat, offering a convenient and flavorful option for those seeking spicy snack sticks.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39694340653120",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39694340653120",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39694340653120",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                      "available": true
+                    }
+                  ],
+                  "description": "4 oz package of our delicious Pepperoni Mozzarella snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+                  "name": "Pepperoni Mozzarella Snack Sticks",
+                  "productID": "gid://shopify/Product/6689572552768",
+                  "tags": [],
+                  "url": "https://schneider-farms-llc.myshopify.com/products/pepperoni-mozzarella-snack-sticks",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 7.0,
+                    "lowPrice": 7.0,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "USD"
+                  }
+                },
+                "source_site_name": "Schneider Farms LLC Hermann, MO",
+                "source_site_score": 80
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#23",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206385,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://chinitos-chimichurris.myshopify.com/products/gushers",
+                "name": "Gushers",
+                "site": "chinitos-chimichurris.myshopify.com",
+                "score": 85,
+                "description": "CHINITOS CHIMICHURRIS Gushers Spicy Candy offers a spicy and tangy flavor with a chewy texture, making it a suitable choice for those seeking spicy crunchy snacks. The candy contains chamoy and chili powder, providing a unique spicy taste experience while being safe to consume under CA Prop65 regulations.",
+                "schema_object": {
+                  "@context": "https://schema.org",
+                  "@type": "Product",
+                  "productID": "gid://shopify/Product/7694134509796",
+                  "name": "Gushers",
+                  "description": "Indulge in the spicy and tangy flavor of CHINITOS CHIMICHURRIS Gushers Spicy Candy - the perfect snack for spice lovers. Deliciously spicy/sweet Tangy and chewy texture 1 Individual bag Weighs 12 Oz per bag Made in the US by Chinito's Chimichurris, this candy is a must-try for those looking for a unique taste experience. Satisfy your cravings anytime with this fun snack that's perfect on-the-go or as a quick treat. Each bite of these gushers is bursting with flavor that will leave you wanting more. This candy contains Chamoy and Chili Powder as its main ingredient and it is not no too spicy or contain carcinogens or reproductive chemicals under CA Prop65, making it safe to enjoy.",
+                  "url": "https://chinitos-chimichurris.myshopify.com/products/gushers",
+                  "image": "https://cdn.shopify.com/s/files/1/0649/6799/9716/files/Untitleddesign_45.png?v=1706481864",
+                  "offers": {
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "USD",
+                    "lowPrice": 16.0,
+                    "highPrice": 16.0
+                  },
+                  "tags": [],
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/43060176322788",
+                      "title": "12 Oz",
+                      "price": "16.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0649/6799/9716/files/Untitleddesign_45.png?v=1706481864",
+                      "available": true
+                    }
+                  ]
+                },
+                "source_site_name": "Chinitos Chimichurris",
+                "source_site_score": 95
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#26",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206565,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://schneider-farms-llc.myshopify.com/products/sweet-bologna-with-jalapeno-snack-sticks",
+                "name": "Sweet Bologna with Jalapeno Snack Sticks",
+                "site": "schneider-farms-llc.myshopify.com",
+                "score": 90,
+                "description": "Sweet Bologna with Jalapeno Snack Sticks are a spicy snack option made from meat and include jalapeno for heat. They are fully cooked, shelf-stable until opened, and USDA inspected, making them a convenient and flavorful snack choice.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39351724703808",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39351724703808",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39351724703808",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                      "available": true
+                    }
+                  ],
+                  "description": "4 oz package of our delicious Sweet Bologna with Jalapeno snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+                  "name": "Sweet Bologna with Jalapeno Snack Sticks",
+                  "productID": "gid://shopify/Product/6578056331328",
+                  "tags": [],
+                  "url": "https://schneider-farms-llc.myshopify.com/products/sweet-bologna-with-jalapeno-snack-sticks",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 7.0,
+                    "lowPrice": 7.0,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "USD"
+                  }
+                },
+                "source_site_name": "Schneider Farms LLC Hermann, MO",
+                "source_site_score": 80
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#27",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206764,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://schneider-farms-llc.myshopify.com/products/pepperjack-snack-sticks",
+                "name": "Pepperjack Snack Sticks",
+                "site": "schneider-farms-llc.myshopify.com",
+                "score": 85,
+                "description": "Pepperjack Snack Sticks are a type of fully cooked meat snack that comes in a 4 oz package. They are made from meat raised on a family farm and do not require refrigeration until opened, making them convenient for snacking. The name 'Pepperjack' suggests a spicy flavor profile, aligning well with the concept of spicy snack sticks.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39351724802112",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39351724802112",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/39351724802112",
+                      "title": "Default Title",
+                      "price": "7.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                      "available": true
+                    }
+                  ],
+                  "description": "4 oz package of our delicious Pepperjack snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+                  "name": "Pepperjack Snack Sticks",
+                  "productID": "gid://shopify/Product/6578056364096",
+                  "tags": [],
+                  "url": "https://schneider-farms-llc.myshopify.com/products/pepperjack-snack-sticks",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 7.0,
+                    "lowPrice": 7.0,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "USD"
+                  }
+                },
+                "source_site_name": "Schneider Farms LLC Hermann, MO",
+                "source_site_score": 80
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#28",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206874,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://eatatlas.myshopify.com/products/eat-atlas-ema-datshi-with-lavash-chips-bhutanese-dip-cheesy-spicy-paired-with-crispy-lavash-chips-ready-to-eat-paired-combo-200-gms-dip-150-gms-lavash",
+                "name": "Bhutan's Ema Datshi (Cheesy + Spicy) Gourmet Dip With Baked Lavash Chips (Combo) (100+85gms)",
+                "site": "eatatlas.myshopify.com",
+                "score": 85,
+                "description": "This product features a spicy and flavorful Bhutanese dip made with fresh green chilies and local cheese, paired with crispy Lavash crackers that provide a crunchy texture. It offers a combination of spicy heat and crunch, making it a suitable choice for those seeking bold and savory snack options.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                      "title": "Default Title",
+                      "price": "338.0",
+                      "currency": "INR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                      "title": "Default Title",
+                      "price": "338.0",
+                      "currency": "INR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                      "title": "Default Title",
+                      "price": "338.0",
+                      "currency": "INR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                      "title": "Default Title",
+                      "price": "338.0",
+                      "currency": "INR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                      "available": true
+                    }
+                  ],
+                  "description": "\"A rush of smoky heat from green chilies, the rich melt of Bhutanese cheese, and the perfect crunch of Lavash Crackers. One bite, and you're in the heart of the Himalayas.\" - Authentic Bhutanese Recipe: Crafted with traditional Bhutanese ingredients like fresh chilies and local cheese. - Spicy & Flavorful: Experience the perfect balance of spicy heat and creamy cheese in every bite. - Crispy Lavash Chips: Paired with light and crunchy Lavash chips for the perfect texture contrast. - Convenient & Ready to Serve: Quick, easy to enjoy as a snack, appetizer, or side dish. - Perfect for Spice Lovers: Ideal for those who crave bold, spicy, and savory flavors.",
+                  "name": "Bhutan's Ema Datshi (Cheesy + Spicy) Gourmet Dip With Baked Lavash Chips (Combo) (100+85gms)",
+                  "productID": "gid://shopify/Product/8833501069538",
+                  "tags": [
+                    "Chip N Dip",
+                    "Combo",
+                    "Chip N Dip",
+                    "Combo",
+                    "Chip N Dip",
+                    "Combo",
+                    "Chip N Dip",
+                    "Combo"
+                  ],
+                  "category": "Chip N Dip Combo",
+                  "url": "https://eatatlas.myshopify.com/products/eat-atlas-ema-datshi-with-lavash-chips-bhutanese-dip-cheesy-spicy-paired-with-crispy-lavash-chips-ready-to-eat-paired-combo-200-gms-dip-150-gms-lavash",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 338.0,
+                    "lowPrice": 338.0,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "INR"
+                  }
+                },
+                "source_site_name": "Eat Atlas",
+                "source_site_score": 85
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#29",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206927,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://en.chiliklaus.dk/products/hot-box-red",
+                "name": "HOT BOX RED",
+                "site": "chili-klaus-int.myshopify.com",
+                "score": 85,
+                "description": "HOT BOX RED is a spicy snack gift box containing chili chips and spicy nuts among other hot items, making it a suitable choice for those seeking spicy crunchy snacks.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                      "title": "Default Title",
+                      "price": "69.0",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                      "title": "Default Title",
+                      "price": "69.0",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                      "title": "Default Title",
+                      "price": "69.0",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                      "title": "Default Title",
+                      "price": "69.0",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                      "available": true
+                    }
+                  ],
+                  "description": "If the Hot Box Black is the man, this stunning red Hot Box Red is the woman. Mild and friendly, but don\u2019t be mistaken. Inside the box, you\u2019ll find both a Reaper Uppercut and Spicy Red candies withlots of power and heat. %%% Hot Box Red contains:Hot Sauce Reaper Uppercut, windforce 12Chili Chips, windforce 4Chili Dip, windforce 3Chili Nuts, windforce 4Hot Rub Fajita, windforce 8Chili Balls, windforce 6Spicy Red, Rhubarb & Strawberry, windforce 12Hot Chocolate, dark 70%, windforce 4Packed in a beautiful red gift box with print and window.",
+                  "name": "HOT BOX RED",
+                  "productID": "gid://shopify/Product/8010065740010",
+                  "tags": [
+                    "gaveide",
+                    "jul23",
+                    "new",
+                    "vindstyrke:3-12",
+                    "gaveide",
+                    "jul23",
+                    "new",
+                    "vindstyrke:3-12",
+                    "gaveide",
+                    "jul23",
+                    "new",
+                    "vindstyrke:3-12",
+                    "gaveide",
+                    "jul23",
+                    "new",
+                    "vindstyrke:3-12"
+                  ],
+                  "url": "https://en.chiliklaus.dk/products/hot-box-red",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 69.0,
+                    "lowPrice": 69.0,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "EUR"
+                  }
+                },
+                "source_site_name": "Chili Klaus",
+                "source_site_score": 90
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#30",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309206976,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-vindstyrke-8",
+                "name": "Chili Klaus Chili Chips wind force 8",
+                "site": "chili-klaus-int.myshopify.com",
+                "score": 95,
+                "description": "Chili Klaus Chili Chips wind force 8 are spicy chips flavored with Trinidad Scorpion Butch T., known for their intense heat level, making them a fitting choice for those seeking spicy crunchy snacks.",
+                "schema_object": {
+                  "@context": "https://schema.org",
+                  "@type": "Product",
+                  "productID": "gid://shopify/Product/7498527670506",
+                  "name": "Chili Klaus Chili Chips wind force 8",
+                  "description": "In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. %%% DESCRIPTION 1 bag of Chili Chips, wind force 8. In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. The wind force sneaks up at 8 - a hard wind - which means you can start to feel what chili can do! Net weight: 1 x 150 gram",
+                  "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-vindstyrke-8",
+                  "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8.jpg?v=1638867839",
+                  "imageAltText": "chips wind force 8",
+                  "offers": {
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "EUR",
+                    "lowPrice": 4.75,
+                    "highPrice": 4.75
+                  },
+                  "category": "Chips",
+                  "tags": [
+                    "bestseller",
+                    "snacks",
+                    "vindstyrke:8"
+                  ],
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893047018",
+                      "title": "Default Title",
+                      "price": "4.75",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8.jpg?v=1638867839",
+                      "available": false
+                    }
+                  ]
+                },
+                "source_site_name": "Chili Klaus",
+                "source_site_score": 90
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#32",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309207072,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-wind-force-4",
+                "name": "Chili Klaus Chili Chips wind force 4",
+                "site": "chili-klaus-int.myshopify.com",
+                "score": 90,
+                "description": "Chili Klaus Chili Chips are crispy potato chips flavored with tomato, onion, paprika, and the Trinidad Scorpion chili, offering a moderately spicy taste. This product fits well within the category of spicy crunchy snacks, making it a suitable option for those seeking chili-flavored chips.",
+                "schema_object": {
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                      "title": "Default Title",
+                      "price": "4.75",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                      "title": "Default Title",
+                      "price": "4.75",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                      "title": "Default Title",
+                      "price": "4.75",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                      "available": true
+                    },
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                      "title": "Default Title",
+                      "price": "4.75",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                      "available": true
+                    }
+                  ],
+                  "description": "1 bag of Chili Chips crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. %%% DESCRIPTION 1 bag of Chili Chips crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. The wind force is just a moderate breeze, so it can be enjoyed by everyone! Net weight: 1 x 150 gram",
+                  "imageAltText": "chips vindstyrke: 4",
+                  "name": "Chili Klaus Chili Chips wind force 4",
+                  "productID": "gid://shopify/Product/7498527637738",
+                  "tags": [
+                    "snacks",
+                    "vindstyrke:4",
+                    "snacks",
+                    "vindstyrke:4",
+                    "snacks",
+                    "vindstyrke:4",
+                    "snacks",
+                    "vindstyrke:4"
+                  ],
+                  "category": "Chips",
+                  "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-wind-force-4",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                  "@type": "Product",
+                  "offers": {
+                    "highPrice": 4.75,
+                    "lowPrice": 4.75,
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "EUR"
+                  }
+                },
+                "source_site_name": "Chili Klaus",
+                "source_site_score": 90
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#33",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309207164,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://en.chiliklaus.dk/products/4-sachets-of-chili-chips",
+                "name": "4 bags of Chili Klaus Chili Chips",
+                "site": "chili-klaus-int.myshopify.com",
+                "score": 95,
+                "description": "This product consists of chili-flavored potato chips with varying levels of spiciness, including the Trinidad Scorpion chili, making it a fitting example of spicy crunchy snacks.",
+                "schema_object": {
+                  "@context": "https://schema.org",
+                  "@type": "Product",
+                  "productID": "gid://shopify/Product/7498527703274",
+                  "name": "4 bags of Chili Klaus Chili Chips",
+                  "description": "4 Bags of crispy and coarse potato chips flavored with aromatic chili from Trinidad. %%% DESCRIPTION 2 bags of Chili Chips, wind force 4Crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. The wind force is just a moderate breeze, so it can be enjoyed by everyone! 2 bags of Chili Chips, wind force 8In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. The wind force sneaks up at 8 - a hard wind - which means you can start to feel what chili can do! Net weight: 4 x 150 grams Wind force 4 and 8",
+                  "url": "https://en.chiliklaus.dk/products/4-sachets-of-chili-chips",
+                  "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/4packchips.jpg?v=1638797681",
+                  "imageAltText": "chili chips",
+                  "offers": {
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "EUR",
+                    "lowPrice": 17.5,
+                    "highPrice": 17.5
+                  },
+                  "category": "Slik og chokolade",
+                  "tags": [
+                    "snacks",
+                    "vindstyrke:4%1",
+                    "vindstyrke:8%2"
+                  ],
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893079786",
+                      "title": "Default Title",
+                      "price": "17.5",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/4packchips.jpg?v=1638797681",
+                      "available": false
+                    }
+                  ]
+                },
+                "source_site_name": "Chili Klaus",
+                "source_site_score": 90
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#34",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309207164,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://lesser-evil-copy.myshopify.com/products/spicy-salsa-power-curls",
+                "name": "Spicy Salsa",
+                "site": "lesser-evil-copy.myshopify.com",
+                "score": 85,
+                "description": "Power Curls are a protein-packed, savory snack with a spicy flavor profile, making them a suitable option for those seeking spicy crunchy snacks.",
+                "schema_object": {
+                  "description": "This is what chips and salsa wish they could be. Salty, savory, and a little spicy, these protein-packed curls are a super satisfying snack. We recently rebranded our Egg White Curls to Power Curls. New look, but the same great snack. With this, packaging on your order may vary.",
+                  "name": "Spicy Salsa",
+                  "productID": "gid://shopify/Product/4859177500781",
+                  "tags": [
+                    "DN_certified-grain-free-gluten-free",
+                    "DN_certified-paleo",
+                    "DN_kosher",
+                    "DN_non-gmo-project-verified",
+                    "FL_savory",
+                    "PS_full-size",
+                    "PS_snack-size",
+                    "DN_certified-grain-free-gluten-free",
+                    "DN_certified-paleo",
+                    "DN_kosher",
+                    "DN_non-gmo-project-verified",
+                    "FL_savory",
+                    "PS_full-size",
+                    "PS_snack-size"
+                  ],
+                  "category": "Power Curls",
+                  "url": "https://lesser-evil-copy.myshopify.com/products/spicy-salsa-power-curls",
+                  "@context": "https://schema.org",
+                  "image": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                  "@type": "Product",
+                  "offers": [
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/33201550950509",
+                      "title": "Case of 6 / 4oz Bags",
+                      "price": "24.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/33201550983277",
+                      "title": "Case of 24 / 1.5 oz Bags (Packaging may vary)",
+                      "price": "37.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/33201550950509",
+                      "title": "Case of 6 / 4oz Bags",
+                      "price": "24.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                      "available": true
+                    },
+                    {
+                      "@type": "Offer",
+                      "variant_id": "gid://shopify/ProductVariant/33201550983277",
+                      "title": "Case of 24 / 1.5 oz Bags (Packaging may vary)",
+                      "price": "37.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                      "available": true
+                    }
+                  ]
+                },
+                "source_site_name": "LesserEvil",
+                "source_site_score": 85
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#36",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309207215,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://en.chiliklaus.dk/products/4-boxes-of-spicy-nuts",
+                "name": "Chili Klaus Spicy Peanuts & Chili Nuts",
+                "site": "chili-klaus-int.myshopify.com",
+                "score": 90,
+                "description": "Chili Klaus Spicy Peanuts & Chili Nuts are crunchy nuts coated with chili seasoning, offering a spicy snack option. They come in different heat levels (wind force 4 and 6), making them suitable for those seeking spicy and crunchy snack choices.",
+                "schema_object": {
+                  "@context": "https://schema.org",
+                  "@type": "Product",
+                  "productID": "gid://shopify/Product/7498527736042",
+                  "name": "Chili Klaus Spicy Peanuts & Chili Nuts",
+                  "description": "2 cups of Chili Nuts, wind force 4 Chili Nuts are coated peanuts seasoned with chili. Enjoy the crispy Chili Nuts together with a drink or as an appetizer. 2 cups of Spicy Peanuts, wind force 6 Peanuts flavored with chili and spices. Goes perfect together with a cold beer and good company! %%% BESKRIVELSE 2 cups of Chili Nuts, wind force 4Chili Nuts are coated peanuts seasoned with chili. Enjoy the crispy Chili Nuts together with a drink or as an appetizer. 2 cups of Spicy Peanuts, wind force 6Peanuts flavored with chili and spices. Goes perfect together with a cold beer and good company! Spicy Peanuts and Chili Nuts are packed in fine cups with removable screw lids. You don't have to eat it all at once - if you can resist it! Net weight: 2 x 100 grams and 2 x 140 grams Wind force 4 and 6",
+                  "url": "https://en.chiliklaus.dk/products/4-boxes-of-spicy-nuts",
+                  "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/spicy_peanus_og_chili_nuts.jpg?v=1638879827",
+                  "imageAltText": "chili nuts",
+                  "offers": {
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "EUR",
+                    "lowPrice": 18.95,
+                    "highPrice": 18.95
+                  },
+                  "category": "N\u00f8dder og kerner",
+                  "tags": [
+                    "bestseller",
+                    "snacks",
+                    "vindstyrke:4%1",
+                    "vindstyrke:6%2"
+                  ],
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/42168893112554",
+                      "title": "Default Title",
+                      "price": "18.95",
+                      "currency": "EUR",
+                      "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/spicy_peanus_og_chili_nuts.jpg?v=1638879827",
+                      "available": false
+                    }
+                  ]
+                },
+                "source_site_name": "Chili Klaus",
+                "source_site_score": 90
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          },
+          {
+            "message_id": "msg_1760309190595_a5a5ae014#39",
+            "sender_type": "user",
+            "message_type": "result",
+            "timestamp": 1760309208564,
+            "content": [
+              {
+                "@type": "Item",
+                "url": "https://double-j-jerky.myshopify.com/products/cayenne-pepper",
+                "name": "(c) Cayenne pepper",
+                "site": "double-j-jerky.myshopify.com",
+                "score": 90,
+                "description": "This product is a cayenne pepper flavored jerky, which aligns well with the concept of spicy and crunchy jerky snacks. The use of cayenne pepper indicates a spicy flavor profile, and being a jerky product, it is inherently crunchy. This makes it a strong match for those seeking spicy crunchy jerky snacks.",
+                "schema_object": {
+                  "@context": "https://schema.org",
+                  "@type": "Product",
+                  "productID": "gid://shopify/Product/193313669169",
+                  "name": "(c) Cayenne pepper",
+                  "description": "Cayenne Pepper Flavored Jerky",
+                  "url": "https://double-j-jerky.myshopify.com/products/cayenne-pepper",
+                  "image": "https://cdn.shopify.com/s/files/1/2894/0594/products/image_181358b4-c822-4a34-b60b-716f52014f68.jpg?v=1689025473",
+                  "offers": {
+                    "@type": "AggregateOffer",
+                    "priceCurrency": "USD",
+                    "lowPrice": 9.0,
+                    "highPrice": 9.0
+                  },
+                  "category": "Jerky",
+                  "tags": [
+                    "beef jerky",
+                    "flavor",
+                    "food",
+                    "jerky",
+                    "locallymade",
+                    "pepper",
+                    "shopsmall",
+                    "snacks",
+                    "texas",
+                    "texasjerky"
+                  ],
+                  "variants": [
+                    {
+                      "variant_id": "gid://shopify/ProductVariant/1737066086449",
+                      "title": "Default Title",
+                      "price": "9.0",
+                      "currency": "USD",
+                      "image_url": "https://cdn.shopify.com/s/files/1/2894/0594/products/image_181358b4-c822-4a34-b60b-716f52014f68.jpg?v=1689025473",
+                      "available": true
+                    }
+                  ]
+                },
+                "source_site_name": "Double J Jerky",
+                "source_site_score": 85
+              }
+            ],
+            "conversation_id": "",
+            "sender_info": {
+              "id": "nlweb_assistant",
+              "name": "NLWeb Assistant"
+            }
+          }
+        ],
+        "results": [
+          {
+            "@type": "Item",
+            "url": "https://realwayfood.myshopify.com/products/chamoy-pickle-kit-1",
+            "name": "Chamoy Pickle Kit",
+            "site": "realwayfood.myshopify.com",
+            "score": 85,
+            "description": "The Chamoy Pickle Kit includes Takis, which are known for their spicy and crunchy texture, making it a fitting choice for those seeking spicy crunchy snacks. The kit also offers a variety of tangy and spicy pickled vegetables and seasonings that complement the spicy snack experience.",
+            "schema_object": {
+              "description": "Enjoy a deliciously tangy and spicy treat with the Chamoy Pickle Kit! This 7 piece kit includes everything you need to create your own pickled vegetables with a twist.\u2022 Big Tex Pickle: A hearty and juicy cucumber pickle\u2022 Gushers: Small, sweet and sour pickled candies for an extra kick of flavor\u2022 Takis: Crunchy corn tortilla chips with a spicy kick\u2022 Lucas:A zesty lime powder seasoning to add some brightness to your pickle creations\u2022 < strong> Fruit: A variety of dried fruit for added sweetness. Made by Barcel, this kit is crafted in the US using fresh cucumbers as its primary ingredient. You can enjoy this delicious snack without any age restrictions or carcinogens or reproductive chemicals as per CA Prop 65 standards. Gather your friends and family together for an unforgettable snack experience with the Chamoy Pickle Kit!\u2022 Seller information\u2022 Business name: Brilliant Buzz Inc\u2022 Business address: Delaware, United States",
+              "name": "Chamoy Pickle Kit",
+              "productID": "gid://shopify/Product/7637473886278",
+              "tags": [
+                "snack",
+                "snack",
+                "snack"
+              ],
+              "category": "snack",
+              "url": "https://realwayfood.myshopify.com/products/chamoy-pickle-kit-1",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-022441_pixian_ai.png?v=1722938736",
+              "@type": "Product",
+              "offers": [
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211742278",
+                  "title": "Big Tex 7 Pieces With Takis 1 Set",
+                  "price": "16.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211775046",
+                  "title": "Big Tex 7 Pieces With Takis 2 Set",
+                  "price": "31.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211807814",
+                  "title": "MINI Tex 7 Pieces With Takis 1 Set",
+                  "price": "14.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211840582",
+                  "title": "MINI Tex 7 Pieces With Takis 2 Set",
+                  "price": "27.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211873350",
+                  "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+                  "price": "16.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211906118",
+                  "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+                  "price": "14.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211742278",
+                  "title": "Big Tex 7 Pieces With Takis 1 Set",
+                  "price": "16.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211775046",
+                  "title": "Big Tex 7 Pieces With Takis 2 Set",
+                  "price": "31.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211807814",
+                  "title": "MINI Tex 7 Pieces With Takis 1 Set",
+                  "price": "14.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211840582",
+                  "title": "MINI Tex 7 Pieces With Takis 2 Set",
+                  "price": "27.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211873350",
+                  "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+                  "price": "16.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211906118",
+                  "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+                  "price": "14.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211742278",
+                  "title": "Big Tex 7 Pieces With Takis 1 Set",
+                  "price": "16.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108.jpg?v=1720495040",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211775046",
+                  "title": "Big Tex 7 Pieces With Takis 2 Set",
+                  "price": "31.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_666fcec4-3511-4cac-8d41-23422a670587.jpg?v=1720495149",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211807814",
+                  "title": "MINI Tex 7 Pieces With Takis 1 Set",
+                  "price": "14.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_9b7f5cc4-7999-4d03-aaed-7bf41a93eb8a.jpg?v=1720495229",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211840582",
+                  "title": "MINI Tex 7 Pieces With Takis 2 Set",
+                  "price": "27.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/20240429-141108_2216a47e-8971-4625-a488-3dbae3a2ec9a.jpg?v=1720495237",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211873350",
+                  "title": "Big Tex 7 Pieces With Cheeto 1 Set",
+                  "price": "16.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle_fd6a9c1a-20a2-492d-bfeb-7e4d61cfa19a.jpg?v=1720495695",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41941211906118",
+                  "title": "MINI Tex 7 Pieces With Cheeto 1 Set",
+                  "price": "14.99",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/0429-pickle-mini_db02fc2a-f7d2-4d32-98a2-538b5288db83.jpg?v=1720495701",
+                  "available": true
+                }
+              ]
+            },
+            "source_site_name": "My Store",
+            "source_site_score": 85
+          },
+          {
+            "@type": "Item",
+            "url": "https://realwayfood.myshopify.com/products/nong-shim-shrimp-crackers-pack-of-2-crispy-snack-spicy-savory-crunchy",
+            "name": "Nong Shim Shrimp Crackers",
+            "site": "realwayfood.myshopify.com",
+            "score": 90,
+            "description": "Nong Shim Shrimp Crackers are spicy and crunchy snacks made with enriched wheat flour, offering a fiery hot flavor and a satisfying crunch. They are a popular snack choice for those seeking a spicy and savory treat.",
+            "schema_object": {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "productID": "gid://shopify/Product/7638006890566",
+              "name": "Nong Shim Shrimp Crackers",
+              "description": "DescriptionIndulge in the spicy and savoury taste of Nong Shim Shrimp Crackers, now available in a pack of 2. These crackers are perfect for satisfying your snack cravings anytime, anywhere.\u2022 Flavour: Shim Hot\u2022 Weight: 75 gm\u2022 Main Ingredient: Enriched Wheat Flour\u2022 Made By:Nong Shim - a renowned name in the food industry.\u2022 Made In:Korea - ensuring top quality and authenticity.\u2022 The Nong Shim Shrimp Crackers are fiery hot flavoured crackers that pack a punch with every bite. Made with enriched wheat flour, these crackers are light and airy with just the right amount of crunch. The pack contains two individual servings that make it easy to carry along wherever you go. Whether you're at work or on-the-go, these shrimp crackers will definitely become your go-to snack option. Elevate your snacking experience to the next level with Nong Shim's spicy shrimp cracker! \u2022 Seller information\u2022 Business name: Brilliant Buzz Inc\u2022 Business address: Delaware, United States",
+              "url": "https://realwayfood.myshopify.com/products/nong-shim-shrimp-crackers-pack-of-2-crispy-snack-spicy-savory-crunchy",
+              "image": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_02032_pixian_ai.png?v=1722938468",
+              "offers": [
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41943221633094",
+                  "title": "NS Shrimp Cracker (Hot & Spicy)",
+                  "price": "8.91",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_0203_2.jpg?v=1720582489",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/41943221665862",
+                  "title": "NS Shrimp Cracker",
+                  "price": "8.91",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0609/0525/9078/files/IMG_0204_2.jpg?v=1720582492",
+                  "available": true
+                }
+              ],
+              "category": "snack",
+              "tags": [
+                "snack"
+              ]
+            },
+            "source_site_name": "My Store",
+            "source_site_score": 85
+          },
+          {
+            "@type": "Item",
+            "url": "https://schneider-farms-llc.myshopify.com/products/jalapeno-cheddar-snack-sticks",
+            "name": "Jalape\u00f1o Cheddar Snack Sticks",
+            "site": "schneider-farms-llc.myshopify.com",
+            "score": 95,
+            "description": "Jalape\u00f1o Cheddar Snack Sticks are a spicy snack option made from meat, fully cooked and shelf-stable until opened, making them convenient and flavorful.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39694344847424",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39694344847424",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39694344847424",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+                  "available": true
+                }
+              ],
+              "description": "4 oz package of our delicious Jalape\u00f1o Cheddar snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+              "name": "Jalape\u00f1o Cheddar Snack Sticks",
+              "productID": "gid://shopify/Product/6689572782144",
+              "tags": [],
+              "url": "https://schneider-farms-llc.myshopify.com/products/jalapeno-cheddar-snack-sticks",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_01a45fd9-6074-4167-8a32-82e225d05d48.heic?v=1669917344",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 7.0,
+                "lowPrice": 7.0,
+                "@type": "AggregateOffer",
+                "priceCurrency": "USD"
+              }
+            },
+            "source_site_name": "Schneider Farms LLC Hermann, MO",
+            "source_site_score": 80
+          },
+          {
+            "@type": "Item",
+            "url": "https://schneider-farms-llc.myshopify.com/products/pepperoni-mozzarella-snack-sticks",
+            "name": "Pepperoni Mozzarella Snack Sticks",
+            "site": "schneider-farms-llc.myshopify.com",
+            "score": 85,
+            "description": "Pepperoni Mozzarella Snack Sticks are a fully cooked, shelf-stable meat snack made from farm-raised meat, offering a convenient and flavorful option for those seeking spicy snack sticks.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39694340653120",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39694340653120",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39694340653120",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+                  "available": true
+                }
+              ],
+              "description": "4 oz package of our delicious Pepperoni Mozzarella snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+              "name": "Pepperoni Mozzarella Snack Sticks",
+              "productID": "gid://shopify/Product/6689572552768",
+              "tags": [],
+              "url": "https://schneider-farms-llc.myshopify.com/products/pepperoni-mozzarella-snack-sticks",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_2bb63256-03eb-45fe-93f2-5f8252be94df.heic?v=1669916986",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 7.0,
+                "lowPrice": 7.0,
+                "@type": "AggregateOffer",
+                "priceCurrency": "USD"
+              }
+            },
+            "source_site_name": "Schneider Farms LLC Hermann, MO",
+            "source_site_score": 80
+          },
+          {
+            "@type": "Item",
+            "url": "https://chinitos-chimichurris.myshopify.com/products/gushers",
+            "name": "Gushers",
+            "site": "chinitos-chimichurris.myshopify.com",
+            "score": 85,
+            "description": "CHINITOS CHIMICHURRIS Gushers Spicy Candy offers a spicy and tangy flavor with a chewy texture, making it a suitable choice for those seeking spicy crunchy snacks. The candy contains chamoy and chili powder, providing a unique spicy taste experience while being safe to consume under CA Prop65 regulations.",
+            "schema_object": {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "productID": "gid://shopify/Product/7694134509796",
+              "name": "Gushers",
+              "description": "Indulge in the spicy and tangy flavor of CHINITOS CHIMICHURRIS Gushers Spicy Candy - the perfect snack for spice lovers. Deliciously spicy/sweet Tangy and chewy texture 1 Individual bag Weighs 12 Oz per bag Made in the US by Chinito's Chimichurris, this candy is a must-try for those looking for a unique taste experience. Satisfy your cravings anytime with this fun snack that's perfect on-the-go or as a quick treat. Each bite of these gushers is bursting with flavor that will leave you wanting more. This candy contains Chamoy and Chili Powder as its main ingredient and it is not no too spicy or contain carcinogens or reproductive chemicals under CA Prop65, making it safe to enjoy.",
+              "url": "https://chinitos-chimichurris.myshopify.com/products/gushers",
+              "image": "https://cdn.shopify.com/s/files/1/0649/6799/9716/files/Untitleddesign_45.png?v=1706481864",
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "USD",
+                "lowPrice": 16.0,
+                "highPrice": 16.0
+              },
+              "tags": [],
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/43060176322788",
+                  "title": "12 Oz",
+                  "price": "16.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0649/6799/9716/files/Untitleddesign_45.png?v=1706481864",
+                  "available": true
+                }
+              ]
+            },
+            "source_site_name": "Chinitos Chimichurris",
+            "source_site_score": 95
+          },
+          {
+            "@type": "Item",
+            "url": "https://schneider-farms-llc.myshopify.com/products/sweet-bologna-with-jalapeno-snack-sticks",
+            "name": "Sweet Bologna with Jalapeno Snack Sticks",
+            "site": "schneider-farms-llc.myshopify.com",
+            "score": 90,
+            "description": "Sweet Bologna with Jalapeno Snack Sticks are a spicy snack option made from meat and include jalapeno for heat. They are fully cooked, shelf-stable until opened, and USDA inspected, making them a convenient and flavorful snack choice.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39351724703808",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39351724703808",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39351724703808",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+                  "available": true
+                }
+              ],
+              "description": "4 oz package of our delicious Sweet Bologna with Jalapeno snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+              "name": "Sweet Bologna with Jalapeno Snack Sticks",
+              "productID": "gid://shopify/Product/6578056331328",
+              "tags": [],
+              "url": "https://schneider-farms-llc.myshopify.com/products/sweet-bologna-with-jalapeno-snack-sticks",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/image_1b7aa294-8578-46ea-8a67-f9d4454280be.heic?v=1669925863",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 7.0,
+                "lowPrice": 7.0,
+                "@type": "AggregateOffer",
+                "priceCurrency": "USD"
+              }
+            },
+            "source_site_name": "Schneider Farms LLC Hermann, MO",
+            "source_site_score": 80
+          },
+          {
+            "@type": "Item",
+            "url": "https://schneider-farms-llc.myshopify.com/products/pepperjack-snack-sticks",
+            "name": "Pepperjack Snack Sticks",
+            "site": "schneider-farms-llc.myshopify.com",
+            "score": 85,
+            "description": "Pepperjack Snack Sticks are a type of fully cooked meat snack that comes in a 4 oz package. They are made from meat raised on a family farm and do not require refrigeration until opened, making them convenient for snacking. The name 'Pepperjack' suggests a spicy flavor profile, aligning well with the concept of spicy snack sticks.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39351724802112",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39351724802112",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/39351724802112",
+                  "title": "Default Title",
+                  "price": "7.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+                  "available": true
+                }
+              ],
+              "description": "4 oz package of our delicious Pepperjack snack sticks. The sticks are fully cooked and do not require refrigeration until opened. USDA Inspected and made from meat raised here on our family farm in Hermann, MO.",
+              "name": "Pepperjack Snack Sticks",
+              "productID": "gid://shopify/Product/6578056364096",
+              "tags": [],
+              "url": "https://schneider-farms-llc.myshopify.com/products/pepperjack-snack-sticks",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/1169/8752/products/Pepperjack4oz.jpg?v=1633614517",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 7.0,
+                "lowPrice": 7.0,
+                "@type": "AggregateOffer",
+                "priceCurrency": "USD"
+              }
+            },
+            "source_site_name": "Schneider Farms LLC Hermann, MO",
+            "source_site_score": 80
+          },
+          {
+            "@type": "Item",
+            "url": "https://eatatlas.myshopify.com/products/eat-atlas-ema-datshi-with-lavash-chips-bhutanese-dip-cheesy-spicy-paired-with-crispy-lavash-chips-ready-to-eat-paired-combo-200-gms-dip-150-gms-lavash",
+            "name": "Bhutan's Ema Datshi (Cheesy + Spicy) Gourmet Dip With Baked Lavash Chips (Combo) (100+85gms)",
+            "site": "eatatlas.myshopify.com",
+            "score": 85,
+            "description": "This product features a spicy and flavorful Bhutanese dip made with fresh green chilies and local cheese, paired with crispy Lavash crackers that provide a crunchy texture. It offers a combination of spicy heat and crunch, making it a suitable choice for those seeking bold and savory snack options.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                  "title": "Default Title",
+                  "price": "338.0",
+                  "currency": "INR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                  "title": "Default Title",
+                  "price": "338.0",
+                  "currency": "INR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                  "title": "Default Title",
+                  "price": "338.0",
+                  "currency": "INR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/46373142364386",
+                  "title": "Default Title",
+                  "price": "338.0",
+                  "currency": "INR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+                  "available": true
+                }
+              ],
+              "description": "\"A rush of smoky heat from green chilies, the rich melt of Bhutanese cheese, and the perfect crunch of Lavash Crackers. One bite, and you're in the heart of the Himalayas.\" - Authentic Bhutanese Recipe: Crafted with traditional Bhutanese ingredients like fresh chilies and local cheese. - Spicy & Flavorful: Experience the perfect balance of spicy heat and creamy cheese in every bite. - Crispy Lavash Chips: Paired with light and crunchy Lavash chips for the perfect texture contrast. - Convenient & Ready to Serve: Quick, easy to enjoy as a snack, appetizer, or side dish. - Perfect for Spice Lovers: Ideal for those who crave bold, spicy, and savory flavors.",
+              "name": "Bhutan's Ema Datshi (Cheesy + Spicy) Gourmet Dip With Baked Lavash Chips (Combo) (100+85gms)",
+              "productID": "gid://shopify/Product/8833501069538",
+              "tags": [
+                "Chip N Dip",
+                "Combo",
+                "Chip N Dip",
+                "Combo",
+                "Chip N Dip",
+                "Combo",
+                "Chip N Dip",
+                "Combo"
+              ],
+              "category": "Chip N Dip Combo",
+              "url": "https://eatatlas.myshopify.com/products/eat-atlas-ema-datshi-with-lavash-chips-bhutanese-dip-cheesy-spicy-paired-with-crispy-lavash-chips-ready-to-eat-paired-combo-200-gms-dip-150-gms-lavash",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/0728/5342/2306/files/Eat_Atlas_Creatives_4.jpg?v=1755370720",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 338.0,
+                "lowPrice": 338.0,
+                "@type": "AggregateOffer",
+                "priceCurrency": "INR"
+              }
+            },
+            "source_site_name": "Eat Atlas",
+            "source_site_score": 85
+          },
+          {
+            "@type": "Item",
+            "url": "https://en.chiliklaus.dk/products/hot-box-red",
+            "name": "HOT BOX RED",
+            "site": "chili-klaus-int.myshopify.com",
+            "score": 85,
+            "description": "HOT BOX RED is a spicy snack gift box containing chili chips and spicy nuts among other hot items, making it a suitable choice for those seeking spicy crunchy snacks.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                  "title": "Default Title",
+                  "price": "69.0",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                  "title": "Default Title",
+                  "price": "69.0",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                  "title": "Default Title",
+                  "price": "69.0",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/43752686059754",
+                  "title": "Default Title",
+                  "price": "69.0",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+                  "available": true
+                }
+              ],
+              "description": "If the Hot Box Black is the man, this stunning red Hot Box Red is the woman. Mild and friendly, but don\u2019t be mistaken. Inside the box, you\u2019ll find both a Reaper Uppercut and Spicy Red candies withlots of power and heat. %%% Hot Box Red contains:Hot Sauce Reaper Uppercut, windforce 12Chili Chips, windforce 4Chili Dip, windforce 3Chili Nuts, windforce 4Hot Rub Fajita, windforce 8Chili Balls, windforce 6Spicy Red, Rhubarb & Strawberry, windforce 12Hot Chocolate, dark 70%, windforce 4Packed in a beautiful red gift box with print and window.",
+              "name": "HOT BOX RED",
+              "productID": "gid://shopify/Product/8010065740010",
+              "tags": [
+                "gaveide",
+                "jul23",
+                "new",
+                "vindstyrke:3-12",
+                "gaveide",
+                "jul23",
+                "new",
+                "vindstyrke:3-12",
+                "gaveide",
+                "jul23",
+                "new",
+                "vindstyrke:3-12",
+                "gaveide",
+                "jul23",
+                "new",
+                "vindstyrke:3-12"
+              ],
+              "url": "https://en.chiliklaus.dk/products/hot-box-red",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/files/Hot_Box_Red_2024.jpg?v=1730960741",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 69.0,
+                "lowPrice": 69.0,
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR"
+              }
+            },
+            "source_site_name": "Chili Klaus",
+            "source_site_score": 90
+          },
+          {
+            "@type": "Item",
+            "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-vindstyrke-8",
+            "name": "Chili Klaus Chili Chips wind force 8",
+            "site": "chili-klaus-int.myshopify.com",
+            "score": 95,
+            "description": "Chili Klaus Chili Chips wind force 8 are spicy chips flavored with Trinidad Scorpion Butch T., known for their intense heat level, making them a fitting choice for those seeking spicy crunchy snacks.",
+            "schema_object": {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "productID": "gid://shopify/Product/7498527670506",
+              "name": "Chili Klaus Chili Chips wind force 8",
+              "description": "In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. %%% DESCRIPTION 1 bag of Chili Chips, wind force 8. In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. The wind force sneaks up at 8 - a hard wind - which means you can start to feel what chili can do! Net weight: 1 x 150 gram",
+              "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-vindstyrke-8",
+              "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8.jpg?v=1638867839",
+              "imageAltText": "chips wind force 8",
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR",
+                "lowPrice": 4.75,
+                "highPrice": 4.75
+              },
+              "category": "Chips",
+              "tags": [
+                "bestseller",
+                "snacks",
+                "vindstyrke:8"
+              ],
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893047018",
+                  "title": "Default Title",
+                  "price": "4.75",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8.jpg?v=1638867839",
+                  "available": false
+                }
+              ]
+            },
+            "source_site_name": "Chili Klaus",
+            "source_site_score": 90
+          },
+          {
+            "@type": "Item",
+            "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-wind-force-4",
+            "name": "Chili Klaus Chili Chips wind force 4",
+            "site": "chili-klaus-int.myshopify.com",
+            "score": 90,
+            "description": "Chili Klaus Chili Chips are crispy potato chips flavored with tomato, onion, paprika, and the Trinidad Scorpion chili, offering a moderately spicy taste. This product fits well within the category of spicy crunchy snacks, making it a suitable option for those seeking chili-flavored chips.",
+            "schema_object": {
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                  "title": "Default Title",
+                  "price": "4.75",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                  "title": "Default Title",
+                  "price": "4.75",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                  "title": "Default Title",
+                  "price": "4.75",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                  "available": true
+                },
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893014250",
+                  "title": "Default Title",
+                  "price": "4.75",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+                  "available": true
+                }
+              ],
+              "description": "1 bag of Chili Chips crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. %%% DESCRIPTION 1 bag of Chili Chips crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. The wind force is just a moderate breeze, so it can be enjoyed by everyone! Net weight: 1 x 150 gram",
+              "imageAltText": "chips vindstyrke: 4",
+              "name": "Chili Klaus Chili Chips wind force 4",
+              "productID": "gid://shopify/Product/7498527637738",
+              "tags": [
+                "snacks",
+                "vindstyrke:4",
+                "snacks",
+                "vindstyrke:4",
+                "snacks",
+                "vindstyrke:4",
+                "snacks",
+                "vindstyrke:4"
+              ],
+              "category": "Chips",
+              "url": "https://en.chiliklaus.dk/products/chili-klaus-chili-chips-wind-force-4",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/enkeltchips4og8-2.jpg?v=1638867561",
+              "@type": "Product",
+              "offers": {
+                "highPrice": 4.75,
+                "lowPrice": 4.75,
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR"
+              }
+            },
+            "source_site_name": "Chili Klaus",
+            "source_site_score": 90
+          },
+          {
+            "@type": "Item",
+            "url": "https://en.chiliklaus.dk/products/4-sachets-of-chili-chips",
+            "name": "4 bags of Chili Klaus Chili Chips",
+            "site": "chili-klaus-int.myshopify.com",
+            "score": 95,
+            "description": "This product consists of chili-flavored potato chips with varying levels of spiciness, including the Trinidad Scorpion chili, making it a fitting example of spicy crunchy snacks.",
+            "schema_object": {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "productID": "gid://shopify/Product/7498527703274",
+              "name": "4 bags of Chili Klaus Chili Chips",
+              "description": "4 Bags of crispy and coarse potato chips flavored with aromatic chili from Trinidad. %%% DESCRIPTION 2 bags of Chili Chips, wind force 4Crispy and coarse potato chips flavored with tomato, onion, paprika and not least the famous Trinidad Scorpion chili. The wind force is just a moderate breeze, so it can be enjoyed by everyone! 2 bags of Chili Chips, wind force 8In this variant, the Trinidad Scorpion Butch T. has been used for flavoring - and more of it. The wind force sneaks up at 8 - a hard wind - which means you can start to feel what chili can do! Net weight: 4 x 150 grams Wind force 4 and 8",
+              "url": "https://en.chiliklaus.dk/products/4-sachets-of-chili-chips",
+              "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/4packchips.jpg?v=1638797681",
+              "imageAltText": "chili chips",
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR",
+                "lowPrice": 17.5,
+                "highPrice": 17.5
+              },
+              "category": "Slik og chokolade",
+              "tags": [
+                "snacks",
+                "vindstyrke:4%1",
+                "vindstyrke:8%2"
+              ],
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893079786",
+                  "title": "Default Title",
+                  "price": "17.5",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/4packchips.jpg?v=1638797681",
+                  "available": false
+                }
+              ]
+            },
+            "source_site_name": "Chili Klaus",
+            "source_site_score": 90
+          },
+          {
+            "@type": "Item",
+            "url": "https://lesser-evil-copy.myshopify.com/products/spicy-salsa-power-curls",
+            "name": "Spicy Salsa",
+            "site": "lesser-evil-copy.myshopify.com",
+            "score": 85,
+            "description": "Power Curls are a protein-packed, savory snack with a spicy flavor profile, making them a suitable option for those seeking spicy crunchy snacks.",
+            "schema_object": {
+              "description": "This is what chips and salsa wish they could be. Salty, savory, and a little spicy, these protein-packed curls are a super satisfying snack. We recently rebranded our Egg White Curls to Power Curls. New look, but the same great snack. With this, packaging on your order may vary.",
+              "name": "Spicy Salsa",
+              "productID": "gid://shopify/Product/4859177500781",
+              "tags": [
+                "DN_certified-grain-free-gluten-free",
+                "DN_certified-paleo",
+                "DN_kosher",
+                "DN_non-gmo-project-verified",
+                "FL_savory",
+                "PS_full-size",
+                "PS_snack-size",
+                "DN_certified-grain-free-gluten-free",
+                "DN_certified-paleo",
+                "DN_kosher",
+                "DN_non-gmo-project-verified",
+                "FL_savory",
+                "PS_full-size",
+                "PS_snack-size"
+              ],
+              "category": "Power Curls",
+              "url": "https://lesser-evil-copy.myshopify.com/products/spicy-salsa-power-curls",
+              "@context": "https://schema.org",
+              "image": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+              "@type": "Product",
+              "offers": [
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/33201550950509",
+                  "title": "Case of 6 / 4oz Bags",
+                  "price": "24.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/33201550983277",
+                  "title": "Case of 24 / 1.5 oz Bags (Packaging may vary)",
+                  "price": "37.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/33201550950509",
+                  "title": "Case of 6 / 4oz Bags",
+                  "price": "24.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                  "available": true
+                },
+                {
+                  "@type": "Offer",
+                  "variant_id": "gid://shopify/ProductVariant/33201550983277",
+                  "title": "Case of 24 / 1.5 oz Bags (Packaging may vary)",
+                  "price": "37.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0040/9675/3773/products/PC_4oz_Mockup_SALSA_LR.png?v=1607726683",
+                  "available": true
+                }
+              ]
+            },
+            "source_site_name": "LesserEvil",
+            "source_site_score": 85
+          },
+          {
+            "@type": "Item",
+            "url": "https://en.chiliklaus.dk/products/4-boxes-of-spicy-nuts",
+            "name": "Chili Klaus Spicy Peanuts & Chili Nuts",
+            "site": "chili-klaus-int.myshopify.com",
+            "score": 90,
+            "description": "Chili Klaus Spicy Peanuts & Chili Nuts are crunchy nuts coated with chili seasoning, offering a spicy snack option. They come in different heat levels (wind force 4 and 6), making them suitable for those seeking spicy and crunchy snack choices.",
+            "schema_object": {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "productID": "gid://shopify/Product/7498527736042",
+              "name": "Chili Klaus Spicy Peanuts & Chili Nuts",
+              "description": "2 cups of Chili Nuts, wind force 4 Chili Nuts are coated peanuts seasoned with chili. Enjoy the crispy Chili Nuts together with a drink or as an appetizer. 2 cups of Spicy Peanuts, wind force 6 Peanuts flavored with chili and spices. Goes perfect together with a cold beer and good company! %%% BESKRIVELSE 2 cups of Chili Nuts, wind force 4Chili Nuts are coated peanuts seasoned with chili. Enjoy the crispy Chili Nuts together with a drink or as an appetizer. 2 cups of Spicy Peanuts, wind force 6Peanuts flavored with chili and spices. Goes perfect together with a cold beer and good company! Spicy Peanuts and Chili Nuts are packed in fine cups with removable screw lids. You don't have to eat it all at once - if you can resist it! Net weight: 2 x 100 grams and 2 x 140 grams Wind force 4 and 6",
+              "url": "https://en.chiliklaus.dk/products/4-boxes-of-spicy-nuts",
+              "image": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/spicy_peanus_og_chili_nuts.jpg?v=1638879827",
+              "imageAltText": "chili nuts",
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR",
+                "lowPrice": 18.95,
+                "highPrice": 18.95
+              },
+              "category": "N\u00f8dder og kerner",
+              "tags": [
+                "bestseller",
+                "snacks",
+                "vindstyrke:4%1",
+                "vindstyrke:6%2"
+              ],
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/42168893112554",
+                  "title": "Default Title",
+                  "price": "18.95",
+                  "currency": "EUR",
+                  "image_url": "https://cdn.shopify.com/s/files/1/0604/0594/0458/products/spicy_peanus_og_chili_nuts.jpg?v=1638879827",
+                  "available": false
+                }
+              ]
+            },
+            "source_site_name": "Chili Klaus",
+            "source_site_score": 90
+          },
+          {
+            "@type": "Item",
+            "url": "https://double-j-jerky.myshopify.com/products/cayenne-pepper",
+            "name": "(c) Cayenne pepper",
+            "site": "double-j-jerky.myshopify.com",
+            "score": 90,
+            "description": "This product is a cayenne pepper flavored jerky, which aligns well with the concept of spicy and crunchy jerky snacks. The use of cayenne pepper indicates a spicy flavor profile, and being a jerky product, it is inherently crunchy. This makes it a strong match for those seeking spicy crunchy jerky snacks.",
+            "schema_object": {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "productID": "gid://shopify/Product/193313669169",
+              "name": "(c) Cayenne pepper",
+              "description": "Cayenne Pepper Flavored Jerky",
+              "url": "https://double-j-jerky.myshopify.com/products/cayenne-pepper",
+              "image": "https://cdn.shopify.com/s/files/1/2894/0594/products/image_181358b4-c822-4a34-b60b-716f52014f68.jpg?v=1689025473",
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "USD",
+                "lowPrice": 9.0,
+                "highPrice": 9.0
+              },
+              "category": "Jerky",
+              "tags": [
+                "beef jerky",
+                "flavor",
+                "food",
+                "jerky",
+                "locallymade",
+                "pepper",
+                "shopsmall",
+                "snacks",
+                "texas",
+                "texasjerky"
+              ],
+              "variants": [
+                {
+                  "variant_id": "gid://shopify/ProductVariant/1737066086449",
+                  "title": "Default Title",
+                  "price": "9.0",
+                  "currency": "USD",
+                  "image_url": "https://cdn.shopify.com/s/files/1/2894/0594/products/image_181358b4-c822-4a34-b60b-716f52014f68.jpg?v=1689025473",
+                  "available": true
+                }
+              ]
+            },
+            "source_site_name": "Double J Jerky",
+            "source_site_score": 85
+          }
+        ],
+        "metadata": {
+          "resultMessageIds": [
+            "msg_1760309190595_a5a5ae014#18",
+            "msg_1760309190595_a5a5ae014#19",
+            "msg_1760309190595_a5a5ae014#21",
+            "msg_1760309190595_a5a5ae014#22",
+            "msg_1760309190595_a5a5ae014#23",
+            "msg_1760309190595_a5a5ae014#26",
+            "msg_1760309190595_a5a5ae014#27",
+            "msg_1760309190595_a5a5ae014#28",
+            "msg_1760309190595_a5a5ae014#29",
+            "msg_1760309190595_a5a5ae014#30",
+            "msg_1760309190595_a5a5ae014#32",
+            "msg_1760309190595_a5a5ae014#33",
+            "msg_1760309190595_a5a5ae014#34",
+            "msg_1760309190595_a5a5ae014#36",
+            "msg_1760309190595_a5a5ae014#39"
+          ],
+          "messageCount": 20
+        },
+        "query": "spicy crunchy snacks"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Found 15 visualizations for \"spicy crunchy snacks\"."
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "Found 15 visualizations for \"spicy crunchy snacks\"."
+    }
+  ]
+}

@@ -10,6 +10,7 @@ export class JsonRenderer {
   constructor(options = {}) {
     this.options = {
       colorize: true,
+      showScores: false,  // Default to not showing scores
       ...options
     };
     
@@ -62,12 +63,18 @@ export class JsonRenderer {
     if (item.schema_object && Array.isArray(item.schema_object) && item.schema_object.length > 0) {
       item.schema_object = item.schema_object[0];
     }
+    
+    // Check for @type in schema_object or directly on item
+    let type = null;
     if (item.schema_object && item.schema_object['@type']) {
-      const type = item.schema_object['@type'];
-      if (Object.prototype.hasOwnProperty.call(this.typeRenderers, type) && 
-             typeof this.typeRenderers[type] === 'function') {
-        return this.typeRenderers[type](item, this);
-      } 
+      type = item.schema_object['@type'];
+    } else if (item['@type']) {
+      type = item['@type'];
+    }
+    
+    if (type && Object.prototype.hasOwnProperty.call(this.typeRenderers, type) && 
+           typeof this.typeRenderers[type] === 'function') {
+      return this.typeRenderers[type](item, this);
     }
     
     return this.createDefaultItemHtml(item);
@@ -90,6 +97,12 @@ export class JsonRenderer {
 
     // Title row with link and info icon
     this.createTitleRow(item, contentDiv);
+    
+    // Add site link if site information is available (for multi-site queries)
+    // Show site link whenever we have site information, which indicates this came from a multi-site query
+    if (item.site || item.source_site_name) {
+      this.addVisibleUrl(item, contentDiv);
+    }
 
     // Description
     const description = document.createElement('div');
@@ -180,6 +193,39 @@ export class JsonRenderer {
     titleLink.className = 'item-title-link';
     titleRow.appendChild(titleLink);
 
+    // Add score badge if available and showScores is enabled
+    if (this.options.showScores && item.score !== undefined && item.score !== null) {
+      const scoreBadge = document.createElement('span');
+      scoreBadge.className = 'item-score-badge';
+      
+      // Determine color based on score value
+      let backgroundColor, textColor;
+      const score = parseFloat(item.score);
+      if (score >= 80) {
+        backgroundColor = '#4caf50'; // Green for high scores
+        textColor = 'white';
+      } else if (score >= 60) {
+        backgroundColor = '#ff9800'; // Orange for medium scores
+        textColor = 'white';
+      } else {
+        backgroundColor = '#f44336'; // Red for low scores
+        textColor = 'white';
+      }
+      
+      scoreBadge.style.cssText = `
+        display: inline-block;
+        margin-left: 10px;
+        padding: 2px 8px;
+        background-color: ${backgroundColor};
+        color: ${textColor};
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+        vertical-align: middle;
+      `;
+      scoreBadge.textContent = Math.round(score);
+      titleRow.appendChild(scoreBadge);
+    }
    
     contentDiv.appendChild(titleRow);
   }
@@ -191,11 +237,14 @@ export class JsonRenderer {
    * @param {HTMLElement} contentDiv - The content div
    */
   addVisibleUrl(item, contentDiv) {
+    const siteName = item.site || item.source_site_name || '';
+    if (!siteName) return;
+    
     const visibleUrlLink = document.createElement("a");
-    // FIX: Use sanitizeUrl for URL attributes
-    visibleUrlLink.href = item.siteUrl ? this.sanitizeUrl(item.siteUrl) : '#';
+    // Link to the site-specific search page
+    visibleUrlLink.href = `/ask?site=${encodeURIComponent(siteName)}`;
     // Use textContent for safe insertion
-    visibleUrlLink.textContent = item.site || '';
+    visibleUrlLink.textContent = siteName;
     visibleUrlLink.className = 'item-site-link';
     contentDiv.appendChild(visibleUrlLink);
   }
@@ -208,13 +257,58 @@ export class JsonRenderer {
    */
   getItemName(item) {
     let name = '';
-    if (item.name) {
+    
+    // First check if item.name exists and is not a URL or "Unnamed Item"
+    if (item.name && !item.name.startsWith('http://') && !item.name.startsWith('https://') && item.name !== 'Unnamed Item') {
       name = item.name;
-    } else if (item.schema_object && item.schema_object.keywords) {
-      name = item.schema_object.keywords;
-    } else if (item.url) {
+    } 
+    // If name is a URL, "Unnamed Item", or doesn't exist, try to get it from schema_object
+    else if (item.schema_object) {
+      // Special handling for Review schema type - get name from itemReviewed
+      if (item.schema_object['@type'] === 'Review' && item.schema_object.itemReviewed) {
+        const reviewed = item.schema_object.itemReviewed;
+        if (reviewed.name && !reviewed.name.startsWith('http://') && !reviewed.name.startsWith('https://')) {
+          name = reviewed.name;
+        }
+      }
+      // Check if schema_object has a proper name field
+      else if (item.schema_object.name && !item.schema_object.name.startsWith('http://') && !item.schema_object.name.startsWith('https://')) {
+        name = item.schema_object.name;
+      } 
+      // Try keywords as fallback
+      else if (item.schema_object.keywords) {
+        name = item.schema_object.keywords;
+      }
+      
+      // If still no name found, try to extract from URL
+      if (!name && item.url) {
+        // Try to create a readable name from the URL
+        try {
+          const urlParts = item.url.split('/');
+          const lastPart = urlParts[urlParts.length - 1] || urlParts[urlParts.length - 2];
+          if (lastPart) {
+            // Remove anchor tags like #1, #2, #3
+            let cleanPart = lastPart.replace(/#\d+$/, '');
+            // Remove file extensions and clean up
+            name = cleanPart.replace(/\.[^/.]+$/, '')
+              .replace(/[_-]/g, ' ')
+              .replace(/([a-z])([A-Z])/g, '$1 $2')
+              .trim();
+            // Capitalize first letter of each word
+            name = name.split(' ').map(word => 
+              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+          }
+        } catch (e) {
+          name = item.url;
+        }
+      }
+    } 
+    // Last resort: use the URL
+    else if (item.url) {
       name = item.url;
     }
+    
     return name;
   }
   
@@ -267,6 +361,19 @@ export class JsonRenderer {
         return articleObj.thumbnailUrl;
       }
       
+      // Look for ImageGallery with associatedMedia
+      const galleryObj = schema_object.find(obj => obj['@type'] === 'ImageGallery');
+      if (galleryObj && galleryObj.associatedMedia && Array.isArray(galleryObj.associatedMedia)) {
+        const firstMedia = galleryObj.associatedMedia[0];
+        if (firstMedia) {
+          // Try contentUrl first, then thumbnailUrl
+          const imageUrl = firstMedia.contentUrl || firstMedia.thumbnailUrl;
+          if (imageUrl && imageUrl.startsWith('http')) {
+            return imageUrl;
+          }
+        }
+      }
+      
       // Check first object for any image property
       if (schema_object[0]) {
         schema_object = schema_object[0];
@@ -275,6 +382,23 @@ export class JsonRenderer {
     
     // Handle single schema object
     if (schema_object) {
+      // Check for ImageGallery type with associatedMedia
+      if (schema_object['@type'] === 'ImageGallery' && schema_object.associatedMedia && Array.isArray(schema_object.associatedMedia)) {
+        const firstMedia = schema_object.associatedMedia[0];
+        if (firstMedia) {
+          // Try contentUrl first, then thumbnailUrl
+          const imageUrl = firstMedia.contentUrl || firstMedia.thumbnailUrl;
+          if (imageUrl && imageUrl.startsWith('http')) {
+            return imageUrl;
+          }
+        }
+      }
+      
+      // Check for Product type with image
+      if (schema_object['@type'] === 'Product' && schema_object.image) {
+        return this.extractImageInternal(schema_object.image);
+      }
+      
       // Check for direct image property
       if (schema_object.image) {
         return this.extractImageInternal(schema_object.image);
@@ -282,6 +406,17 @@ export class JsonRenderer {
       // Check for thumbnailUrl property
       if (schema_object.thumbnailUrl) {
         return schema_object.thumbnailUrl;
+      }
+      
+      // Check for associatedMedia even without specific type
+      if (schema_object.associatedMedia && Array.isArray(schema_object.associatedMedia)) {
+        const firstMedia = schema_object.associatedMedia[0];
+        if (firstMedia) {
+          const imageUrl = firstMedia.contentUrl || firstMedia.thumbnailUrl;
+          if (imageUrl && imageUrl.startsWith('http')) {
+            return imageUrl;
+          }
+        }
       }
     }
     return null;

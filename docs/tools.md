@@ -6,7 +6,7 @@ NLWeb now supports a flexible tool calling system that allows different methods 
 
 ## Architecture
 
-Tools are defined in XML format in `code/config/tools.xml`. The system:
+Tools are defined in XML format in `config/tools.xml`. The system:
 
 1. Analyzes the incoming query and its associated schema.org type
 2. Collects applicable tools based on the type hierarchy

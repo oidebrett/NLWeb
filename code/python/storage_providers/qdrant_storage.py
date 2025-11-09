@@ -13,7 +13,8 @@ from datetime import datetime
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.http import models
 
-from core.storage import StorageProvider, ConversationEntry
+from core.schemas import ConversationEntry
+from core.conversation_history import StorageProvider
 from core.embedding import get_embedding
 from misc.logger.logging_config_helper import get_configured_logger
 
@@ -102,53 +103,72 @@ class QdrantStorageProvider(StorageProvider):
             logger.error(f"Failed to initialize Qdrant storage: {e}")
             raise
     
-    async def add_conversation(self, user_id: str, site: str, thread_id: Optional[str], 
-                             user_prompt: str, response: str) -> ConversationEntry:
+    async def add_conversation(self, user_id: str, site: str, message_id: Optional[str], 
+                             user_prompt: str, response: str, conversation_id: str,
+                             embedding: Optional[List[float]] = None,
+                             summary: Optional[str] = None, main_topics: Optional[List[str]] = None,
+                             participants: Optional[List[Dict[str, Any]]] = None) -> ConversationEntry:
         """
         Add a conversation to storage.
         
-        If thread_id is None, creates a new thread_id.
-        Creates conversation_id and computes embedding from user_prompt + response.
+        conversation_id is required (from frontend).
+        If message_id is None, creates a new message_id.
         """
         try:
-            # Generate thread_id if not provided
-            if thread_id is None:
-                thread_id = str(uuid.uuid4())
-                logger.info(f"Created new thread_id: {thread_id}")
+            # conversation_id is required
+            if not conversation_id:
+                raise ValueError("conversation_id is required")
             
-            # Generate conversation_id
-            conversation_id = str(uuid.uuid4())
+            # Generate message_id if not provided
+            if message_id is None:
+                message_id = str(uuid.uuid4())
+                logger.info(f"Created new message_id: {message_id}")
             
-            # Generate embedding for the conversation
-            # Combine user prompt and response for better context
-            conversation_text = f"User: {user_prompt}\nAssistant: {response}"
-            embedding = await get_embedding(conversation_text)
+            # Generate embedding if not provided
+            if embedding is None:
+                # Combine user prompt and response for better context
+                conversation_text = f"User: {user_prompt}\nAssistant: {response}"
+                embedding = await get_embedding(conversation_text)
             
             # Create conversation entry
             entry = ConversationEntry(
                 user_id=user_id,
                 site=site,
-                thread_id=thread_id,
+                message_id=message_id,
                 user_prompt=user_prompt,
                 response=response,
                 time_of_creation=datetime.utcnow(),
                 conversation_id=conversation_id,
-                embedding=embedding
+                embedding=embedding,
+                summary=summary,
+                main_topics=main_topics,
+                participants=participants
             )
+            
+            # Build payload
+            payload = {
+                "conversation_id": entry.conversation_id,
+                "user_id": entry.user_id,
+                "site": entry.site,
+                "message_id": entry.message_id,
+                "user_prompt": entry.user_prompt,
+                "response": entry.response,
+                "time_of_creation": entry.time_of_creation.isoformat()
+            }
+            
+            # Add optional fields if provided
+            if entry.summary:
+                payload["summary"] = entry.summary
+            if entry.main_topics:
+                payload["main_topics"] = entry.main_topics
+            if entry.participants:
+                payload["participants"] = entry.participants
             
             # Convert to point format
             point = models.PointStruct(
                 id=str(uuid.uuid4()),  # Generate unique point ID
                 vector=entry.embedding,
-                payload={
-                    "conversation_id": entry.conversation_id,
-                    "user_id": entry.user_id,
-                    "site": entry.site,
-                    "thread_id": entry.thread_id,
-                    "user_prompt": entry.user_prompt,
-                    "response": entry.response,
-                    "time_of_creation": entry.time_of_creation.isoformat()
-                }
+                payload=payload
             )
             
             # Store in Qdrant
@@ -157,7 +177,7 @@ class QdrantStorageProvider(StorageProvider):
                 points=[point]
             )
             
-            logger.debug(f"Stored conversation {entry.conversation_id} in thread {entry.thread_id}")
+            logger.debug(f"Stored conversation {entry.conversation_id} with message_id {entry.message_id}")
             return entry
             
         except Exception as e:
@@ -204,7 +224,10 @@ class QdrantStorageProvider(StorageProvider):
                     user_prompt=payload["user_prompt"],
                     response=payload["response"],
                     time_of_creation=datetime.fromisoformat(payload["time_of_creation"]),
-                    embedding=point.vector
+                    embedding=point.vector,
+                    summary=payload.get("summary"),
+                    main_topics=payload.get("main_topics"),
+                    participants=payload.get("participants")
                 ))
             
             # Sort by time
@@ -213,6 +236,62 @@ class QdrantStorageProvider(StorageProvider):
             
         except Exception as e:
             logger.error(f"Failed to get conversation thread: {e}")
+            return []
+    
+    async def get_conversation_by_id(self, conversation_id: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Retrieve all conversations with the given conversation_id.
+        
+        Args:
+            conversation_id: The conversation ID to retrieve
+            limit: Optional limit to return only the N most recent exchanges
+            
+        Returns:
+            Dict containing all conversation exchanges as events
+        """
+        try:
+            # Search for all conversations with this ID
+            # Use a high default limit if none specified
+            scroll_limit = limit if limit else 1000
+            
+            results = await self.client.scroll(
+                collection_name=self.collection_name,
+                scroll_filter=models.Filter(
+                    must=[
+                        models.FieldCondition(
+                            key="conversation_id",
+                            match=models.MatchValue(value=conversation_id)
+                        )
+                    ]
+                ),
+                limit=scroll_limit,
+                with_payload=True,
+                with_vectors=False
+            )
+            
+            points = results[0]
+            
+            if not points:
+                return []
+            
+            # Extract all payloads and sort by time
+            events = []
+            for point in points:
+                events.append(point.payload)
+            
+            # Sort events by time (oldest first for chronological order)
+            events.sort(key=lambda x: x.get("time_of_creation", ""))
+            
+            # If limit is specified, take only the N most recent
+            if limit and len(events) > limit:
+                # For most recent, we want the last N items after sorting
+                events = events[-limit:]
+            
+            # Return just the array of events
+            return events
+            
+        except Exception as e:
+            logger.error(f"Failed to get conversation by ID: {e}")
             return []
     
     async def get_recent_conversations(self, user_id: str, site: str, limit: int = 50) -> List[Dict[str, Any]]:
@@ -325,8 +404,79 @@ class QdrantStorageProvider(StorageProvider):
     async def search_conversations(self, query: str, user_id: Optional[str] = None, 
         site: Optional[str] = None, limit: int = 10) -> List[ConversationEntry]:
         """
-        To be implemented: Search conversations using a text query.
-        This will likely involve using the vector search capabilities of Qdrant.
+        Search conversations using vector similarity search.
+        
+        Args:
+            query: The search query string
+            user_id: User ID to filter results (optional)
+            site: Site to filter results (optional)
+            limit: Maximum number of results to return
+            
+        Returns:
+            List of ConversationEntry objects matching the search criteria
         """
-        # TODO: implement this method
-        raise NotImplementedError("search_conversations() not implemented yet")
+        try:
+            # Get embedding for the query
+            query_embedding = await get_embedding(query)
+            
+            # Build filter conditions
+            filter_conditions = []
+            if user_id:
+                filter_conditions.append(
+                    models.FieldCondition(
+                        key="user_id",
+                        match=models.MatchValue(value=user_id)
+                    )
+                )
+            if site:
+                filter_conditions.append(
+                    models.FieldCondition(
+                        key="site",
+                        match=models.MatchValue(value=site)
+                    )
+                )
+            
+            # Combine filters if any
+            search_filter = None
+            if filter_conditions:
+                if len(filter_conditions) == 1:
+                    search_filter = models.Filter(must=filter_conditions)
+                else:
+                    search_filter = models.Filter(must=filter_conditions)
+            
+            # Perform vector search
+            search_results = await self.client.search(
+                collection_name=self.collection_name,
+                query_vector=query_embedding,
+                query_filter=search_filter,
+                limit=limit,
+                with_payload=True
+            )
+            
+            # Convert search results to ConversationEntry objects
+            conversations = []
+            for result in search_results:
+                payload = result.payload
+                
+                # Create ConversationEntry from payload
+                conversation = ConversationEntry(
+                    conversation_id=payload.get('conversation_id'),
+                    thread_id=payload.get('thread_id'),
+                    user_id=payload.get('user_id'),
+                    site=payload.get('site'),
+                    user_prompt=payload.get('user_prompt'),
+                    response=payload.get('response'),
+                    time_of_creation=payload.get('time_of_creation'),
+                    summary=payload.get('summary'),
+                    embedding=payload.get('embedding'),
+                    participants=payload.get('participants'),
+                    main_topics=payload.get('main_topics')
+                )
+                conversations.append(conversation)
+            
+            logger.info(f"Found {len(conversations)} conversations matching query: {query}")
+            return conversations
+            
+        except Exception as e:
+            logger.error(f"Failed to search conversations: {e}")
+            return []

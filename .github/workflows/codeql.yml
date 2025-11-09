@@ -41,6 +41,9 @@ jobs:
       actions: read
       contents: read
 
+    env:
+      CODEQL_ACTION_CACHE_KEY: ${{ matrix.language }}-${{ github.run_id }}
+      
     strategy:
       fail-fast: false
       matrix:

@@ -22,13 +22,14 @@ from psycopg_pool import AsyncConnectionPool
 import pgvector.psycopg
 
 from core.config import CONFIG
+from core.retriever import RetrievalClientBase
 from core.embedding import get_embedding
 from misc.logger.logging_config_helper  import get_configured_logger
 from misc.logger.logger import LogLevel
 
 logger = get_configured_logger("postgres_client")
 
-class PgVectorClient:
+class PgVectorClient(RetrievalClientBase):
     """
     Client for PostgreSQL vector database operations with pgvector extension.
     Provides a unified interface for indexing, storing, and retrieving vector-based search results.
@@ -39,6 +40,7 @@ class PgVectorClient:
     """
     
     def __init__(self, endpoint_name: Optional[str] = None):
+        super().__init__()  # Initialize the base class with caching
         """
         Initialize the PostgreSQL vector database client.
         

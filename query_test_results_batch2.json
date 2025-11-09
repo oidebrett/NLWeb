@@ -1,0 +1,1381 @@
+[
+  {
+    "query": "Recycled cashmere yarn for luxury knitting projects",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Heritage grain flours including spelt and einkorn for baking",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Specialty salts including fleur de sel and pink Himalayan",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Sourdough starter with active wild yeast cultures",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bread knives with serrated edges that stay sharp",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Ancient grain berries for grinding fresh flour at home",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Semolina flour for dusting and making traditional pasta",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Shaving soaps in traditional scents like sandalwood",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pre-shave oils to soften beard hair before lathering",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Shaving bowls in ceramic with textured interiors",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Natural loofahs and body brushes for exfoliation",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bath salts with essential oils and minerals",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Body oils in nourishing blends for massage",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Soap dishes that drain and extend bar life",
+    "quality_score": 60,
+    "num_results": 15,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Raw shea butter from Ghana for DIY skin care formulations",
+    "quality_score": 60,
+    "num_results": 14,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Dutch ovens specifically designed for bread baking",
+    "quality_score": 60,
+    "num_results": 14,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Dough scrapers in stainless steel and flexible plastic",
+    "quality_score": 60,
+    "num_results": 14,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bone broth from slow-simmered organic bones",
+    "quality_score": 60,
+    "num_results": 13,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Damascus chef knives with pakkawood handles",
+    "quality_score": 60,
+    "num_results": 12,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Heirloom tomato seeds with disease resistance for home gardens",
+    "quality_score": 60,
+    "num_results": 12,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Microgreens seeds for indoor kitchen gardens",
+    "quality_score": 60,
+    "num_results": 12,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Activated charcoal for natural teeth whitening and detox",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wine making supplies including carboys and airlocks",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Writing slopes and lap desks in fine woods",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Kitchen scales with precision to one gram increments",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Heritage breed poultry and eggs from pastured farms",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Grass-fed beef and lamb from regenerative ranches",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bubble removers and headspace measuring tools",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Turkish towels in lightweight quick-drying cotton",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Neem oil for organic pest control in gardens",
+    "quality_score": 60,
+    "num_results": 11,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Telescoping camping cookware sets for backpacking meals",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Natural fiber rope including hemp and sisal for macrame",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Aged rum for crafting classic cocktails and tiki drinks",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Cocktail bitters in unique flavors for mixology experiments",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Craft beer brewing kits with specialty malts and hops",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Fermentation weights to keep vegetables submerged",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wild-caught salmon and seafood with sustainable practices",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Duck fat and schmaltz for cooking with rich flavor",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Recipe books focused on seasonal canning techniques",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pumice stones for smoothing rough skin on feet",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bamboo stakes and trellises for supporting plants",
+    "quality_score": 60,
+    "num_results": 10,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Small batch gin with botanical complexity for martinis",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bar tools including jiggers, strainers, and muddlers",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Vintage wine from specific regions and exceptional years",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Banneton proofing baskets in various shapes for bread",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Lame blades for scoring artisan bread loaves",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Canning funnels with wide mouths for easy filling",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Straight razors with carbon steel blades that hold edges",
+    "quality_score": 60,
+    "num_results": 9,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Vintage brass hardware for restoring antique furniture",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Magnetic spice tins for organizing herb and spice collections",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Artisan vinegar mothers for making homemade apple cider vinegar",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Brass compass and navigation tools for wilderness exploration",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Crystal cocktail glasses in vintage art deco styles",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Silicone baking mats as parchment paper alternatives",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Vacuum sealers for preserving food freshness",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Curing salts for making salami and prosciutto at home",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Ghee clarified from grass-fed butter",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Transfer paper for moving designs to fabric",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Shaving mugs with handles and soap recesses",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Shaving brushes in different hair grades and knot sizes",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Razor strops in leather for maintaining blade sharpness",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Natural sea sponges harvested sustainably",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Seed starting trays with humidity domes",
+    "quality_score": 60,
+    "num_results": 8,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Organic kombucha starter cultures with detailed brewing instructions",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Coconut wax for making clean burning candle blends",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Natural wine from biodynamic vineyards with minimal intervention",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Proofing boxes with temperature and humidity control",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Ravioli cutters and stamps in decorative shapes",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Sausage stuffers in manual and electric models",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Butcher paper for wrapping and storing meat properly",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Embroidery scissors with sharp pointed tips",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Stabilizers for machine embroidery projects",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Alum blocks for sealing small nicks after shaving",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Double edge safety razor blades in bulk quantities",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Grow lights with full spectrum for year-round growing",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Garden markers in slate or weatherproof materials",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Hydroponic nutrients in organic formulations",
+    "quality_score": 60,
+    "num_results": 7,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Copper Moscow mule mugs with authentic hammered finish",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Artisan pickle and fermentation crocks with water seals",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Natural cork yoga blocks that provide firm support",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Hand-forged blacksmithing tools for beginner metalworkers",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Japanese pull saws with fine teeth for precision woodworking",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Sake from premium rice polished to daiginjo grade",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pizza stones made from cordierite for high heat",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pasta machines with multiple thickness settings",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Rolling pins in different materials and lengths",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Chitarra cutters for making square spaghetti strands",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pastry wheels with fluted edges for decorative cuts",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Dehydrators with multiple trays for making jerky",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Cheese making kits with rennet and cultures",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Cold press juicers that extract maximum nutrients",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Tallow and lard from pastured animals for frying",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pattern books with traditional and modern motifs",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Mason jars in various sizes with two-piece lids",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Water bath canners for high-acid food preservation",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Canning labels for dating and identifying preserves",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Aftershave splashes with witch hazel and alcohol",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Copper bathtub caddies for reading in the tub",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Garden kneelers with padded surfaces and handles",
+    "quality_score": 60,
+    "num_results": 6,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Natural indigo dye for creating fade patterns on denim",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Binchotan charcoal for water filtration and odor absorption",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Vintage film cameras in working condition for analog photography",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Developing tanks and chemicals for processing black and white film",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Block printing tools and linoleum blocks for fabric design",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Mezcal from traditional palenques in Oaxaca Mexico",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Artisan vermouth from small producers for sophisticated aperitifs",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Japanese whisky from independent distilleries with limited releases",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Belgian beer including Trappist ales from monastery breweries",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Armagnac aged in oak barrels for minimum twenty years",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wood burning stoves with soapstone heat retention",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Vintage light fixtures rewired for modern electrical systems",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Reclaimed barn wood beams for rustic interior design",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Cast iron radiators restored and refinished for vintage homes",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Antique doorknobs and escutcheons in brass and porcelain",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Subway tiles in classic white with beveled edges",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Clawfoot bathtubs refinished in original porcelain enamel",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Farmhouse sinks in fireclay with apron fronts",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Period-appropriate molding and trim for historic renovations",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Handmade tiles with Arts and Crafts movement patterns",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Loose leaf pipe tobacco in classic English and Virginia blends",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Briar wood pipes with quality stems for pipe smoking",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Humidors with Spanish cedar lining for cigar storage",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Premium cigars from Cuban seed tobacco grown in Nicaragua",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pipe cleaners and reaming tools for maintenance",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Tobacco pouches in leather with moisture-retaining linings",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Cigar cutters with sharp guillotine blades",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Torch lighters with adjustable flames for even lighting",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pipe stands displaying multiple pipes with style",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Aging rooms and cabinets for maturing pipe tobacco",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Handmade leather belts with solid brass buckles",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Suspenders in woven elastic with leather trim details",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pocket squares in silk with hand-rolled edges",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Tie bars and cufflinks in sterling silver or gold",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Hat brushes and shapers for maintaining fedora crowns",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Shoe trees made from aromatic cedar wood",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Boot jacks for removing tall boots without bending",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Collar stays in metal for crisp shirt presentations",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Vintage typewriter ribbons for specific models",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Tailoring supplies including chalk, shears, and measuring tapes",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Garment bags in canvas for protecting suits during travel",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wax sealing kits with custom monogram stamps",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Bookbinding tools including bone folders and awls",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Calligraphy nibs in various sizes and flexibility",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Fountain pen ink in archival quality with rich colors",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Handmade paper from cotton rag with deckled edges",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Desk blotters in leather with corner protectors",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Leather book covers with hand-tooled decorative patterns",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Letter openers in damascus steel with elegant handles",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pasta drying racks that hold multiple portions",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Gnocchi boards with ridged surfaces for shaping",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Meat grinders with various plate sizes for sausage",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Smoking chips in different woods for unique flavors",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Organ meats including liver and heart from quality sources",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Collagen powder from grass-fed sources for health",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Charcuterie from artisan producers with traditional methods",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Basswood blanks for relief and chip carving",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wood carving tools with razor-sharp edges",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Finishing oils including Danish and tung oil",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Sandpaper in grits from coarse to ultra-fine",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wood stains in oil and water-based formulas",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Chisels in various widths for mortise and tenon joints",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Hand planes for smoothing and shaping wood surfaces",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Marking gauges for precise measurements and layouts",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Japanese water stones for sharpening edge tools",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Dust collection systems for workshop cleanliness",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Leather working stamps for tooling decorative patterns",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Edge bevelers for finishing leather goods professionally",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Stitching chisels in various prong configurations",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Waxed thread in different weights and colors",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Leather dyes and finishes in authentic tones",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Rivet setters and snaps for functional closures",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Skiving knives for thinning leather edges",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Burnishing tools for polishing cut leather edges",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Leather cement and contact adhesives for bonding",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Belt blanks in various widths and thicknesses",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Embroidery hoops in multiple sizes for hand stitching",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "DMC floss in complete color ranges for cross stitch",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Sashiko thread and needles for Japanese mending",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Crewel wool for dimensional embroidery work",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pressure canners for preserving low-acid foods safely",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Aida cloth and evenweave fabric for counted thread",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Needle threaders for fine embroidery needles",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pectin for making jams and jellies that set properly",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Jar lifters for safely removing hot jars from water",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pickle crisp for maintaining vegetable texture",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Hemp shower curtains that resist mildew naturally",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Aquaponics systems combining fish and plant growth",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Wooden bath mats with slats for drainage",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Worm composting bins for kitchen scrap recycling",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Pruning shears with bypass cutting action",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Soil testing kits for pH and nutrient analysis",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Diatomaceous earth for natural insect barriers",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Beneficial nematodes for controlling soil pests",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Companion planting guides for natural pest management",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Cold frames and row covers extending growing seasons",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Rain gauges for monitoring garden irrigation needs",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  },
+  {
+    "query": "Soil amendments including compost and worm castings",
+    "quality_score": 10,
+    "num_results": 1,
+    "avg_result_score": 0,
+    "error": null
+  }
+]

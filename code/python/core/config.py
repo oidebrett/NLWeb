@@ -35,6 +35,7 @@ class LLMProviderConfig:
     models: Optional[ModelConfig] = None
     endpoint: Optional[str] = None
     api_version: Optional[str] = None
+    auth_method: Optional[str] = None
 
 @dataclass
 class EmbeddingProviderConfig:
@@ -43,6 +44,7 @@ class EmbeddingProviderConfig:
     api_version: Optional[str] = None
     model: Optional[str] = None
     config: Optional[Dict[str, Any]] = None
+    auth_method: Optional[str] = None
 
 @dataclass
 class RetrievalProviderConfig:
@@ -96,8 +98,11 @@ class NLWebConfig:
     analyze_query_enabled: bool = False  # Enable or disable query analysis
     decontextualize_enabled: bool = True  # Enable or disable decontextualization
     required_info_enabled: bool = True  # Enable or disable required info checking
+    aggregation_enabled: bool = False  # Enable or disable aggregation functionality
+    who_endpoint_enabled: bool = True  # Enable or disable the who endpoint
     api_keys: Dict[str, str] = field(default_factory=dict)  # API keys for external services
     upload_docs_enabled: bool = False  # Enable or disable document upload in chat interface
+    who_endpoint: str = "http://localhost:8000/who"  # Endpoint for /who requests
 
 @dataclass
 class ConversationStorageConfig:
@@ -258,13 +263,16 @@ class AppConfig:
                 api_endpoint = self._get_config_value(cfg.get("api_endpoint_env"))
                 api_version = self._get_config_value(cfg.get("api_version_env"))
                 llm_type = self._get_config_value(cfg.get("llm_type"))
+                auth_method = self._get_config_value(cfg.get("auth_method"), "api_key")
+
                 # Create the LLM provider config - no longer include embedding model
                 self.llm_endpoints[name] = LLMProviderConfig(
                     llm_type=llm_type,
                     api_key=api_key,
                     models=models,
                     endpoint=api_endpoint,
-                    api_version=api_version
+                    api_version=api_version,
+                    auth_method=auth_method
                 )
 
     def load_embedding_config(self, path: str = "config_embedding.yaml"):
@@ -293,6 +301,7 @@ class AppConfig:
             api_version = self._get_config_value(cfg.get("api_version_env"))
             model = self._get_config_value(cfg.get("model"))
             config = self._get_config_value(cfg.get("config"))
+            auth_method = self._get_config_value(cfg.get("auth_method"), "api_key")
 
             # Create the embedding provider config
             self.embedding_providers[name] = EmbeddingProviderConfig(
@@ -300,7 +309,8 @@ class AppConfig:
                 endpoint=api_endpoint,
                 api_version=api_version,
                 model=model,
-                config=config
+                config=config,
+                auth_method=auth_method
             )
 
     def load_retrieval_config(self, path: str = "config_retrieval.yaml"):
@@ -353,6 +363,7 @@ class AppConfig:
             data = {
                 "port": 8080,
                 "static_directory": "./static",
+                "homepage": "static/index.html",
                 "server": {}
             }
         
@@ -360,6 +371,8 @@ class AppConfig:
         self.port: int = self._get_config_value(data.get("port"), 8080)
         self.static_directory: str = self._get_config_value(data.get("static_directory"), "./static")
         self.mode: str = self._get_config_value(data.get("mode"), "production")
+        self.homepage: str = self._get_config_value(data.get("homepage"), "static/index.html")
+        self.nlweb_gateway: str = self._get_config_value(data.get("nlweb_gateway"), "nlwm.azurewebsites.net")
         
         # Keep static directory relative to config directory, not base output directory
         if not os.path.isabs(self.static_directory):
@@ -466,10 +479,23 @@ class AppConfig:
         
         # Load required info enabled flag
         required_info_enabled = self._get_config_value(data.get("required_info_enabled"), True)
+<<<<<<< HEAD
 
         # Load upload docs in chat interface by enabled flag
         upload_docs_enabled = self._get_config_value(data.get("upload_docs_enabled"), False)
 
+=======
+        
+        # Load aggregation enabled flag
+        aggregation_enabled = self._get_config_value(data.get("aggregation_enabled"), False)
+        
+        # Load who endpoint enabled flag
+        who_endpoint_enabled = self._get_config_value(data.get("who_endpoint_enabled"), True)
+        
+        # Load who_endpoint from config
+        who_endpoint = self._get_config_value(data.get("who_endpoint"), "http://localhost:8000/who")
+        
+>>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
         # Load headers from config
         headers = data.get("headers", {})
         
@@ -504,8 +530,15 @@ class AppConfig:
             analyze_query_enabled=analyze_query_enabled,
             decontextualize_enabled=decontextualize_enabled,
             required_info_enabled=required_info_enabled,
+<<<<<<< HEAD
             api_keys=api_keys,
             upload_docs_enabled=upload_docs_enabled
+=======
+            aggregation_enabled=aggregation_enabled,
+            who_endpoint_enabled=who_endpoint_enabled,
+            api_keys=api_keys,
+            who_endpoint=who_endpoint
+>>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
         )
     
     def get_chatbot_instructions(self, instruction_type: str = "search_results") -> str:
@@ -613,11 +646,23 @@ class AppConfig:
     def is_required_info_enabled(self) -> bool:
         """Check if required info checking is enabled."""
         return self.nlweb.required_info_enabled if hasattr(self, 'nlweb') else True
+<<<<<<< HEAD
 
     def is_upload_docs_enabled(self) -> bool:
         """Check if upload documents in chat interface functionality is enabled."""
         return self.nlweb.upload_docs_enabled if hasattr(self, 'nlweb') else False
 
+=======
+    
+    def is_aggregation_enabled(self) -> bool:
+        """Check if aggregation functionality is enabled."""
+        return self.nlweb.aggregation_enabled if hasattr(self, 'nlweb') else False
+    
+    def is_who_endpoint_enabled(self) -> bool:
+        """Check if the who endpoint is enabled."""
+        return self.nlweb.who_endpoint_enabled if hasattr(self, 'nlweb') else True
+    
+>>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
     def load_sites_config(self, path: str = "sites.xml"):
         """Load site configurations from XML file."""
         # Build the full path to the config file using the config directory

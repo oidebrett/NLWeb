@@ -30,12 +30,13 @@ from azure.search.documents.indexes.models import (
 
 from core.config import CONFIG
 from core.embedding import get_embedding
+from core.retriever import RetrievalClientBase
 from misc.logger.logging_config_helper import get_configured_logger
 from misc.logger.logger import LogLevel
 
 logger = get_configured_logger("azure_search_client")
 
-class AzureSearchClient:
+class AzureSearchClient(RetrievalClientBase):
     """
     Client for Azure AI Search operations, providing a unified interface for 
     indexing, storing, and retrieving vector-based search results.
@@ -48,6 +49,7 @@ class AzureSearchClient:
         Args:
             endpoint_name: Name of the endpoint to use (defaults to preferred endpoint in CONFIG)
         """
+        super().__init__()  # Initialize the base class with caching
         self.endpoint_name = endpoint_name or CONFIG.write_endpoint
         self._client_lock = threading.Lock()
         self._search_clients = {}  # Cache for search clients
@@ -651,20 +653,30 @@ class AzureSearchClient:
             
             # Execute the search asynchronously
             def search_sync():
-                return search_client.search(**search_options)
+                result = search_client.search(**search_options)
+                return result
             
             results = await asyncio.get_event_loop().run_in_executor(None, search_sync)
             
             # Extract unique sites from facets
             sites = []
-            if hasattr(results, 'get_facets') and results.get_facets():
-                site_facets = results.get_facets().get('site', [])
-                sites = [facet['value'] for facet in site_facets]
+            if hasattr(results, 'get_facets'):
+                facets = results.get_facets()
+                if facets:
+                    site_facets = facets.get('site', [])
+                    sites = [facet['value'] for facet in site_facets]
+                else:
+                    logger.warning("No site facets found in response")
+                    sites = []
+            else:
+                logger.warning("No facets found in search response")
+                sites = []
             
             logger.info(f"Retrieved {len(sites)} unique sites")
             return sorted(sites)
         
         except Exception as e:
+            import traceback
             logger.exception(f"Error retrieving sites from index: {index_name}")
             logger.log_with_context(
                 LogLevel.ERROR,

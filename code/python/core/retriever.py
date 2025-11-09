@@ -71,6 +71,9 @@ def init():
                     )
 
                     _preloaded_modules[db_type] = CloudflareAutoRAGClient
+                elif db_type == "bing_search":
+                    from retrieval_providers.bing_search_client import BingSearchClient
+                    _preloaded_modules[db_type] = BingSearchClient
 
             except Exception as e:
                 logger.warning(f"Failed to preload {db_type} client module: {e}")
@@ -86,6 +89,7 @@ _db_type_packages = {
     "postgres": ["psycopg", "psycopg[binary]>=3.1.12", "psycopg[pool]>=3.2.0", "pgvector>=0.4.0"],
     "shopify_mcp": ["aiohttp>=3.8.0"],
     "cloudflare_autorag": ['cloudflare>=4.3.1', "httpx>=0.28.1", "zon>=3.0.0", "markdown>=3.8.2", "beautifulsoup4>=4.13.4"],
+    "bing_search": ["httpx>=0.28.1"],  # Bing search uses httpx for API calls
 }
 
 # Cache for installed packages
@@ -233,7 +237,117 @@ class VectorDBClientInterface(ABC):
             Backends that don't support this method should return None.
             The default implementation returns None.
         """
+       
         return None
+
+
+class RetrievalClientBase(VectorDBClientInterface):
+    """
+    Base implementation for retrieval clients with default caching behavior.
+    All retrieval provider implementations should inherit from this class.
+    """
+    
+    def __init__(self):
+        """Initialize the base client with caching structures."""
+        # Cache for available sites
+        self._sites_cache: Optional[List[str]] = None
+        self._sites_cache_time: float = 0
+        self._cache_expiry_seconds = 300  # 5 minutes cache expiry
+        self._cache_lock = asyncio.Lock()
+    
+    async def can_handle_query(self, site: Union[str, List[str]], **kwargs) -> bool:
+        """
+        Check if this provider can handle a query for the given site(s).
+        Implements caching with stale-while-revalidate pattern.
+        
+        Args:
+            site: Site identifier or list of sites
+            **kwargs: Additional parameters
+            
+        Returns:
+            True if the provider can handle queries for at least one of the requested sites
+        """
+        # Handle 'all' case - always return True
+        if site == "all":
+            return True
+        
+        # Get cached or fresh sites list
+        available_sites = await self._get_cached_sites()
+        
+        # If get_sites is not supported or errored, assume provider might have the site
+        if available_sites is None:
+            return True
+        
+        # If no sites available, provider can't handle any query
+        if not available_sites:
+            return False
+        
+        # Convert site to list for uniform handling
+        sites_to_check = [site] if isinstance(site, str) else site
+        
+        # Check if any requested site is available
+        return any(s in available_sites for s in sites_to_check)
+    
+    async def _get_cached_sites(self) -> Optional[List[str]]:
+        """
+        Get sites list with caching and background refresh.
+        Uses stale-while-revalidate pattern for better performance.
+        
+        Returns:
+            List of available sites or None if get_sites is not supported
+        """
+        current_time = time.time()
+        cache_age = current_time - self._sites_cache_time
+        
+        # If we have cache and it's fresh, return it immediately
+        if self._sites_cache is not None and cache_age < self._cache_expiry_seconds:
+            return self._sites_cache
+        
+        # If we have stale cache (but not too old), return it and refresh in background
+        if self._sites_cache is not None and cache_age < self._cache_expiry_seconds * 10:
+            logger.debug(f"Returning stale sites cache (age: {cache_age:.1f}s), refreshing in background")
+            # Start background refresh (fire and forget)
+            asyncio.create_task(self._refresh_sites_cache())
+            return self._sites_cache
+        
+        # No cache or very old cache - fetch synchronously
+        async with self._cache_lock:
+            # Check again in case another coroutine just updated it
+            if self._sites_cache is not None:
+                cache_age = time.time() - self._sites_cache_time
+                if cache_age < self._cache_expiry_seconds:
+                    return self._sites_cache
+            
+            try:
+                sites = await self.get_sites()
+                self._sites_cache = sites
+                self._sites_cache_time = current_time
+                if sites:
+                    logger.info(f"Provider has {len(sites)} sites: {sites[:5]}{'...' if len(sites) > 5 else ''}")
+                return sites
+            except AttributeError:
+                # get_sites method doesn't exist - not supported by this backend
+                logger.debug("Provider does not support get_sites()")
+                self._sites_cache = None
+                self._sites_cache_time = current_time
+                return None
+            except Exception as e:
+                logger.warning(f"Failed to get sites from provider: {e}")
+                # Keep using old cache if available
+                return self._sites_cache
+    
+    async def _refresh_sites_cache(self) -> None:
+        """Refresh the sites cache in the background."""
+        try:
+            sites = await self.get_sites()
+            async with self._cache_lock:
+                self._sites_cache = sites
+                self._sites_cache_time = time.time()
+            if sites:
+                logger.debug(f"Background refresh: Provider has {len(sites)} sites")
+        except Exception as e:
+            logger.warning(f"Background refresh of sites cache failed: {e}")
+            # Don't update cache - keep using stale value
 
 
 class VectorDBClient:
@@ -254,22 +368,24 @@ class VectorDBClient:
         self.endpoint_name = endpoint_name  # Store the endpoint name
         self.db_type = None  # Will be set based on the primary endpoint
         
-        # In development mode, check if query_params specifies a database endpoint
-        if CONFIG.is_development_mode() and self.query_params:
+        # Check if query_params specifies a database endpoint override
+        if self.query_params:
             # Check for 'db' or 'retrieval_backend' parameter
             param_endpoint = self.query_params.get('db') or self.query_params.get('retrieval_backend')
+            if CONFIG.is_development_mode():
+                print(f"[RETRIEVER] Development mode - param_endpoint from query_params: {param_endpoint}")
             if param_endpoint:
                 # Handle case where param_endpoint might be a list
                 if isinstance(param_endpoint, list):
                     if len(param_endpoint) > 0:
                         param_endpoint = param_endpoint[0]
-                        logger.warning(f"Development mode: 'db' parameter was a list, using first element: {param_endpoint}")
+                        logger.warning(f"'db' parameter was a list, using first element: {param_endpoint}")
                     else:
-                        logger.error("Development mode: 'db' parameter is an empty list")
+                        logger.error("'db' parameter is an empty list")
                         param_endpoint = None
-                
+
                 if param_endpoint:
-                    logger.info(f"Development mode: Using database endpoint from params: {param_endpoint}")
+                    logger.info(f"Using database endpoint from params: {param_endpoint}")
                     endpoint_name = param_endpoint
         
         # If specific endpoint requested, validate and use it
@@ -320,9 +436,9 @@ class VectorDBClient:
             
             logger.info(f"VectorDBClient initialized with {len(self.enabled_endpoints)} enabled endpoints: {list(self.enabled_endpoints.keys())}")
         
-        # Validate write endpoint if configured
+        # Validate write endpoint if configured (skip for specific endpoint mode)
         self.write_endpoint = CONFIG.write_endpoint
-        if self.write_endpoint:
+        if self.write_endpoint and not endpoint_name:  # Only validate write endpoint if not in specific endpoint mode
             if self.write_endpoint not in CONFIG.retrieval_endpoints:
                 raise ValueError(f"Write endpoint '{self.write_endpoint}' not found in configuration")
             
@@ -331,83 +447,15 @@ class VectorDBClient:
                 raise ValueError(f"Write endpoint '{self.write_endpoint}' is missing required credentials")
             
             logger.info(f"Write operations will use endpoint: {self.write_endpoint}")
-        else:
+        elif not endpoint_name:
             logger.warning("No write endpoint configured - write operations will fail")
         
         self._retrieval_lock = asyncio.Lock()
         
-        # Cache for endpoint sites - will be populated lazily
-        self._endpoint_sites_cache: Dict[str, Optional[List[str]]] = {}
         
     
-    async def _get_endpoint_sites(self, endpoint_name: str) -> Optional[List[str]]:
-        """
-        Get the list of sites available in an endpoint, with caching.
-        
-        Args:
-            endpoint_name: Name of the endpoint
-            
-        Returns:
-            List of site names if supported, None if not supported by this backend.
-        """
-        # Return cached value if available
-        if endpoint_name in self._endpoint_sites_cache:
-            return self._endpoint_sites_cache[endpoint_name]
-        
-        try:
-            client = await self.get_client(endpoint_name)
-            sites = await client.get_sites()
-            self._endpoint_sites_cache[endpoint_name] = sites
-            if sites:
-                logger.info(f"Endpoint {endpoint_name} has {len(sites)} sites: {sites[:5]}{'...' if len(sites) > 5 else ''}")
-            else:
-                logger.info(f"Endpoint {endpoint_name} returned empty sites list")
-            return sites
-        except Exception as e:
-            # Any error means the backend doesn't support get_sites or it failed
-            logger.error(f"Backend for endpoint {endpoint_name} does not support get_sites() or it failed: {e}", exc_info=True)
-            # Cache None to indicate unsupported
-            self._endpoint_sites_cache[endpoint_name] = None
-            return None
     
-    async def _endpoint_has_site(self, endpoint_name: str, site: Union[str, List[str]]) -> bool:
-        """
-        Check if an endpoint has data for the requested site(s).
-        
-        If the backend doesn't support get_sites, we assume it might have the site.
-        
-        Args:
-            endpoint_name: Name of the endpoint
-            site: Site name or list of site names to check
-            
-        Returns:
-            True if endpoint has data for at least one of the requested sites
-        """
-        # Handle 'all' case - endpoint should be queried for all sites
-        if site == "all":
-            return True
-            
-        endpoint_sites = await self._get_endpoint_sites(endpoint_name)
-        
-        if endpoint_sites is None:
-            # Backend doesn't support get_sites, assume it might have the site
-            return True
-        elif not endpoint_sites:
-            # Backend supports get_sites but returned empty list
-            return False
-        
-        # Convert site to list for uniform handling
-        if isinstance(site, str):
-            sites_to_check = [site]
-        else:
-            sites_to_check = site
-        
-        # Check if any requested site is available in the endpoint
-        for site_name in sites_to_check:
-            if site_name in endpoint_sites:
-                return True
-        
-        return False
+    
     
     def _has_valid_credentials(self, name: str, config) -> bool:
         """
@@ -424,6 +472,9 @@ class VectorDBClient:
         
         if db_type in ["azure_ai_search", "snowflake_cortex_search", "opensearch", "milvus"]:
             # These require API key and endpoint
+            logger.debug(f"Checking credentials for {name} (type: {db_type})")
+            logger.debug(f"  api_key: {bool(config.api_key)} ({config.api_key[:10] + '...' if config.api_key else 'None'})")
+            logger.debug(f"  api_endpoint: {bool(config.api_endpoint)} ({config.api_endpoint if config.api_endpoint else 'None'})")
             return bool(config.api_key and config.api_endpoint)
         elif db_type == "qdrant":
             # Qdrant can use either local path or remote URL
@@ -442,6 +493,10 @@ class VectorDBClient:
             return True
         elif db_type == "cloudflare_autorag":
             return bool(config.api_key)
+            return bool(config.database_path)
+        elif db_type == "bing_search":
+            # Bing search just needs to be enabled (API key can be hardcoded or from env)
+            return True
         else:
             logger.warning(f"Unknown database type {db_type} for endpoint {name}")
             return False
@@ -512,6 +567,9 @@ class VectorDBClient:
                 elif db_type == "shopify_mcp":
                     from retrieval_providers.shopify_mcp import ShopifyMCPClient
                     client = ShopifyMCPClient(endpoint_name)
+                elif db_type == "bing_search":
+                    from retrieval_providers.bing_search_client import BingSearchClient
+                    client = BingSearchClient(endpoint_name)
                 else:
                     error_msg = f"Unsupported database type: {db_type}"
                     logger.error(error_msg)
@@ -769,31 +827,26 @@ class VectorDBClient:
             
             for endpoint_name in self.enabled_endpoints:
                 try:
-                    # Check if endpoint has data for the requested site
-                    if not await self._endpoint_has_site(endpoint_name, site):
-                        skipped_endpoints.append(endpoint_name)
-                        continue
-                    
                     client = await self.get_client(endpoint_name)
+                    
+                    # If only one endpoint is enabled (e.g., explicit db= parameter), skip can_handle_query check
+                    if len(self.enabled_endpoints) == 1:
+                        # Single endpoint mode - use it regardless of can_handle_query
+                        logger.info(f"Single endpoint mode for {endpoint_name}, skipping can_handle_query check")
+                    else:
+                        # Check if the provider can handle this query
+                        # Pass query_params along with other kwargs
+                        if not await client.can_handle_query(site, query_params=self.query_params, **kwargs):
+                            skipped_endpoints.append(endpoint_name)
+                            continue
                     
                     # Use search_all_sites if site is "all"
                     if site == "all":
                         task = asyncio.create_task(client.search_all_sites(query, num_results, **kwargs))
                     else:
-                        # For Shopify MCP, always go through the rewrite wrapper
-                        if type(client).__name__ == 'ShopifyMCPClient':
-                            # Extract handler from kwargs for rewriting
-                            handler_for_rewrite = kwargs.pop('handler', None)  # Remove handler from kwargs
-                            # Use the rewrite wrapper for Shopify MCP
-                            task = asyncio.create_task(
-                                search_with_rewrite(client, query, site, num_results, handler_for_rewrite, **kwargs)
-                            )
-                        else:
-                            # Regular search for other backends
-                            # Remove handler from kwargs if present (some backends don't accept it)
-                            search_kwargs = kwargs.copy()
-                            search_kwargs.pop('handler', None)
-                            task = asyncio.create_task(client.search(query, site, num_results, **search_kwargs))
+                        # Pass all arguments including handler to all clients
+                        # Individual clients can choose to use or ignore the handler
+                        task = asyncio.create_task(client.search(query, site, num_results, **kwargs))
                     tasks.append(task)
                     endpoint_names.append(endpoint_name)
                 except Exception as e:
@@ -940,6 +993,7 @@ class VectorDBClient:
         Returns:
             List of site names, or empty list if backend doesn't support get_sites
         """
+        
         # If endpoint is specified and different from current, create a new client for that endpoint
         if endpoint_name and endpoint_name != self.endpoint_name:
             temp_client = VectorDBClient(endpoint_name=endpoint_name)
@@ -1004,101 +1058,35 @@ def get_vector_db_client(endpoint_name: Optional[str] = None,
                         query_params: Optional[Dict[str, Any]] = None) -> VectorDBClient:
     """
     Factory function to create a vector database client with the appropriate configuration.
+    Uses a global cache to avoid repeated initialization and site queries.
     
     Args:
         endpoint_name: Optional name of the endpoint to use
         query_params: Optional query parameters for overriding endpoint
         
     Returns:
-        Configured VectorDBClient instance
+        Configured VectorDBClient instance (cached if possible)
     """
-    return VectorDBClient(endpoint_name=endpoint_name, query_params=query_params)
+    global _client_cache
+    
+    # Create a cache key based on endpoint_name
+    # Note: We don't include query_params in the key since they're typically the same
+    cache_key = endpoint_name or 'default'
+    
+    # Check if we have a cached client
+    if cache_key in _client_cache:
+        return _client_cache[cache_key]
+    
+    # Create a new client and cache it
+    client = VectorDBClient(endpoint_name=endpoint_name, query_params=query_params)
+    _client_cache[cache_key] = client
+    
+    return client
 
 
-async def search_with_rewrite(client: VectorDBClientInterface, query: str, site: Union[str, List[str]], 
-                             num_results: int = 50, handler: Optional[Any] = None, **kwargs) -> List[List[str]]:
-    """
-    Wrapper that handles query rewriting for keyword-based search engines.
-    If the query has more than 4 words, it rewrites it into simpler queries.
-    
-    Args:
-        client: The database client to use
-        query: The search query
-        site: Site identifier or list of sites
-        num_results: Maximum number of results to return
-        handler: Optional handler for query rewriting
-        **kwargs: Additional parameters
-        
-    Returns:
-        List of search results
-    """
-    # Check if this is a keyword-based backend (like Shopify MCP)
-    is_keyword_backend = isinstance(client, _preloaded_modules.get('shopify_mcp', type(None))) or \
-                        type(client).__name__ == 'ShopifyMCPClient'
-    
-    # Only rewrite for keyword backends with long queries
-    word_count = len(query.split())
-    needs_rewrite = is_keyword_backend and word_count > 4 and handler is not None
-    
-    if needs_rewrite:
-        logger.info(f"Query has {word_count} words, triggering rewrite for keyword backend")
-        
-        # Import and run query rewrite
-        try:
-            from core.query_analysis.query_rewrite import QueryRewrite
-            
-            # Store original decontextualized query if not set
-            if not hasattr(handler, 'decontextualized_query'):
-                handler.decontextualized_query = query
-            
-            # Run the query rewrite
-            rewriter = QueryRewrite(handler)
-            await rewriter.do()
-            
-            # Get rewritten queries
-            rewritten_queries = getattr(handler, 'rewritten_queries', [query])
-            
-            if len(rewritten_queries) > 1:
-                logger.info(f"Using {len(rewritten_queries)} rewritten queries: {rewritten_queries}")
-                
-                # Calculate results per query to maintain total count
-                results_per_query = max(1, num_results // len(rewritten_queries))
-                remainder = num_results % len(rewritten_queries)
-                
-                # Create parallel search tasks for each rewritten query
-                tasks = []
-                for i, rewritten_query in enumerate(rewritten_queries):
-                    # Add remainder to first queries
-                    query_results = results_per_query + (1 if i < remainder else 0)
-                    # Call the client's search method directly - no recursion
-                    task = asyncio.create_task(
-                        client.search(rewritten_query, site, query_results, **kwargs)
-                    )
-                    tasks.append(task)
-                
-                # Execute all searches in parallel
-                all_results = await asyncio.gather(*tasks, return_exceptions=True)
-                
-                # Combine results, filtering out errors
-                combined_results = []
-                for i, result in enumerate(all_results):
-                    if isinstance(result, Exception):
-                        logger.warning(f"Search failed for rewritten query '{rewritten_queries[i]}': {result}")
-                    elif result:
-                        combined_results.extend(result)
-                
-                # Limit to requested number of results
-                return combined_results[:num_results]
-                
-        except Exception as e:
-            logger.error(f"Error during query rewrite: {e}")
-            # Fall back to original query
-    
-    # No rewrite needed or rewrite failed - use original query
-    return await client.search(query, site, num_results, **kwargs)
 
 
-async def search(query: str, 
+async def search(query: str,
                 site: str = "all",
                 num_results: int = 50,
                 endpoint_name: Optional[str] = None,
@@ -1129,15 +1117,15 @@ async def search(query: str,
         kwargs['handler'] = handler
     results = await client.search(query, site, num_results, **kwargs)
     
-    # Send retrieval count message if handler is provided
-    if handler and hasattr(handler, 'http_handler') and hasattr(handler.http_handler, 'write_stream'):
+    # Send retrieval count message if handler is provided and in debug mode
+    if handler and getattr(handler, 'debug_mode', False) and hasattr(handler, 'http_handler') and hasattr(handler.http_handler, 'write_stream'):
         retrieval_message = {
             "message_type": "retrieval_count",
             "query": query,
             "site": site,
             "count": len(results),
             "requested_count": num_results,
-            "query_id": getattr(handler, 'query_id', None)
+            "sender_info": {"id": "system", "name": "NLWeb"}
         }
         try:
             await handler.http_handler.write_stream(retrieval_message)

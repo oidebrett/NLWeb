@@ -6,8 +6,79 @@ default_storage: qdrant_local
 
 # Storage endpoints configuration
 storage_endpoints:
-  
-  # Local Qdrant storage (default)
+
+  # Azure AI Search storage
+  azure_search:
+    enabled: false
+    type: azure_ai_search
+    # Azure Search endpoint (from environment variable)
+    api_key_env: AZURE_VECTOR_SEARCH_API_KEY
+    endpoint_env: AZURE_VECTOR_SEARCH_ENDPOINT
+    # Index name for conversations
+    collection_name: nlweb_conversations
+    # Vector size for embeddings
+    vector_size: 1536
+    
+  # Azure Cosmos DB storage
+  cosmos_db:
+    enabled: false
+    type: azure_cosmos
+    # Cosmos DB endpoint (from environment variable)
+    endpoint_env: COSMOS_DB_ENDPOINT
+    # Primary key (from environment variable)
+    key_env: COSMOS_DB_KEY
+    # Database name
+    database_name: nlweb_conversations
+    # Container name
+    container_name: conversations
+    # Partition key path
+    partition_key: /user_id
+
+  # Elasticsearch storage
+  elasticsearch:
+    enabled: false
+    type: elasticsearch
+    # Elasticsearch endpoint (localhost or remote URL with Elastic Cloud/Serverless)
+    url_env: ELASTICSEARCH_URL
+    # Authentication credentials
+    api_key_env: ELASTICSEARCH_API_KEY
+    # Collection name (index name) for conversations
+    collection_name: nlweb_conversations
+    vector_type:
+      type: dense_vector
+      index_options:
+        type: int8_hnsw # byte quantization for efficient storage
+    rrf:
+      rank_constant: 60
+    knn:
+      num_candidates: 100
+
+  # In-memory storage (for testing only)
+  memory:
+    enabled: false
+    type: memory
+    # Maximum conversations to keep in memory
+    max_conversations: 10000
+    # TTL in seconds (optional)
+    ttl_seconds: 86400  # 24 hours
+
+  # PostgreSQL with pgvector
+  postgres:
+    enabled: false
+    type: postgres
+    # Connection string (from environment variable)
+    connection_string_env: POSTGRES_CONV_CONNECTION_STRING
+    # Or individual connection parameters
+    host_env: POSTGRES_CONV_HOST
+    port: 5432
+    database: nlweb_conversations
+    user_env: POSTGRES_CONV_USER
+    password_env: POSTGRES_CONV_PASSWORD
+    # Table name
+    table_name: conversations
+    # Vector dimensions
+    vector_dimensions: 1536
+
   qdrant_local:
     enabled: true
     type: qdrant
@@ -30,79 +101,6 @@ storage_endpoints:
     collection_name: nlweb_conversations
     # Vector size for embeddings
     vector_size: 1536
-    
-  # Azure AI Search storage
-  azure_search:
-    enabled: false
-    type: azure_ai_search
-    # Azure Search endpoint (from environment variable)
-    endpoint_env: AZURE_SEARCH_CONVERSATIONS_ENDPOINT
-    # API key (from environment variable)
-    api_key_env: AZURE_SEARCH_CONVERSATIONS_KEY
-    # Index name for conversations
-    collection_name: nlweb_conversations
-    # Vector size for embeddings
-    vector_size: 1536
-    
-  # Azure Cosmos DB storage
-  cosmos_db:
-    enabled: false
-    type: azure_cosmos
-    # Cosmos DB endpoint (from environment variable)
-    endpoint_env: COSMOS_DB_ENDPOINT
-    # Primary key (from environment variable)
-    key_env: COSMOS_DB_KEY
-    # Database name
-    database_name: nlweb_conversations
-    # Container name
-    container_name: conversations
-    # Partition key path
-    partition_key: /user_id
-    
-  # PostgreSQL with pgvector
-  postgres:
-    enabled: false
-    type: postgres
-    # Connection string (from environment variable)
-    connection_string_env: POSTGRES_CONV_CONNECTION_STRING
-    # Or individual connection parameters
-    host_env: POSTGRES_CONV_HOST
-    port: 5432
-    database: nlweb_conversations
-    user_env: POSTGRES_CONV_USER
-    password_env: POSTGRES_CONV_PASSWORD
-    # Table name
-    table_name: conversations
-    # Vector dimensions
-    vector_dimensions: 1536
-    
-  # In-memory storage (for testing only)
-  memory:
-    enabled: false
-    type: memory
-    # Maximum conversations to keep in memory
-    max_conversations: 10000
-    # TTL in seconds (optional)
-    ttl_seconds: 86400  # 24 hours
-
-  # Elasticsearch storage
-  elasticsearch:
-    enabled: false
-    type: elasticsearch
-    # Elasticsearch endpoint (localhost or remote URL with Elastic Cloud/Serverless)
-    url_env: ELASTICSEARCH_URL
-    # Authentication credentials
-    api_key_env: ELASTICSEARCH_API_KEY
-    # Collection name (index name) for conversations
-    collection_name: nlweb_conversations
-    vector_type:
-      type: dense_vector
-      index_options:
-        type: int8_hnsw # byte quantization for efficient storage
-    rrf:
-      rank_constant: 60
-    knn:
-      num_candidates: 100
 
 # Storage behavior configuration
 storage_behavior:

@@ -5,7 +5,8 @@
 
 <!-- This file has all the prompts that are used in the process of running a query. -->
 
-  <Item>
+  <Site id="default">
+    <Item>
 
     <Prompt ref="DetectIrrelevantQueryPrompt">
       <promptString>
@@ -128,7 +129,7 @@
       <promptString>
         Analyze the following query from the user.
         Is the user asking for only one kind of item or are they asking for multiple kinds of items.
-        If they are asking for multiple kinds of items, construct indepenent queries for each of the 
+        If they are asking for multiple kinds of items, construct independent queries for each of the 
         kinds of items, separated by semicolons. The user's query is: {request.query}.
       </promptString>
       <returnStruc>
@@ -184,6 +185,7 @@
         Provide a short description of the item that is relevant to the user's question, without mentioning the user's question.
         Provide an explanation of the relevance of the item to the user's question, without mentioning the user's question or the score or explicitly mentioning the term relevance.
         If the score is below 75, in the description, include the reason why it is still relevant.
+          
         The user's question is: {request.query}. The item's description is {item.description}
       </promptString>
       <returnStruc>
@@ -202,6 +204,8 @@
         If the score is above 50, provide a short description of the item highlighting the relevance to the user's question, without mentioning the user's question.
         Provide an explanation of the relevance of the item to the user's question, without mentioning the user's question or the score or explicitly mentioning the term relevance.
         If the score is below 75, in the description, include the reason why it is still relevant.
+          
+
         The user's question is: \"{request.query}\". The item's description in schema.org format is \"{item.description}\".
       </promptString>
       <returnStruc>
@@ -405,7 +409,9 @@
 
 
 
- <Prompt ref="ItemMatchingPrompt">
+
+
+    <Prompt ref="ItemMatchingPrompt">
       <promptString>
         The user is looking for some details about: {request.item_name} and the users query is: {request.query}.
         Assign a score between 0 and 100 for whether the following item description
@@ -431,7 +437,7 @@
       </returnStruc>
     </Prompt>
 
-        <Prompt ref="RankingPrompt">
+    <Prompt ref="RankingPrompt">
       <promptString>
         Assign a score between 0 and 100 to the following item
         based on how relevant it is to the user's question. Use your knowledge from other sources, about the item, to make a judgement. 
@@ -735,5 +741,144 @@
       </returnStruc>
     </Prompt>
   </Statistics>
+  </Site>
+
+  <!-- Site configuration for 'all' - searching across multiple sites -->
+  <Site id="all">
+    <Item>
+      <Prompt ref="DetectIrrelevantQueryPrompt">
+        <promptString>
+          The user is searching across ALL sites for: '{request.query}'
+          
+          Since we're searching across all sites, very few queries would be truly irrelevant.
+          Only mark as irrelevant if the query is completely nonsensical or impossible to search for.
+        </promptString>
+        <returnStruc>
+          {
+            "site_is_irrelevant_to_query": "True or False",
+            "explanation_for_irrelevance": "Explanation for why the query cannot be searched across sites"
+          }
+        </returnStruc>
+      </Prompt>
+
+      <Prompt ref="RankingPrompt">
+        <promptString>
+          Assign a score between 0 and 100 to the following item from {item.source_site}
+          based on how relevant it is to the user's question across all sites.
+          
+          Consider that this result is being compared against results from multiple different sites,
+          so factor in the credibility and relevance of the source site as well.
+          
+          The user's question is: "{request.query}". 
+          The item's description is: "{item.description}".
+          Source site: {item.source_site}
+        </promptString>
+        <returnStruc>
+          {
+            "score": "integer between 0 and 100",
+            "description": "short description of the item highlighting cross-site relevance"
+          }
+        </returnStruc>
+      </Prompt>
+
+      <Prompt ref="SummarizeResultsPrompt">
+        <promptString>
+          Given the following items from multiple sites, summarize the aggregated results to answer the user's question.
+          Highlight consensus across sites where it exists, and note significant differences.
+          
+          The user's question is: {request.query}.
+          The items from various sites are: {request.answers}.
+        </promptString>
+        <returnStruc>
+          {
+            "summary": "comprehensive summary highlighting insights from multiple sources"
+          }
+        </returnStruc>
+      </Prompt>
+
+      <Prompt ref="EnsembleItemRankingPrompt">
+        <promptString>
+          Given the user's query: "{request.query}"
+
+          And this item:
+          Name: {item.name}
+          Type: {item.type}
+          Description: {item.description}
+
+          Rate how relevant this item is for answering the user's query on a scale of 0-100.
+          Consider:
+          - Does this item directly address what the user is looking for?
+          - Is it the right type of item (e.g., restaurant vs attraction)?
+          - Does it match any specific criteria mentioned in the query?
+
+          Provide your response as a JSON object with a 'score' field containing the relevance score.
+        </promptString>
+        <returnStruc>
+          {
+            "score": "integer between 0 and 100"
+          }
+        </returnStruc>
+      </Prompt>
+
+      <Prompt ref="EnsembleBasePrompt">
+        <promptString>
+          Based on the user's request: "{request.query}"
+
+          I searched for: {ensemble.queries}
+
+          Here are the search results:
+          {ensemble.results}
+
+          Please create a cohesive recommendation that addresses the user's request.
+        </promptString>
+        <returnStruc>
+          {
+            "theme": "Brief description of the overall recommendation theme",
+            "items": [
+              {
+                "category": "Category name (e.g., Appetizer, Museum, Footwear)",
+                "name": "Specific item name", 
+                "description": "Detailed description",
+                "why_recommended": "Why this item fits the request",
+                "details": {}
+              }
+            ],
+            "overall_tips": ["Any general tips or considerations"]
+          }
+        </returnStruc>
+      </Prompt>
+
+      <Prompt ref="EnsembleGenericPrompt">
+        <promptString>
+          Based on the user's request: "{request.query}"
+
+          I searched for: {ensemble.queries}
+
+          Here are the search results:
+          {ensemble.results}
+
+          Create a cohesive set of recommendations that work well together.
+          For each item, explain why it's recommended and how it complements the other items.
+          Include the URL of the item in the 'url' field of the structured output.
+        </promptString>
+        <returnStruc>
+          {
+            "theme": "Brief description of the recommendation theme",
+            "items": [
+              {
+                "category": "Item category",
+                "name": "Specific item name",
+                "description": "Detailed description",
+                "why_recommended": "Why this item fits the request",
+                "url": "URL of the item",
+                "details": {}
+              }
+            ],
+            "overall_tips": ["General tips or considerations"]
+          }
+        </returnStruc>
+      </Prompt>
+    </Item>
+  </Site>
 
 </root>

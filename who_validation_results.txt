@@ -1,0 +1,803 @@
+Extracted 390 queries from static/sample-who-queries.js
+
+Validating 390 WHO sample queries...
+Endpoint: https://agentfinder.azurewebsites.net/who
+Delay between requests: 0.3s
+================================================================================
+[1/390] Single origin Ethiopian coffee with fruity notes for pour over brewing
+  ✓ 15 results
+[2/390] Fair trade organic coffee beans for espresso with dark chocolate undertones
+  ✓ 15 results
+[3/390] Decaffeinated coffee that still has rich flavor for evening drinking
+  ✓ 15 results
+[4/390] Cold brew coffee concentrate that works well with oat milk
+  ✓ 12 results
+[5/390] Light roast coffee from Kenya with bright acidity and berry notes
+  ✓ 15 results
+[6/390] Organic coffee subscription with rotating single origin selections
+  ✓ 15 results
+[7/390] Coffee beans suitable for French press with bold earthy flavors
+  ✓ 15 results
+[8/390] Micro-lot coffee from small farms in Guatemala with caramel sweetness
+  ✓ 15 results
+[9/390] Loose leaf oolong tea with floral notes for afternoon tea service
+  ✓ 15 results
+[10/390] Organic herbal tea blend for relaxation and better sleep
+  ✓ 15 results
+[11/390] High quality matcha powder for traditional tea ceremonies
+  ✓ 15 results
+[12/390] Chai tea with strong spice profile and low sugar content
+  ✓ 15 results
+[13/390] White tea with delicate flavor and antioxidant properties
+  ✓ 15 results
+[14/390] Pu-erh tea aged for several years with complex earthy taste
+  ✓ 12 results
+[15/390] Green tea from Japan with umami flavor for cold brewing
+  ✓ 15 results
+[16/390] English breakfast tea blend strong enough for milk and sugar
+  ✓ 15 results
+[17/390] Blue glaze for making japanese pottery
+  ✓ 15 results
+[18/390] Food-safe pottery glazes that work well with cone 6 firing
+  ✓ 14 results
+[19/390] Handmade ceramic bowls with rustic aesthetic for soup serving
+  ✓ 15 results
+[20/390] Porcelain clay suitable for throwing delicate tea cups on the wheel
+  ✓ 12 results
+[21/390] Pottery tools for trimming and shaping bowls on the wheel
+  ✓ 14 results
+[22/390] Underglazes in earth tones for detailed ceramic decoration
+  ✓ 12 results
+[23/390] Raku clay and supplies for outdoor firing techniques
+  ✓ 15 results
+[24/390] Kiln shelves and furniture for cone 10 stoneware firing
+  ✓ 9 results
+[25/390] Organic cotton fabric in earth tones for quilting projects
+  ✓ 15 results
+[26/390] Waterproof ripstop nylon for making outdoor gear and backpacks
+  ✓ 6 results
+[27/390] Vintage-style floral print fabric for 1950s dress reproduction
+  ✓ 15 results
+[28/390] Interfacing and stabilizers for professional garment construction
+  ✓ 15 results
+[29/390] Japanese selvedge denim for crafting raw denim jeans
+  ✓ 8 results
+[30/390] Silk charmeuse fabric in jewel tones for evening wear sewing
+  ✓ 8 results
+[31/390] Wool felt in bright colors for craft projects and applique
+  ✓ 10 results
+[32/390] Double gauze cotton muslin for making soft baby clothing
+  ✓ 11 results
+[33/390] Whole spices for making authentic garam masala from scratch
+  ✓ 15 results
+[34/390] High quality saffron threads for paella and risotto dishes
+  ✓ 12 results
+[35/390] Smoked paprika and chipotle powder for southwestern marinades
+  ✓ 15 results
+[36/390] Vanilla beans and extract for baking French pastries
+  ✓ 8 results
+[37/390] Cardamom pods and cinnamon sticks for chai tea blending
+  ✓ 15 results
+[38/390] Dried chilies including ancho and guajillo for mole sauce
+  ✓ 9 results
+[39/390] Mediterranean herbs like oregano and thyme from Greece
+  ✓ 14 results
+[40/390] Japanese spices including shichimi togarashi and yuzu kosho
+  ✓ 14 results
+[41/390] Full grain vegetable tanned leather for crafting durable belts
+  ✓ 15 results
+[42/390] Minimalist leather wallet with RFID protection for everyday carry
+  ✓ 15 results
+[43/390] Leather working tools and supplies for beginner saddle stitching
+  ✓ 8 results
+[44/390] Vintage leather messenger bag that develops character with age
+  ✓ 15 results
+[45/390] Italian leather in cognac brown for making dress shoes
+  ✓ 10 results
+[46/390] Leather conditioner and care products for maintaining patina
+  ✓ 14 results
+[47/390] Chrome tanned leather suitable for upholstery projects
+  ✓ 7 results
+[48/390] Exotic leathers like ostrich or alligator for luxury goods
+  ✓ 13 results
+[49/390] Natural face oils for mature skin with anti-aging properties
+  ✓ 15 results
+[50/390] Mineral sunscreen that doesn't leave white cast on darker skin tones
+  ✓ 15 results
+[51/390] Beard oil with cedarwood and sandalwood scent for daily grooming
+  ✓ 15 results
+[52/390] Organic lip balm with beeswax and shea butter for winter protection
+  ✓ 15 results
+[53/390] Retinol serum for reducing fine lines and improving texture
+  ✓ 15 results
+[54/390] Vitamin C serum with stable L-ascorbic acid for brightening
+  ✓ 15 results
+[55/390] Clay masks with kaolin and bentonite for deep pore cleansing
+  ✓ 13 results
+[56/390] Hyaluronic acid moisturizer for plump hydrated skin
+  ✓ 15 results
+[57/390] Handmade leather moccasins with sheepskin lining for indoor wear
+  ✓ 10 results
+[58/390] Minimalist running shoes with wide toe box for natural gait
+  ✓ 15 results
+[59/390] Waterproof hiking boots with good ankle support for mountain trails
+  ✓ 15 results
+[60/390] Classic leather dress shoes that can be resoled and repaired
+  ✓ 15 results
+[61/390] Slip-on canvas sneakers in neutral colors for casual wear
+  ✓ 15 results
+[62/390] Work boots with steel toe protection and electrical hazard rating
+  ✓ 15 results
+[63/390] Ballet flats in soft leather with cushioned insoles for comfort
+  ✓ 15 results
+[64/390] Athletic sandals with arch support for hiking and water activities
+  ✓ 14 results
+[65/390] Beeswax candles with natural cotton wicks that burn clean
+  ✓ 14 results
+[66/390] Handwoven wool blankets in traditional patterns for cold weather
+  ✓ 10 results
+[67/390] Cast iron skillets that come pre-seasoned for cooking
+  ✓ 15 results
+[68/390] Wooden cutting boards made from sustainable end-grain maple
+  ✓ 12 results
+[69/390] Linen tablecloths in natural colors for formal dining
+  ✓ 6 results
+[70/390] Handmade pottery dinnerware sets with organic shapes
+  ✓ 15 results
+[71/390] French copper cookware with tin lining for even heating
+  ✓ 6 results
+[72/390] Japanese knives in high carbon steel with traditional handles
+  ✓ 15 results
+[73/390] Artisan sourdough bread with crispy crust and open crumb structure
+  ✓ 15 results
+[74/390] Raw honey from single flower sources with unique flavor profiles
+  ✓ 10 results
+[75/390] Aged balsamic vinegar from Modena for finishing dishes
+  ✓ 15 results
+[76/390] Small batch hot sauce with habanero and fruit for complex heat
+  ✓ 15 results
+[77/390] Handmade pasta including pappardelle and tagliatelle
+  ✓ 15 results
+[78/390] Aged cheese from small dairies with natural rinds
+  ✓ 13 results
+[79/390] Extra virgin olive oil from single estate Greek groves
+  ✓ 15 results
+[80/390] Smoked salmon cured with dill and brown sugar
+  ✓ 8 results
+[81/390] Ultralight camping gear for long distance backpacking trips
+  ✓ 15 results
+[82/390] Merino wool base layers that regulate temperature and resist odor
+  ✓ 11 results
+[83/390] Fishing lures designed for catching bass in freshwater lakes
+  ✓ 15 results
+[84/390] Climbing chalk and accessories for indoor bouldering sessions
+  ✓ 8 results
+[85/390] Down sleeping bags rated for winter mountaineering conditions
+  ✓ 8 results
+[86/390] Backpacking stoves that work with multiple fuel types
+  ✓ 6 results
+[87/390] Trekking poles with adjustable length and shock absorption
+  ✓ 7 results
+[88/390] Dry bags in various sizes for kayaking and canoe camping
+  ✓ 8 results
+[89/390] Professional grade watercolor paints with high pigment concentration
+  ✓ 1 results
+[90/390] Acid-free archival paper for preserving pen and ink drawings
+  ✓ 8 results
+[91/390] Natural bristle brushes for oil painting with fine detail work
+  ✓ 1 results
+[92/390] Screen printing supplies for making multi-color fabric designs
+  ✓ 7 results
+[93/390] Acrylic paints in heavy body formula for impasto techniques
+  ✓ 1 results
+[94/390] Canvas panels pre-primed with gesso for oil painting
+  ✓ 1 results
+[95/390] Graphite pencils ranging from 9H to 9B for detailed sketching
+  ✓ 6 results
+[96/390] Artist quality colored pencils with lightfast pigments
+  ✓ 1 results
+[97/390] Handcrafted leather journals with deckle edge paper for writing
+  ✓ 10 results
+[98/390] Fountain pens with gold nibs for smooth daily writing
+  ✓ 8 results
+[99/390] Archival quality ink in various colors for calligraphy
+  ✓ 7 results
+[100/390] Vintage typewriters in working condition for analog writing
+  ✓ 1 results
+[101/390] Brass bookmarks with intricate designs for collectors
+  ✓ 1 results
+[102/390] Hardcover blank journals with lay-flat binding for sketching
+  ✓ 14 results
+[103/390] Leather pen cases that hold multiple writing instruments
+  ✓ 9 results
+[104/390] Japanese washi tape in decorative patterns for planners
+  ✓ 7 results
+[105/390] Handmade soap using cold process method with essential oils
+  ✓ 15 results
+[106/390] Shaving brushes with badger hair for traditional wet shaving
+  ✓ 1 results
+[107/390] Safety razors with adjustable blade gap for different hair types
+  ✓ 1 results
+[108/390] Aftershave balm with witch hazel and aloe for sensitive skin
+  ✓ 7 results
+[109/390] Natural deodorant without aluminum or synthetic fragrances
+  ✓ 14 results
+[110/390] Bar shampoo and conditioner for zero waste hair care
+  ✓ 10 results
+[111/390] Konjac sponges infused with charcoal for gentle exfoliation
+  ✓ 8 results
+[112/390] Bamboo toothbrushes with biodegradable bristles
+  ✓ 10 results
+[113/390] Alpaca wool sweaters with traditional Peruvian patterns
+  ✓ 1 results
+[114/390] Organic cotton t-shirts in heavyweight fabric for durability
+  ✓ 14 results
+[115/390] Raw denim jeans with selvedge details from Japanese mills
+  ✓ 10 results
+[116/390] Merino wool socks that wick moisture and prevent blisters
+  ✓ 15 results
+[117/390] Linen shirts in relaxed fit for hot summer weather
+  ✓ 10 results
+[118/390] Cashmere sweaters in classic styles that last for years
+  ✓ 8 results
+[119/390] Waxed canvas jackets with warm flannel lining
+  ✓ 10 results
+[120/390] Wool peacoats in navy blue from military surplus
+  ✓ 1 results
+[121/390] Handmade wooden toys for children without plastic parts
+  ✓ 14 results
+[122/390] Educational building blocks made from sustainable hardwoods
+  ✓ 9 results
+[123/390] Organic cotton stuffed animals with natural wool filling
+  ✓ 6 results
+[124/390] Wooden puzzles with unique shapes for cognitive development
+  ✓ 15 results
+[125/390] Montessori learning materials including geometric solids
+  ✓ 6 results
+[126/390] Natural rubber balls and outdoor toys free from toxins
+  ✓ 14 results
+[127/390] Cloth dolls with hand-embroidered faces and removable clothing
+  ✓ 7 results
+[128/390] Board games designed for family play with high replay value
+  ✓ 12 results
+[129/390] Hand forged chef knives from high carbon steel
+  ✓ 15 results
+[130/390] Damascus steel pocket knives with unique pattern welding
+  ✓ 14 results
+[131/390] Sharpening stones including water stones and oil stones
+  ✓ 8 results
+[132/390] Knife rolls and storage solutions for protecting edges
+  ✓ 13 results
+[133/390] Kitchen shears with separated blades for easy cleaning
+  ✓ 10 results
+[134/390] Butcher blocks made from thick maple for heavy use
+  ✓ 8 results
+[135/390] Carbon steel woks pre-seasoned for high heat cooking
+  ✓ 14 results
+[136/390] Dutch ovens in enameled cast iron for braising and stews
+  ✓ 12 results
+[137/390] Whole bean single origin cacao for making chocolate from scratch
+  ✓ 8 results
+[138/390] Natural sweeteners including raw cane sugar and maple syrup
+  ✓ 10 results
+[139/390] Ancient grains like farro, freekeh, and kamut for cooking
+  ✓ 15 results
+[140/390] Heirloom beans in varieties like cranberry and flageolet
+  ✓ 8 results
+[141/390] Stone ground whole wheat flour milled fresh to order
+  ✓ 15 results
+[142/390] Nutritional yeast with B12 for vegan cooking and cheese alternatives
+  ✓ 10 results
+[143/390] Coconut products including oil, milk, and dried unsweetened flakes
+  ✓ 15 results
+[144/390] Nuts and seeds in bulk including almonds, cashews, and pumpkin seeds
+  ✓ 15 results
+[145/390] Handwoven baskets from natural materials like sweetgrass and willow
+  ✓ 7 results
+[146/390] Ceramic planters with drainage holes in modern geometric shapes
+  ✓ 15 results
+[147/390] Garden tools with hardwood handles and stainless steel heads
+  ✓ 1 results
+[148/390] Heirloom vegetable seeds for organic garden cultivation
+  ✓ 14 results
+[149/390] Composting bins and supplies for reducing kitchen waste
+  ✓ 11 results
+[150/390] Rain barrels for collecting water for garden irrigation
+  ✓ 6 results
+[151/390] Cold frame kits for extending the growing season
+  ✓ 6 results
+[152/390] Raised bed garden kits made from untreated cedar
+  ✓ 9 results
+[153/390] Electric guitars handmade with solid wood construction
+  ✓ 7 results
+[154/390] Vacuum tube amplifiers for warm vintage guitar tone
+  ✓ 7 results
+[155/390] Guitar strings in different gauges for various playing styles
+  ✓ 8 results
+[156/390] Effects pedals including overdrive, delay, and reverb
+  ✓ 8 results
+[157/390] Microphones for recording vocals with large diaphragm condensers
+  ✓ 1 results
+[158/390] Studio monitors with flat frequency response for mixing
+  ✓ 1 results
+[159/390] MIDI controllers with velocity sensitive keys and drum pads
+  ✓ 1 results
+[160/390] Audio interfaces with multiple inputs for home recording
+  ✓ 1 results
+[161/390] Mechanical keyboards with custom switches and keycaps
+  ✓ 1 results
+[162/390] Ergonomic office chairs with lumbar support and adjustable arms
+  ✓ 8 results
+[163/390] Standing desks with electric height adjustment
+  ✓ 6 results
+[164/390] Monitor arms with gas spring adjustment for multiple screens
+  ✓ 1 results
+[165/390] Desk organizers made from sustainable bamboo or cork
+  ✓ 7 results
+[166/390] Task lighting with adjustable color temperature and brightness
+  ✓ 8 results
+[167/390] Noise canceling headphones for focused work in open offices
+  ✓ 7 results
+[168/390] Laptop stands that improve posture and airflow
+  ✓ 6 results
+[169/390] Cable management solutions for clean desktop setups
+  ✓ 7 results
+[170/390] Resistance bands in various tensions for home workouts
+  ✓ 9 results
+[171/390] Yoga mats made from natural rubber with good grip
+  ✓ 7 results
+[172/390] Foam rollers for myofascial release and muscle recovery
+  ✓ 10 results
+[173/390] Kettlebells in competition grade cast iron construction
+  ✓ 6 results
+[174/390] Pull-up bars that mount in doorways without drilling
+  ✓ 1 results
+[175/390] Adjustable dumbbells that save space in home gyms
+  ✓ 7 results
+[176/390] Jump ropes with weighted handles for cardio training
+  ✓ 10 results
+[177/390] Suspension trainers for bodyweight strength exercises
+  ✓ 1 results
+[178/390] Bike lights with high lumens for night commuting safety
+  ✓ 7 results
+[179/390] Panniers and bike bags for grocery shopping and touring
+  ✓ 10 results
+[180/390] Bike locks with high security ratings against cutting
+  ✓ 7 results
+[181/390] Cycling shoes compatible with clipless pedal systems
+  ✓ 6 results
+[182/390] Bike tools including multi-tools and chain breakers
+  ✓ 7 results
+[183/390] Frame pumps that mount to bike frame for convenience
+  ✓ 6 results
+[184/390] Cycling jerseys made from moisture wicking technical fabrics
+  ✓ 15 results
+[185/390] Bike helmets with MIPS technology for impact protection
+  ✓ 6 results
+[186/390] Slow cookers with programmable timers for meal prep
+  ✓ 6 results
+[187/390] Instant pots with pressure cooking and multiple functions
+  ✓ 6 results
+[188/390] Food processors with large capacity and various attachments
+  ✓ 6 results
+[189/390] Immersion blenders for making soups and sauces
+  ✓ 8 results
+[190/390] Espresso machines with PID temperature control
+  ✓ 13 results
+[191/390] Manual coffee grinders with conical burrs for travel
+  ✓ 11 results
+[192/390] Milk frothers for making lattes and cappuccinos at home
+  ✓ 15 results
+[193/390] Pour over coffee makers including Chemex and V60
+  ✓ 14 results
+[194/390] Recycled cashmere yarn for luxury knitting projects
+  ✓ 15 results
+[195/390] Heritage grain flours including spelt and einkorn for baking
+  ✓ 15 results
+[196/390] Specialty salts including fleur de sel and pink Himalayan
+  ✓ 15 results
+[197/390] Sourdough starter with active wild yeast cultures
+  ✓ 14 results
+[198/390] Bread knives with serrated edges that stay sharp
+  ✓ 14 results
+[199/390] Ancient grain berries for grinding fresh flour at home
+  ✓ 15 results
+[200/390] Semolina flour for dusting and making traditional pasta
+  ✓ 15 results
+[201/390] Shaving soaps in traditional scents like sandalwood
+  ✓ 11 results
+[202/390] Pre-shave oils to soften beard hair before lathering
+  ✓ 15 results
+[203/390] Shaving bowls in ceramic with textured interiors
+  ✓ 11 results
+[204/390] Natural loofahs and body brushes for exfoliation
+  ✓ 8 results
+[205/390] Bath salts with essential oils and minerals
+  ✓ 15 results
+[206/390] Body oils in nourishing blends for massage
+  ✓ 15 results
+[207/390] Soap dishes that drain and extend bar life
+  ✓ 14 results
+[208/390] Raw shea butter from Ghana for DIY skin care formulations
+  ✓ 12 results
+[209/390] Dutch ovens specifically designed for bread baking
+  ✓ 11 results
+[210/390] Dough scrapers in stainless steel and flexible plastic
+  ✓ 10 results
+[211/390] Bone broth from slow-simmered organic bones
+  ✓ 14 results
+[212/390] Damascus chef knives with pakkawood handles
+  ✓ 15 results
+[213/390] Heirloom tomato seeds with disease resistance for home gardens
+  ✓ 11 results
+[214/390] Microgreens seeds for indoor kitchen gardens
+  ✓ 13 results
+[215/390] Activated charcoal for natural teeth whitening and detox
+  ✓ 11 results
+[216/390] Wine making supplies including carboys and airlocks
+  ✓ 12 results
+[217/390] Writing slopes and lap desks in fine woods
+  ✓ 6 results
+[218/390] Kitchen scales with precision to one gram increments
+  ✓ 11 results
+[219/390] Heritage breed poultry and eggs from pastured farms
+  ✓ 10 results
+[220/390] Grass-fed beef and lamb from regenerative ranches
+  ✓ 13 results
+[221/390] Bubble removers and headspace measuring tools
+  ✓ 8 results
+[222/390] Turkish towels in lightweight quick-drying cotton
+  ✓ 13 results
+[223/390] Neem oil for organic pest control in gardens
+  ✓ 9 results
+[224/390] Telescoping camping cookware sets for backpacking meals
+  ✓ 12 results
+[225/390] Natural fiber rope including hemp and sisal for macrame
+  ✓ 7 results
+[226/390] Aged rum for crafting classic cocktails and tiki drinks
+  ✓ 8 results
+[227/390] Cocktail bitters in unique flavors for mixology experiments
+  ✓ 9 results
+[228/390] Craft beer brewing kits with specialty malts and hops
+  ✓ 10 results
+[229/390] Fermentation weights to keep vegetables submerged
+  ✓ 8 results
+[230/390] Wild-caught salmon and seafood with sustainable practices
+  ✓ 15 results
+[231/390] Duck fat and schmaltz for cooking with rich flavor
+  ✓ 8 results
+[232/390] Recipe books focused on seasonal canning techniques
+  ✓ 8 results
+[233/390] Pumice stones for smoothing rough skin on feet
+  ✓ 9 results
+[234/390] Bamboo stakes and trellises for supporting plants
+  ✓ 7 results
+[235/390] Small batch gin with botanical complexity for martinis
+  ✓ 9 results
+[236/390] Bar tools including jiggers, strainers, and muddlers
+  ✓ 7 results
+[237/390] Vintage wine from specific regions and exceptional years
+  ✓ 8 results
+[238/390] Banneton proofing baskets in various shapes for bread
+  ✓ 10 results
+[239/390] Lame blades for scoring artisan bread loaves
+  ✓ 9 results
+[240/390] Canning funnels with wide mouths for easy filling
+  ✓ 11 results
+[241/390] Straight razors with carbon steel blades that hold edges
+  ✓ 6 results
+[242/390] Vintage brass hardware for restoring antique furniture
+  ✓ 8 results
+[243/390] Magnetic spice tins for organizing herb and spice collections
+  ✓ 7 results
+[244/390] Artisan vinegar mothers for making homemade apple cider vinegar
+  ✓ 6 results
+[245/390] Brass compass and navigation tools for wilderness exploration
+  ✓ 9 results
+[246/390] Crystal cocktail glasses in vintage art deco styles
+  ✓ 10 results
+[247/390] Silicone baking mats as parchment paper alternatives
+  ✓ 8 results
+[248/390] Vacuum sealers for preserving food freshness
+  ✓ 7 results
+[249/390] Curing salts for making salami and prosciutto at home
+  ✓ 1 results
+[250/390] Ghee clarified from grass-fed butter
+  ✓ 8 results
+[251/390] Transfer paper for moving designs to fabric
+  ✓ 12 results
+[252/390] Shaving mugs with handles and soap recesses
+  ✓ 6 results
+[253/390] Shaving brushes in different hair grades and knot sizes
+  ✓ 6 results
+[254/390] Razor strops in leather for maintaining blade sharpness
+  ✓ 7 results
+[255/390] Natural sea sponges harvested sustainably
+  ✓ 7 results
+[256/390] Seed starting trays with humidity domes
+  ✓ 8 results
+[257/390] Organic kombucha starter cultures with detailed brewing instructions
+  ✓ 7 results
+[258/390] Coconut wax for making clean burning candle blends
+  ✓ 7 results
+[259/390] Natural wine from biodynamic vineyards with minimal intervention
+  ✓ 6 results
+[260/390] Proofing boxes with temperature and humidity control
+  ✓ 1 results
+[261/390] Ravioli cutters and stamps in decorative shapes
+  ✓ 6 results
+[262/390] Sausage stuffers in manual and electric models
+  ✓ 6 results
+[263/390] Butcher paper for wrapping and storing meat properly
+  ✓ 6 results
+[264/390] Embroidery scissors with sharp pointed tips
+  ✓ 13 results
+[265/390] Stabilizers for machine embroidery projects
+  ✓ 11 results
+[266/390] Alum blocks for sealing small nicks after shaving
+  ✓ 6 results
+[267/390] Double edge safety razor blades in bulk quantities
+  ✓ 6 results
+[268/390] Grow lights with full spectrum for year-round growing
+  ✗ NO RESULTS
+[269/390] Garden markers in slate or weatherproof materials
+  ✓ 6 results
+[270/390] Hydroponic nutrients in organic formulations
+  ✓ 7 results
+[271/390] Copper Moscow mule mugs with authentic hammered finish
+  ✓ 7 results
+[272/390] Artisan pickle and fermentation crocks with water seals
+  ✓ 9 results
+[273/390] Natural cork yoga blocks that provide firm support
+  ✓ 6 results
+[274/390] Hand-forged blacksmithing tools for beginner metalworkers
+  ✓ 1 results
+[275/390] Japanese pull saws with fine teeth for precision woodworking
+  ✓ 6 results
+[276/390] Sake from premium rice polished to daiginjo grade
+  ✓ 1 results
+[277/390] Pizza stones made from cordierite for high heat
+  ✓ 6 results
+[278/390] Pasta machines with multiple thickness settings
+  ✓ 7 results
+[279/390] Rolling pins in different materials and lengths
+  ✓ 6 results
+[280/390] Chitarra cutters for making square spaghetti strands
+  ✓ 1 results
+[281/390] Pastry wheels with fluted edges for decorative cuts
+  ✓ 6 results
+[282/390] Dehydrators with multiple trays for making jerky
+  ✓ 1 results
+[283/390] Cheese making kits with rennet and cultures
+  ✓ 6 results
+[284/390] Cold press juicers that extract maximum nutrients
+  ✓ 7 results
+[285/390] Tallow and lard from pastured animals for frying
+  ✓ 7 results
+[286/390] Pattern books with traditional and modern motifs
+  ✓ 15 results
+[287/390] Mason jars in various sizes with two-piece lids
+  ✓ 7 results
+[288/390] Water bath canners for high-acid food preservation
+  ✓ 1 results
+[289/390] Canning labels for dating and identifying preserves
+  ✓ 1 results
+[290/390] Aftershave splashes with witch hazel and alcohol
+  ✓ 1 results
+[291/390] Copper bathtub caddies for reading in the tub
+  ✓ 1 results
+[292/390] Garden kneelers with padded surfaces and handles
+  ✓ 6 results
+[293/390] Natural indigo dye for creating fade patterns on denim
+  ✓ 6 results
+[294/390] Binchotan charcoal for water filtration and odor absorption
+  ✓ 1 results
+[295/390] Vintage film cameras in working condition for analog photography
+  ✓ 1 results
+[296/390] Developing tanks and chemicals for processing black and white film
+  ✓ 1 results
+[297/390] Block printing tools and linoleum blocks for fabric design
+  ✓ 1 results
+[298/390] Mezcal from traditional palenques in Oaxaca Mexico
+  ✓ 1 results
+[299/390] Artisan vermouth from small producers for sophisticated aperitifs
+  ✓ 1 results
+[300/390] Japanese whisky from independent distilleries with limited releases
+  ✓ 1 results
+[301/390] Belgian beer including Trappist ales from monastery breweries
+  ✓ 6 results
+[302/390] Armagnac aged in oak barrels for minimum twenty years
+  ✓ 1 results
+[303/390] Wood burning stoves with soapstone heat retention
+  ✓ 1 results
+[304/390] Vintage light fixtures rewired for modern electrical systems
+  ✓ 7 results
+[305/390] Reclaimed barn wood beams for rustic interior design
+  ✓ 1 results
+[306/390] Cast iron radiators restored and refinished for vintage homes
+  ✓ 1 results
+[307/390] Antique doorknobs and escutcheons in brass and porcelain
+  ✓ 7 results
+[308/390] Subway tiles in classic white with beveled edges
+  ✓ 8 results
+[309/390] Clawfoot bathtubs refinished in original porcelain enamel
+  ✓ 1 results
+[310/390] Farmhouse sinks in fireclay with apron fronts
+  ✓ 6 results
+[311/390] Period-appropriate molding and trim for historic renovations
+  ✓ 8 results
+[312/390] Handmade tiles with Arts and Crafts movement patterns
+  ✓ 10 results
+[313/390] Loose leaf pipe tobacco in classic English and Virginia blends
+  ✓ 1 results
+[314/390] Briar wood pipes with quality stems for pipe smoking
+  ✓ 1 results
+[315/390] Humidors with Spanish cedar lining for cigar storage
+  ✓ 1 results
+[316/390] Premium cigars from Cuban seed tobacco grown in Nicaragua
+  ✓ 1 results
+[317/390] Pipe cleaners and reaming tools for maintenance
+  ✓ 9 results
+[318/390] Tobacco pouches in leather with moisture-retaining linings
+  ✓ 6 results
+[319/390] Cigar cutters with sharp guillotine blades
+  ✓ 1 results
+[320/390] Torch lighters with adjustable flames for even lighting
+  ✓ 7 results
+[321/390] Pipe stands displaying multiple pipes with style
+  ✓ 1 results
+[322/390] Aging rooms and cabinets for maturing pipe tobacco
+  ✓ 6 results
+[323/390] Handmade leather belts with solid brass buckles
+  ✓ 15 results
+[324/390] Suspenders in woven elastic with leather trim details
+  ✓ 10 results
+[325/390] Pocket squares in silk with hand-rolled edges
+  ✓ 7 results
+[326/390] Tie bars and cufflinks in sterling silver or gold
+  ✓ 10 results
+[327/390] Hat brushes and shapers for maintaining fedora crowns
+  ✓ 9 results
+[328/390] Shoe trees made from aromatic cedar wood
+  ✓ 6 results
+[329/390] Boot jacks for removing tall boots without bending
+  ✓ 6 results
+[330/390] Collar stays in metal for crisp shirt presentations
+  ✓ 1 results
+[331/390] Vintage typewriter ribbons for specific models
+  ✓ 1 results
+[332/390] Tailoring supplies including chalk, shears, and measuring tapes
+  ✓ 14 results
+[333/390] Garment bags in canvas for protecting suits during travel
+  ✓ 8 results
+[334/390] Wax sealing kits with custom monogram stamps
+  ✓ 6 results
+[335/390] Bookbinding tools including bone folders and awls
+  ✓ 8 results
+[336/390] Calligraphy nibs in various sizes and flexibility
+  ✓ 6 results
+[337/390] Fountain pen ink in archival quality with rich colors
+  ✓ 7 results
+[338/390] Handmade paper from cotton rag with deckled edges
+  ✓ 6 results
+[339/390] Desk blotters in leather with corner protectors
+  ✓ 6 results
+[340/390] Leather book covers with hand-tooled decorative patterns
+  ✓ 9 results
+[341/390] Letter openers in damascus steel with elegant handles
+  ✓ 6 results
+[342/390] Pasta drying racks that hold multiple portions
+  ✓ 1 results
+[343/390] Gnocchi boards with ridged surfaces for shaping
+  ✓ 1 results
+[344/390] Meat grinders with various plate sizes for sausage
+  ✓ 1 results
+[345/390] Smoking chips in different woods for unique flavors
+  ✓ 1 results
+[346/390] Organ meats including liver and heart from quality sources
+  ✓ 8 results
+[347/390] Collagen powder from grass-fed sources for health
+  ✓ 15 results
+[348/390] Charcuterie from artisan producers with traditional methods
+  ✓ 15 results
+[349/390] Basswood blanks for relief and chip carving
+  ✓ 6 results
+[350/390] Wood carving tools with razor-sharp edges
+  ✓ 10 results
+[351/390] Finishing oils including Danish and tung oil
+  ✓ 1 results
+[352/390] Sandpaper in grits from coarse to ultra-fine
+  ✓ 7 results
+[353/390] Wood stains in oil and water-based formulas
+  ✓ 8 results
+[354/390] Chisels in various widths for mortise and tenon joints
+  ✓ 7 results
+[355/390] Hand planes for smoothing and shaping wood surfaces
+  ✓ 6 results
+[356/390] Marking gauges for precise measurements and layouts
+  ✓ 7 results
+[357/390] Japanese water stones for sharpening edge tools
+  ✓ 9 results
+[358/390] Dust collection systems for workshop cleanliness
+  ✓ 9 results
+[359/390] Leather working stamps for tooling decorative patterns
+  ✓ 1 results
+[360/390] Edge bevelers for finishing leather goods professionally
+  ✓ 6 results
+[361/390] Stitching chisels in various prong configurations
+  ✓ 1 results
+[362/390] Waxed thread in different weights and colors
+  ✓ 12 results
+[363/390] Leather dyes and finishes in authentic tones
+  ✓ 8 results
+[364/390] Rivet setters and snaps for functional closures
+  ✓ 6 results
+[365/390] Skiving knives for thinning leather edges
+  ✓ 7 results
+[366/390] Burnishing tools for polishing cut leather edges
+  ✓ 7 results
+[367/390] Leather cement and contact adhesives for bonding
+  ✓ 7 results
+[368/390] Belt blanks in various widths and thicknesses
+  ✓ 10 results
+[369/390] Embroidery hoops in multiple sizes for hand stitching
+  ✓ 9 results
+[370/390] DMC floss in complete color ranges for cross stitch
+  ✓ 1 results
+[371/390] Sashiko thread and needles for Japanese mending
+  ✓ 10 results
+[372/390] Crewel wool for dimensional embroidery work
+  ✓ 11 results
+[373/390] Pressure canners for preserving low-acid foods safely
+  ✓ 1 results
+[374/390] Aida cloth and evenweave fabric for counted thread
+  ✓ 6 results
+[375/390] Needle threaders for fine embroidery needles
+  ✓ 10 results
+[376/390] Pectin for making jams and jellies that set properly
+  ✓ 6 results
+[377/390] Jar lifters for safely removing hot jars from water
+  ✓ 1 results
+[378/390] Pickle crisp for maintaining vegetable texture
+  ✓ 1 results
+[379/390] Hemp shower curtains that resist mildew naturally
+  ✓ 1 results
+[380/390] Aquaponics systems combining fish and plant growth
+  ✓ 1 results
+[381/390] Wooden bath mats with slats for drainage
+  ✓ 1 results
+[382/390] Worm composting bins for kitchen scrap recycling
+  ✓ 1 results
+[383/390] Pruning shears with bypass cutting action
+  ✓ 6 results
+[384/390] Soil testing kits for pH and nutrient analysis
+  ✓ 6 results
+[385/390] Diatomaceous earth for natural insect barriers
+  ✓ 7 results
+[386/390] Beneficial nematodes for controlling soil pests
+  ✓ 1 results
+[387/390] Companion planting guides for natural pest management
+  ✓ 1 results
+[388/390] Cold frames and row covers extending growing seasons
+  ✓ 6 results
+[389/390] Rain gauges for monitoring garden irrigation needs
+  ✓ 1 results
+[390/390] Soil amendments including compost and worm castings
+  ✓ 13 results
+
+================================================================================
+VALIDATION SUMMARY
+================================================================================
+Total queries: 390
+Queries with results: 389 (99.7%)
+Queries without results: 1 (0.3%)
+Queries with errors: 0 (0.0%)
+
+================================================================================
+QUERIES WITHOUT RESULTS
+================================================================================
+
+• Grow lights with full spectrum for year-round growing
+  Error: Request timeout
+
+Average results per successful query: 8.58

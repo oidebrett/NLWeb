@@ -14,10 +14,23 @@ Backwards compatibility is not guaranteed at this time.
 from core.retriever import search
 import core.ranking as ranking
 from misc.logger.logging_config_helper import get_configured_logger
+from core.config import CONFIG
 import asyncio
 
 logger = get_configured_logger("fast_track")
 
+# Sites that don't support standard vector retrieval
+NO_STANDARD_RETRIEVAL_SITES = ["datacommons", "all", "conv_history", "CricketLens", "cricketlens", "cricketlens.com"]
+
+def site_supports_standard_retrieval(site):
+    """Check if a site supports standard vector database retrieval"""
+    
+    # If site is "all" and aggregation is disabled, treat it as supporting standard retrieval
+    if site == "all" and not CONFIG.is_aggregation_enabled():
+        logger.debug("Site is 'all' with aggregation disabled - treating as standard retrieval")
+        return True
+    
+    return site not in NO_STANDARD_RETRIEVAL_SITES
 
 class FastTrack:
     def __init__(self, handler):
@@ -26,9 +39,8 @@ class FastTrack:
 
     def is_fastTrack_eligible(self):
         """Check if query is eligible for fast track processing"""
-        # Skip fast track for sites without embeddings
-        if "datacommons" in self.handler.site:
-            logger.debug("Fast track not eligible: DataCommons site has no embeddings")
+        # Skip fast track for sites without standard retrieval
+        if not site_supports_standard_retrieval(self.handler.site):
             return False
         if (self.handler.context_url != ''):
             logger.debug("Fast track not eligible: context_url present")
@@ -50,7 +62,7 @@ class FastTrack:
         self.handler.retrieval_done_event.set()  # Use event instead of flag
         
         try:
-            logger.debug(f"Retrieving items for query: {self.handler.query}")
+           
             items = await search(
                 self.handler.query, 
                 self.handler.site,
@@ -58,42 +70,12 @@ class FastTrack:
                 handler=self.handler
             )
             self.handler.final_retrieved_items = items
-            logger.info(f"Fast track retrieved {len(items)} items")
-            
-            # Wait for decontextualization to complete with timeout
-            decon_done = False
-            try:
-                decon_done = await asyncio.wait_for(
-                    self.handler.state.wait_for_decontextualization(),
-                    timeout=5.0  # 5 second timeout
-                )
-            except asyncio.TimeoutError:
-                logger.warning("Decontextualization timed out in fast track")
-                return
-            
-            if decon_done:
-                logger.debug("Decontextualization is done")
-                
-                # Check all abort conditions using centralized method
-                if self.handler.state.abort_fast_track_if_needed():
-                    logger.info("Fast track aborted: abort conditions met")
-                    return
-                elif (not self.handler.query_done and not self.handler.abort_fast_track_event.is_set()):
-                    logger.info("Fast track proceeding: decontextualization not required")
-                    self.handler.fastTrackRanker = ranking.Ranking(self.handler, items, ranking.Ranking.FAST_TRACK)
-                    await self.handler.fastTrackRanker.do()
-                    logger.info("Fast track ranking completed")
-                    return  
-            elif (not self.handler.query_done and not self.handler.abort_fast_track_event.is_set()):
-                logger.info("Fast track proceeding: decontextualization call pending, query not done")
+          
+            if (not self.handler.query_done and not self.handler.abort_fast_track_event.is_set()):
                 self.handler.fastTrackRanker = ranking.Ranking(self.handler, items, ranking.Ranking.FAST_TRACK)
                 await self.handler.fastTrackRanker.do()
-                logger.info("Fast track ranking completed")
                 return
                 
         except Exception as e:
             logger.error(f"Error during fast track processing: {str(e)}")
-            logger.debug("Fast track error details:", exc_info=True)
             raise
-        
-        logger.info("Fast track processing completed")

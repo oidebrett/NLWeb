@@ -35,24 +35,53 @@ class Tool:
 
 def init():
     """Initialize the router module by loading tools."""
-    # Load tools from config directory
+    # Load tools from config directory for default site
     tools_xml_path = os.path.join(CONFIG.config_directory, "tools.xml")
-    
-    logger.info(f"Loading tools from {tools_xml_path}")
-    tools = _load_tools_from_file(tools_xml_path)
-    _tools_cache[tools_xml_path] = tools
+    site_id = 'default'
+
+    logger.info(f"Loading tools from {tools_xml_path} for site '{site_id}'")
+    tools = _load_tools_from_file(tools_xml_path, site_id)
+    cache_key = (tools_xml_path, site_id)
+    _tools_cache[cache_key] = tools
     
     logger.info(f"Loaded {len(tools)} tools")
     logger.info("Router initialization complete")
 
-def _load_tools_from_file(tools_xml_path: str) -> List[Tool]:
-    """Load tools from XML file."""
+def _load_tools_from_file(tools_xml_path: str, site_id: str = 'default') -> List[Tool]:
+    """Load tools from XML file for a specific site.
+    
+    Args:
+        tools_xml_path: Path to the tools.xml file
+        site_id: The site ID to load tools for (default: 'default')
+        
+    Returns:
+        List of Tool objects
+    """
     tools = []
     try:
         tree = ET.parse(tools_xml_path)
         root = tree.getroot()
         
-        for schema_elem in root:
+        # Find the Site element with the matching id
+        site_element = None
+        for site_elem in root:
+            if site_elem.tag == 'Site' and site_elem.get('id') == site_id:
+                site_element = site_elem
+                break
+        
+        # If specific site not found and it's not 'default', try 'default' as fallback
+        if site_element is None and site_id != 'default':
+            for site_elem in root:
+                if site_elem.tag == 'Site' and site_elem.get('id') == 'default':
+                    site_element = site_elem
+                    break
+        
+        if site_element is None:
+            logger.warning(f"No Site element found with id='{site_id}' in {tools_xml_path}")
+            return []
+        
+        # Now iterate through schema types within the Site element
+        for schema_elem in site_element:
             if not hasattr(schema_elem, 'tag'):
                 continue
                 
@@ -117,7 +146,8 @@ def _load_tools_from_file(tools_xml_path: str) -> List[Tool]:
         return []
 
 # Global cache for tools - loaded once and shared
-_tools_cache: Dict[str, List['Tool']] = {}
+# Key is (tools_xml_path, site_id) tuple
+_tools_cache: Dict[tuple, List['Tool']] = {}
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -144,11 +174,24 @@ class ToolSelector:
     PRE_CACHE_TYPES = ["Item", "Recipe", "Movie", "Product", "Restaurant", "Event", "Podcast", "Statistics"]
     
     # Class-level cache for get_tools_by_type results
-    _type_tools_cache: Dict[str, List[Tool]] = {}
+    # Key is (site_id, schema_type) tuple
+    _type_tools_cache: Dict[tuple, List[Tool]] = {}
     
     def __init__(self, handler):
         self.handler = handler
         self.handler.state.start_precheck_step(self.STEP_NAME)
+        
+        # Get site_id from handler (similar to how prompts.py does it)
+        self.site_id = None
+        if handler.site and isinstance(handler.site, list) and len(handler.site) > 0:
+            self.site_id = handler.site[0]
+        elif handler.site and isinstance(handler.site, str):
+            self.site_id = handler.site
+        if self.site_id is None:
+            self.site_id = 'default'
+        
+        print(f"\n[TOOL-SELECTOR] Initializing for site: {self.site_id}")
+        print(f"[TOOL-SELECTOR] Handler site value: {handler.site}")
         
         # Load tools if not already cached
         tools_xml_path = os.path.join(CONFIG.config_directory, "tools.xml")
@@ -162,16 +205,19 @@ class ToolSelector:
         """Load tools from XML if not already cached."""
         global _tools_cache
         
-        if tools_xml_path not in _tools_cache:
-            logger.info(f"Loading tools from {tools_xml_path}")
-            _tools_cache[tools_xml_path] = self._load_tools_from_file(tools_xml_path)
+        # Cache key includes both path and site_id
+        cache_key = (tools_xml_path, self.site_id)
+        
+        if cache_key not in _tools_cache:
+            logger.info(f"Loading tools from {tools_xml_path} for site '{self.site_id}'")
+            _tools_cache[cache_key] = self._load_tools_from_file(tools_xml_path, self.site_id)
         else:
-            logger.info(f"Using cached tools from {tools_xml_path}")
+            logger.info(f"Using cached tools from {tools_xml_path} for site '{self.site_id}'")
     
-    def _load_tools_from_file(self, tools_xml_path: str) -> List[Tool]:
+    def _load_tools_from_file(self, tools_xml_path: str, site_id: str = 'default') -> List[Tool]:
         """Load tools from XML file."""
-        # Now just delegates to the module-level function
-        return _load_tools_from_file(tools_xml_path)
+        # Now just delegates to the module-level function with site_id
+        return _load_tools_from_file(tools_xml_path, site_id)
     
     def _warm_cache(self):
         """Warm the cache for common types."""
@@ -226,7 +272,9 @@ class ToolSelector:
                     # Task was cancelled, skip it
                     pass
                 except Exception as e:
-                    # Silently continue on error
+                    # Log the error but continue evaluating other tools
+                    print(f"[TOOL-SELECTOR] Error processing completed task: {str(e)}")
+                    logger.error(f"Error processing completed task: {str(e)}", exc_info=True)
                     pass
             
             # If no tool exceeded threshold, return all results
@@ -241,14 +289,18 @@ class ToolSelector:
     
     def get_tools_by_type(self, schema_type: str) -> List[Tool]:
         """Get tools for a specific schema type, including inherited tools from parent types."""
+        # Cache key includes site_id
+        cache_key = (self.site_id, schema_type)
+        
         # Check cache first
-        if schema_type in self._type_tools_cache:
-            logger.info(f"Using cached tools for type: {schema_type}")
-            return self._type_tools_cache[schema_type]
+        if cache_key in self._type_tools_cache:
+            logger.info(f"Using cached tools for type: {schema_type} (site: {self.site_id})")
+            return self._type_tools_cache[cache_key]
         
         # Get all loaded tools
         tools_xml_path = os.path.join(CONFIG.config_directory, "tools.xml")
-        all_tools = _tools_cache.get(tools_xml_path, [])
+        tools_cache_key = (tools_xml_path, self.site_id)
+        all_tools = _tools_cache.get(tools_cache_key, [])
         
         # Get all parent types including the current type
         types_to_check = [schema_type]
@@ -272,14 +324,67 @@ class ToolSelector:
         # Convert back to list
         type_tools = list(tools_by_name.values())
         
-        # Cache the result
-        self._type_tools_cache[schema_type] = type_tools
+        # Cache the result with site_id
+        cache_key = (self.site_id, schema_type)
+        self._type_tools_cache[cache_key] = type_tools
         
         # Debug logging
         logger.info(f"Schema type: {schema_type}, checking types: {types_to_check}")
         logger.info(f"Found {len(type_tools)} tools: {[t.name for t in type_tools]}")
         
         return type_tools
+    
+    async def _send_tool_selection_message(self, tool_results, query, tools):
+        """Send tool selection messages in debug mode."""
+        if not getattr(self.handler, 'debug_mode', False):
+            # Not in debug mode, but still need to handle no tools case
+            if not tool_results:
+                logger.info(f"No tools selected (all below threshold {self.MIN_TOOL_SCORE_THRESHOLD}), defaulting to search")
+                # Create a dummy search tool result for the handler
+                search_tool = next((t for t in tools if t.name == 'search'), None)
+                if search_tool:
+                    self.handler.tool_routing_results = [{
+                        "tool": search_tool,
+                        "score": 0,
+                        "result": {"score": 0, "justification": "Default fallback"}
+                    }]
+            return
+        
+        # In debug mode - send messages
+        if tool_results:
+            selected_tool = tool_results[0]
+            elapsed_time = time.time() - self.handler.init_time
+            logger.info(f"Tool selection complete: {selected_tool['tool'].name} (score: {selected_tool['score']:.2f})")
+            message = {
+                "message_type": "tool_selection",
+                "selected_tool": selected_tool['tool'].name,
+                "score": selected_tool['score'],
+                "parameters": selected_tool['result'],
+                "query": query,
+                "time_elapsed": f"{elapsed_time:.3f}s"
+            }
+            asyncio.create_task(self.handler.send_message(message))
+        else:
+            # No tools selected - default to search
+            logger.info(f"No tools selected (all below threshold {self.MIN_TOOL_SCORE_THRESHOLD}), defaulting to search")
+            elapsed_time = time.time() - self.handler.init_time
+            message = {
+                "message_type": "tool_selection",
+                "selected_tool": "search",
+                "score": 0,
+                "parameters": {"score": 0, "justification": "Default fallback - no tools met threshold"},
+                "query": query,
+                "time_elapsed": f"{elapsed_time:.3f}s"
+            }
+            asyncio.create_task(self.handler.send_message(message))
+            # Create a dummy search tool result for the handler
+            search_tool = next((t for t in tools if t.name == 'search'), None)
+            if search_tool:
+                self.handler.tool_routing_results = [{
+                    "tool": search_tool,
+                    "score": 0,
+                    "result": {"score": 0, "justification": "Default fallback"}
+                }]
     
     async def do(self):
         """Main method that evaluates tools and stores results."""
@@ -290,6 +395,43 @@ class ToolSelector:
                 await self.handler.state.precheck_step_done(self.STEP_NAME)
                 return
             
+            # Check if site is "all" and aggregation is disabled - default to search
+            if (self.handler.site == "all" and not CONFIG.is_aggregation_enabled()):
+                logger.info("Site is 'all' and aggregation is disabled, defaulting to search tool")
+                # Find the search tool
+                tools = self.get_tools_by_type("Item")  # Search is typically an Item-level tool
+                search_tool = next((t for t in tools if t.name == 'search'), None)
+                
+                if search_tool:
+                    # Create a default search result
+                    query = self.handler.decontextualized_query or self.handler.query
+                    self.handler.tool_routing_results = [{
+                        "tool": search_tool,
+                        "score": 100,
+                        "result": {
+                            "score": 100, 
+                            "justification": "Default to search for site='all' with aggregation disabled",
+                            "search_query": query
+                        }
+                    }]
+                    
+                    # Send debug message if in debug mode
+                    if getattr(self.handler, 'debug_mode', False):
+                        elapsed_time = time.time() - self.handler.init_time
+                        await self.handler.send_message({
+                            "message_type": "tool_selection",
+                            "selected_tool": "search",
+                            "score": 100,
+                            "parameters": {"score": 100, "justification": "Site='all' with aggregation disabled"},
+                            "query": query,
+                            "time_elapsed": f"{elapsed_time:.3f}s",
+                            "llm_skipped": True
+                        })
+                else:
+                    logger.warning("Search tool not found, continuing with normal tool selection")
+                
+                await self.handler.state.precheck_step_done(self.STEP_NAME)
+                return
 
             # Skip tool selection if generate_mode is summarize or generate
             generate_mode = getattr(self.handler, 'generate_mode', 'none')
@@ -312,8 +454,52 @@ class ToolSelector:
             # Get tools for this type
             tools = self.get_tools_by_type(schema_type)
             
-            # Evaluate tools with early termination strategy
-            tool_results = await self._evaluate_tools_with_early_termination(query, tools, threshold=90)
+            # Handle case where no tools are available
+            if len(tools) == 0:
+                logger.warning(f"No tools available for schema type: {schema_type}")
+                self.handler.tool_routing_results = []
+                await self.handler.state.precheck_step_done(self.STEP_NAME)
+                return
+            
+            # If there's only one tool, skip LLM evaluation and use it directly
+            elif len(tools) == 1:
+                logger.info(f"Only one tool available ({tools[0].name}), skipping LLM evaluation - saving API call")
+                # Build result with default parameters based on tool requirements
+                result = {
+                    "score": 100,
+                    "justification": "Only available tool for this query type"
+                }
+                
+                # Add required parameters based on tool name
+                # These are the common parameters that tools expect when skipping LLM
+                if tools[0].name in ["conversation_search", "search", "cricket_stats"]:
+                    result["search_query"] = query
+                elif tools[0].name in ["who_and_search", "statistics_query"]:
+                    # Add any default params these tools might need
+                    pass
+                
+                tool_results = [{
+                    "tool": tools[0],
+                    "score": 100,
+                    "result": result
+                }]
+                
+                # Send debug message if in debug mode
+                if getattr(self.handler, 'debug_mode', False):
+                    elapsed_time = time.time() - self.handler.init_time
+                    await self.handler.send_message({
+                        "message_type": "tool_selection",
+                        "selected_tool": tools[0].name,
+                        "score": 100,
+                        "parameters": {"score": 100, "justification": "Single tool available - skipped LLM evaluation"},
+                        "query": query,
+                        "time_elapsed": f"{elapsed_time:.3f}s",
+                        "llm_skipped": True
+                    })
+            else:
+                # Evaluate tools with early termination strategy
+                # Evaluating tools for query
+                tool_results = await self._evaluate_tools_with_early_termination(query, tools, threshold=90)
             
             # Sort by score
             tool_results.sort(key=lambda x: x["score"], reverse=True)
@@ -354,40 +540,8 @@ class ToolSelector:
             
             self.handler.tool_routing_results = tool_results
             
-            # Send tool selection results as a message
-            if tool_results:
-                selected_tool = tool_results[0]
-                elapsed_time = time.time() - self.handler.init_time
-                message = {
-                    "message_type": "tool_selection",
-                    "selected_tool": selected_tool['tool'].name,
-                    "score": selected_tool['score'],
-                    "parameters": selected_tool['result'],
-                    "query": query,
-                    "time_elapsed": f"{elapsed_time:.3f}s"
-                }
-                await self.handler.send_message(message)
-            else:
-                # No tools selected - default to search
-                logger.info(f"No tools selected (all below threshold {self.MIN_TOOL_SCORE_THRESHOLD}), defaulting to search")
-                elapsed_time = time.time() - self.handler.init_time
-                message = {
-                    "message_type": "tool_selection",
-                    "selected_tool": "search",
-                    "score": 0,
-                    "parameters": {"score": 0, "justification": "Default fallback - no tools met threshold"},
-                    "query": query,
-                    "time_elapsed": f"{elapsed_time:.3f}s"
-                }
-                await self.handler.send_message(message)
-                # Create a dummy search tool result for the handler
-                search_tool = next((t for t in tools if t.name == 'search'), None)
-                if search_tool:
-                    self.handler.tool_routing_results = [{
-                        "tool": search_tool,
-                        "score": 0,
-                        "result": {"score": 0, "justification": "Default fallback"}
-                    }]
+            # Send tool selection message (handles debug mode internally)
+            await self._send_tool_selection_message(tool_results, query, tools)
                 
         except Exception as e:
             logger.error(f"Error in tool selection: {e}")
@@ -413,18 +567,11 @@ class ToolSelector:
             
             result = response or {"score": 0, "justification": "No response from LLM"}
             
-            # Log timing and response information (commented out to reduce console output)
-            # print(f"\n--- Tool Evaluation: {tool.name} ---")
-            # print(f"Time taken: {elapsed_time:.3f} seconds")
-            # print(f"Response: {result}")
-            # print(f"Score: {result.get('score', 0)}")
-            # print("-" * 40)
+            # Tool evaluation completed
             
             return {"tool": tool, "result": result, "score": result.get("score", 0)}
         except Exception as e:
-            # print(f"\n--- Tool Evaluation ERROR: {tool.name} ---")
-            # print(f"Error: {str(e)}")
-            # print("-" * 40)
+            # Tool evaluation error
             logger.error(f"Tool evaluation error for {tool.name}: {str(e)}")
             return {"tool": tool, "score": 0, "result": {"score": 0, "justification": f"Error: {str(e)}"}}
     
@@ -450,4 +597,4 @@ class ToolSelector:
             "schema_type": schema_type
         }
         
-        await self.handler.send_message(message)
+        asyncio.create_task(self.handler.send_message(message))

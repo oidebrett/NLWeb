@@ -13,12 +13,17 @@ import asyncio
 from typing import List, Dict, Optional, Any, Union
 
 from core.config import CONFIG
+from core.retriever import RetrievalClientBase
 from misc.logger.logging_config_helper import get_configured_logger
 
 logger = get_configured_logger("shopify_mcp")
 
+# Cache for MCP call results
+# Key: (site, query), Value: list of results
+_mcp_results_cache = {}
 
-class ShopifyMCPClient:
+
+class ShopifyMCPClient(RetrievalClientBase):
     """
     Client for Shopify MCP operations, providing search functionality via MCP endpoints.
     Currently supports search_shop_catalog method with USD currency and 50 results by default.
@@ -31,7 +36,24 @@ class ShopifyMCPClient:
         Args:
             endpoint_name: Name of the endpoint configuration in config_retrieval.yaml
         """
+        super().__init__()  # Initialize the base class with caching
         self.endpoint_name = endpoint_name
+    
+    async def can_handle_query(self, site: Union[str, List[str]], **kwargs) -> bool:
+        """
+        Check if this Shopify MCP client can handle a query for the given site(s).
+        Returns True if the site contains 'shopify' in the domain or is in the cached sites list.
+        """
+        # Convert site to list for uniform handling
+        sites_to_check = [site] if isinstance(site, str) else site
+        
+        # Check if any site contains 'shopify' in the domain
+        for site_name in sites_to_check:
+            if 'shopify' in site_name.lower():
+                return True
+        
+        # Fall back to the default implementation
+        return await super().can_handle_query(site, **kwargs)
     
     async def search(self, query: str, site: Union[str, List[str]], 
                     num_results: int = 50, query_params: Optional[Dict[str, Any]] = None, **kwargs) -> List[List[str]]:
@@ -42,7 +64,7 @@ class ShopifyMCPClient:
             query: The search query string
             site: Site identifier or list of sites
             num_results: Maximum number of results to return
-            **kwargs: Additional parameters
+            **kwargs: Additional parameters (including optional 'handler')
             
         Returns:
             List of search results formatted as [url, schema_json, name, site]
@@ -51,14 +73,93 @@ class ShopifyMCPClient:
         if isinstance(site, list):
             site = site[0] if site else None
         
+        print(f"[SHOPIFY_MCP] search() called with query='{query}', site='{site}', num_results={num_results}")
+        
         if not site:
             logger.error("No site specified for Shopify MCP search")
             return []
         
+        # Check if we have pre-computed rewritten queries from the handler
+        handler = kwargs.get('handler')
+        
+        # Wait for rewritten_queries to be available if handler exists
+        if handler:
+            max_wait = 10  # Maximum wait time in seconds
+            wait_interval = 0.1  # Check every 100ms
+            waited = 0
+            
+            while not hasattr(handler, 'rewritten_queries') and waited < max_wait:
+                await asyncio.sleep(wait_interval)
+                waited += wait_interval
+            
+            if waited >= max_wait:
+                logger.warning(f"Timeout waiting for rewritten_queries after {max_wait}s")
+        
+        rewritten_queries = getattr(handler, 'rewritten_queries', None) if handler else None
+        
+        # Use rewritten queries if available and multiple queries exist
+        if rewritten_queries and len(rewritten_queries) > 1:
+            logger.info(f"Using {len(rewritten_queries)} rewritten queries for Shopify search: {rewritten_queries}")
+            print(f"[SHOPIFY_MCP] Original query: '{query}'")
+            print(f"[SHOPIFY_MCP] Using {len(rewritten_queries)} rewritten queries: {rewritten_queries}")
+
+            # Calculate results per query to maintain total count
+            results_per_query = max(1, num_results // len(rewritten_queries))
+            remainder = num_results % len(rewritten_queries)
+            
+            # Execute searches for each rewritten query in parallel
+            tasks = []
+            for i, rewritten_query in enumerate(rewritten_queries):
+                # Add remainder to first queries
+                query_results = results_per_query + (1 if i < remainder else 0)
+                # Create a task for each rewritten query
+                task = asyncio.create_task(
+                    self._search_single_query(rewritten_query, site, query_results)
+                )
+                tasks.append(task)
+            
+            # Execute all searches in parallel
+            all_results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Combine results, filtering out errors
+            combined_results = []
+            for i, result in enumerate(all_results):
+                if isinstance(result, Exception):
+                    logger.warning(f"Search failed for rewritten query '{rewritten_queries[i]}': {result}")
+                elif result:
+                    combined_results.extend(result)
+            
+            # Limit to requested number of results
+            return combined_results[:num_results]
+        
+        # No rewritten queries - use original query
+        result = await self._search_single_query(query, site, num_results)
+        return result
+    
+    async def _search_single_query(self, query: str, site: str, num_results: int) -> List[List[str]]:
+        """
+        Internal method to search with a single query.
+
+        Args:
+            query: The search query string
+            site: Site identifier
+            num_results: Maximum number of results to return
+
+        Returns:
+            List of search results formatted as [url, schema_json, name, site]
+        """
+        # Check cache first
+        cache_key = (site, query)
+        if cache_key in _mcp_results_cache:
+            logger.debug(f"Cache hit for Shopify MCP query: {query} on {site}")
+            cached_results = _mcp_results_cache[cache_key]
+            print(f"[SHOPIFY_MCP] Query '{query}' to {site}: {len(cached_results)} results (cached)")
+            return cached_results[:num_results]
+
+        logger.debug(f"Cache miss for Shopify MCP query: {query} on {site}")
+
         # Construct the MCP endpoint URL based on the site
         endpoint = f"https://{site}/api/mcp"
-        
-        logger.info(f"Shopify MCP search initiated for query: '{query}' on site: {site}")
         
         # Prepare the MCP request
         mcp_request = {
@@ -84,9 +185,6 @@ class ShopifyMCPClient:
         
         try:
             async with aiohttp.ClientSession() as session:
-                logger.debug(f"Sending request to: {endpoint}")
-                logger.debug(f"Request headers: {headers}")
-                logger.debug(f"Request body: {json.dumps(mcp_request, indent=2)}")
                 
                 async with session.post(
                     endpoint,
@@ -94,8 +192,6 @@ class ShopifyMCPClient:
                     headers=headers,
                     timeout=aiohttp.ClientTimeout(total=30)
                 ) as response:
-                    logger.debug(f"Response status: {response.status}")
-                    logger.debug(f"Response headers: {dict(response.headers)}")
                     
                     if response.status != 200:
                         logger.error(f"Shopify MCP request failed with status {response.status}")
@@ -111,8 +207,7 @@ class ShopifyMCPClient:
                     except Exception as json_error:
                         # If JSON parsing fails, then it's really not JSON
                         text = await response.text()
-                        logger.error(f"Failed to parse response as JSON. Content-Type: {content_type}")
-                        logger.debug(f"Response text (first 500 chars): {text[:500]}")
+                        print(f"Failed to parse response as JSON. Content-Type: {content_type}")
                         return []
                     
                     # Check for JSON-RPC error
@@ -131,18 +226,31 @@ class ShopifyMCPClient:
                                 try:
                                     # Parse the text as JSON
                                     search_data = json.loads(content_item['text'])
-                                    return self._format_results(search_data, site)
+                                    formatted = self._format_results(search_data, site)
+                                    # Cache the results
+                                    _mcp_results_cache[cache_key] = formatted
+                                    # Print query and results on one line
+                                    print(f"[SHOPIFY_MCP] Query '{query}' to {site}: {len(formatted)} results")
+                                    return formatted
                                 except json.JSONDecodeError:
                                     logger.error(f"Failed to parse search results from content text")
-                    
+
                     # Otherwise try direct format
-                    return self._format_results(mcp_result, site)
+                    formatted = self._format_results(mcp_result, site)
+
+                    # Cache the results
+                    _mcp_results_cache[cache_key] = formatted
+
+                    # Print query and results on one line
+                    print(f"[SHOPIFY_MCP] Query '{query}' to {site}: {len(formatted)} results")
+
+                    return formatted
                     
         except asyncio.TimeoutError:
-            logger.error("Shopify MCP request timed out")
+            print(f"[SHOPIFY_MCP] Query '{query}' to {site}: 0 results (timeout)")
             return []
         except Exception as e:
-            logger.error(f"Shopify MCP request failed: {str(e)}")
+            print(f"[SHOPIFY_MCP] Query '{query}' to {site}: 0 results (error: {str(e)})")
             return []
     
     def _format_results(self, mcp_result: Dict, site: str) -> List[List[str]]:
@@ -307,3 +415,44 @@ class ShopifyMCPClient:
         Close the MCP client. No cleanup needed for now.
         """
         pass
+    
+    async def delete_documents_by_site(self, site: str, **kwargs) -> int:
+        """
+        Delete documents for a site - not supported by Shopify MCP.
+        
+        Args:
+            site: Site identifier
+            **kwargs: Additional parameters
+            
+        Returns:
+            0 - deletion not supported
+        """
+        logger.warning("Document deletion not supported by Shopify MCP")
+        return 0
+    
+    async def upload_documents(self, documents: List[Dict[str, Any]], **kwargs) -> int:
+        """
+        Upload documents - not supported by Shopify MCP.
+        
+        Args:
+            documents: Documents to upload
+            **kwargs: Additional parameters
+            
+        Returns:
+            0 - upload not supported
+        """
+        logger.warning("Document upload not supported by Shopify MCP")
+        return 0
+    
+    async def search_by_url(self, url: str, **kwargs) -> Optional[List[str]]:
+        """
+        Search by URL - not implemented for Shopify MCP.
+        
+        Args:
+            url: URL to search for
+            **kwargs: Additional parameters
+            
+        Returns:
+            None - search by URL not supported
+        """
+        return None

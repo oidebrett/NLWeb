@@ -8,7 +8,7 @@ NLWeb is a collection of open protocols and associated open source tools. Its ma
 
 AI has the potential to enhance every web interaction. Realizing this requires a collaborative spirit reminiscent of the Web's early "barn raising" days. Shared protocols, sample implementations, and community participation are all essential. NLWeb brings together protocols, Schema.org formats, and sample code to help sites quickly implement conversational endpoints — benefitting both users through natural interfaces and agents through structured interaction.
 
-> Join us in building this connected web of agents.
+Join us in building this connected web of agents.
 
 ## How It Works
 

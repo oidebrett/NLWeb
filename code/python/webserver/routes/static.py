@@ -4,6 +4,7 @@ from aiohttp import web
 import logging
 import os
 from pathlib import Path
+from core.config import CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ def setup_static_routes(app: web.Application):
         path=static_path,
         name='static',
         show_index=False,
-        follow_symlinks=True
+        follow_symlinks=False
     )
     
     # Serve HTML files
@@ -48,7 +49,7 @@ def setup_static_routes(app: web.Application):
             path=html_path,
             name='html',
             show_index=False,
-            follow_symlinks=True
+            follow_symlinks=False
         )
     
     # Store static path in app for use in handlers
@@ -56,20 +57,33 @@ def setup_static_routes(app: web.Application):
 
 
 async def index_handler(request: web.Request) -> web.Response:
-    """Serve index.html for root path"""
-    
+    """Serve homepage file specified in config for root path"""
+
     static_path = request.app.get('static_path')
     if not static_path:
         return web.Response(text="Static files not configured", status=500)
-    
-    index_file = static_path / 'index.html'
-    
-    if not index_file.exists():
-        logger.error(f"index.html not found at {index_file}")
-        return web.Response(text="index.html not found", status=404)
-    
+
+    # Get homepage from config, default to 'static/index.html' if not set
+    homepage = getattr(CONFIG, 'homepage', 'static/index.html')
+
+    # Remove 'static/' prefix if present since we're already in the static directory
+    if homepage.startswith('static/'):
+        homepage = homepage[7:]  # Remove 'static/' prefix
+
+    homepage_file = static_path / homepage
+
+    if not homepage_file.exists():
+        logger.error(f"Homepage file not found at {homepage_file}")
+        # Fall back to index.html if configured homepage doesn't exist
+        fallback_file = static_path / 'index.html'
+        if fallback_file.exists():
+            logger.warning(f"Using fallback index.html instead of configured homepage: {homepage}")
+            homepage_file = fallback_file
+        else:
+            return web.Response(text=f"Homepage file '{homepage}' not found", status=404)
+
     return web.FileResponse(
-        index_file,
+        homepage_file,
         headers={
             'Cache-Control': 'no-cache',
             'Content-Type': 'text/html; charset=utf-8'

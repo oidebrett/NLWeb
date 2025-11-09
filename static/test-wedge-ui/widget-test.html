@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NLWeb Widget Test Harness</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      h1 {
+        margin-bottom: 12px;
+        font-size: 20px;
+      }
+      .note {
+        margin-bottom: 16px;
+        color: #475569;
+      }
+      iframe {
+        width: 100%;
+        height: 900px;
+        border: 1px solid #cbd5f5;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      textarea {
+        width: 100%;
+        height: 220px;
+        font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 13px;
+        padding: 12px;
+        border: 1px solid #cbd5f5;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #0f172a;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+      }
+      button {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>NLWeb AppSDK Widget Harness</h1>
+    <p class="note">
+      Paste the <code>structuredContent</code> JSON (or the entire payload produced by
+      <code>python -m testing.mock_appsdk_tool --output output.json</code>) into the text area below,
+      then click “Load Widget”. The widget iframe will render using <code>window.structuredContent</code>.
+    </p>
+
+    <textarea id="json-input" placeholder='Paste JSON here (either full AppSDK payload or just structuredContent)'></textarea>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; align-items:center;">
+      <button id="load-btn">Load Widget</button>
+      <button id="load-sample-btn" type="button">Load Latest output.json</button>
+      <label style="font-size:13px; color:#475569;">
+        or choose file:
+        <input id="file-input" type="file" accept="application/json" />
+      </label>
+    </div>
+
+    <iframe id="widget-frame" src="nlweb_widget.html"></iframe>
+
+    <script>
+      const loadButton = document.getElementById("load-btn");
+      const loadSampleButton = document.getElementById("load-sample-btn");
+      const fileInput = document.getElementById("file-input");
+      const textArea = document.getElementById("json-input");
+      const iframe = document.getElementById("widget-frame");
+
+      let pendingStructured = null;
+      let widgetHasSignaledReady = false;
+
+      const normalizeStructuredContent = (structured) => {
+        const clone = structured ? JSON.parse(JSON.stringify(structured)) : {};
+        if (!Array.isArray(clone.results) || clone.results.length === 0) {
+          const legacyResults =
+            structured?.legacyResponse?.structuredContent?.results ||
+            structured?.legacyResponse?.results ||
+            structured?.results ||
+            [];
+          clone.results = legacyResults;
+        }
+        return clone;
+      };
+
+      const sendToWidget = (structured) => {
+        const normalized = normalizeStructuredContent(structured);
+        pendingStructured = normalized;
+        if (!iframe.contentWindow) {
+          return;
+        }
+        iframe.contentWindow.postMessage(
+          {
+            type: "setStructuredContent",
+            payload: normalized,
+          },
+          "*",
+        );
+      };
+
+      loadButton.addEventListener("click", () => {
+        const raw = textArea.value.trim();
+        if (!raw) {
+          alert("Please paste JSON first.");
+          return;
+        }
+
+        let parsed;
+        try {
+          parsed = JSON.parse(raw);
+        } catch (error) {
+          alert("Invalid JSON: " + error);
+          return;
+        }
+
+        const structured = parsed.structuredContent ? parsed.structuredContent : parsed;
+        sendToWidget(structured);
+      });
+
+      loadSampleButton.addEventListener("click", async () => {
+        const SAMPLE_PATH = "./sample_output.json";
+        try {
+          const response = await fetch(SAMPLE_PATH, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
+          const data = await response.json();
+          textArea.value = JSON.stringify(data, null, 2);
+          loadButton.click();
+        } catch (error) {
+          alert(`Failed to fetch ${SAMPLE_PATH}: ${error}`);
+        }
+      });
+
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target?.files?.[0];
+        if (!file) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const text = typeof reader.result === "string" ? reader.result : "";
+          textArea.value = text;
+          loadButton.click();
+        };
+        reader.onerror = () => {
+          alert(`Failed to read file: ${reader.error}`);
+        };
+        reader.readAsText(file);
+      });
+
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "widgetReady") {
+          widgetHasSignaledReady = true;
+          if (pendingStructured) {
+            sendToWidget(pendingStructured);
+          } else {
+            const raw = textArea.value.trim();
+            if (!raw) {
+              return;
+            }
+            try {
+              const parsed = JSON.parse(raw);
+              const structured = parsed.structuredContent ? parsed.structuredContent : parsed;
+              sendToWidget(structured);
+            } catch (error) {
+              console.warn("Skipping auto-load because JSON was invalid:", error);
+            }
+          }
+        } else if (event.data?.type === "widgetRendered") {
+          pendingStructured = null;
+        }
+      });
+
+      iframe.addEventListener("load", () => {
+        if (pendingStructured && widgetHasSignaledReady) {
+          sendToWidget(pendingStructured);
+        }
+      });
+    </script>
+  </body>
+</html>

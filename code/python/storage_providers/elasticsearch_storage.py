@@ -10,7 +10,8 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 
 from elasticsearch import AsyncElasticsearch
-from core.storage import StorageProvider, ConversationEntry
+from core.schemas import ConversationEntry
+from core.conversation_history import StorageProvider
 from core.embedding import get_embedding
 from misc.logger.logging_config_helper import get_configured_logger
 from misc.logger.logger import LogLevel
@@ -20,6 +21,11 @@ logger = get_configured_logger("elasticsearch_storage")
 class ElasticsearchStorageProvider(StorageProvider):
     """Elasticsearch-based storage for conversation history."""
 
+    async def initialize(self):
+        """Initialize the Elasticsearch storage provider."""
+        # Client initialization happens lazily in _get_es_client
+        pass
+    
     def __init__(self, config):
         """
         Initialize Elasticsearch storage provider.
@@ -115,7 +121,16 @@ class ElasticsearchStorageProvider(StorageProvider):
             "conversation_id": {
                 "type": "keyword"
             },
-            "embedding": vector_type
+            "embedding": vector_type,
+            "summary": {
+                "type": "text"
+            },
+            "main_topics": {
+                "type": "keyword"
+            },
+            "participants": {
+                "type": "text"
+            }
         }
         
         try:
@@ -158,12 +173,14 @@ class ElasticsearchStorageProvider(StorageProvider):
                 self.es_client = None
     
     async def add_conversation(self, user_id: str, site: str, thread_id: Optional[str], 
-                             user_prompt: str, response: str) -> ConversationEntry:
+                             user_prompt: str, response: str, embedding: Optional[List[float]] = None,
+                             summary: Optional[str] = None, main_topics: Optional[List[str]] = None,
+                             participants: Optional[List[Dict[str, Any]]] = None) -> ConversationEntry:
         """
         Add a conversation to storage.
         
         If thread_id is None, creates a new thread_id.
-        Creates conversation_id and computes embedding from user_prompt + response.
+        Creates conversation_id and computes embedding from user_prompt + response if not provided.
 
         Args:
             user_id: The user ID associated with the conversation
@@ -171,6 +188,10 @@ class ElasticsearchStorageProvider(StorageProvider):
             thread_id: The thread ID of the conversation (optional)
             user_prompt: The user's prompt in the conversation
             response: The assistant's response in the conversation
+            embedding: Optional pre-computed embedding vector
+            summary: Optional LLM-generated summary
+            main_topics: Optional list of main topics
+            participants: Optional list of participants
 
         Returns:
             ConversationEntry: The conversation entry created
@@ -186,10 +207,11 @@ class ElasticsearchStorageProvider(StorageProvider):
             # Generate conversation_id
             conversation_id = str(uuid.uuid4())
             
-            # Generate embedding for the conversation
-            # Combine user prompt and response for better context
-            conversation_text = f"User: {user_prompt}\nAssistant: {response}"
-            embedding = await get_embedding(conversation_text)
+            # Generate embedding if not provided
+            if embedding is None:
+                # Combine user prompt and response for better context
+                conversation_text = f"User: {user_prompt}\nAssistant: {response}"
+                embedding = await get_embedding(conversation_text)
             
             # Create conversation entry
             entry = ConversationEntry(
@@ -200,22 +222,35 @@ class ElasticsearchStorageProvider(StorageProvider):
                 response=response,
                 time_of_creation=datetime.now(timezone.utc),
                 conversation_id=conversation_id,
-                embedding=embedding
+                embedding=embedding,
+                summary=summary,
+                main_topics=main_topics,
+                participants=participants
             )
             
             # Store in Elasticsearch
+            document = {
+                "conversation_id": entry.conversation_id,
+                "user_id": entry.user_id,
+                "site": entry.site,
+                "thread_id": entry.thread_id,
+                "user_prompt": entry.user_prompt,
+                "response": entry.response,
+                "time_of_creation": entry.time_of_creation.isoformat(),
+                "embedding": entry.embedding
+            }
+            
+            # Add optional fields if provided
+            if entry.summary:
+                document["summary"] = entry.summary
+            if entry.main_topics:
+                document["main_topics"] = entry.main_topics
+            if entry.participants:
+                document["participants"] = entry.participants
+            
             await client.index(
                 index=self.index_name,
-                document={
-                    "conversation_id": entry.conversation_id,
-                    "user_id": entry.user_id,
-                    "site": entry.site,
-                    "thread_id": entry.thread_id,
-                    "user_prompt": entry.user_prompt,
-                    "response": entry.response,
-                    "time_of_creation": entry.time_of_creation.isoformat(),
-                    "embedding": entry.embedding
-                }
+                document=document
             )
             
             logger.debug(f"Stored conversation {entry.conversation_id} in thread {entry.thread_id}")
@@ -271,13 +306,70 @@ class ElasticsearchStorageProvider(StorageProvider):
                     user_prompt=source.get("user_prompt", ""),
                     response=source.get("response", ""),
                     time_of_creation=datetime.fromisoformat(source.get("time_of_creation", "")),
-                    embedding=source.get("embedding", [])
+                    embedding=source.get("embedding", []),
+                    summary=source.get("summary"),
+                    main_topics=source.get("main_topics"),
+                    participants=source.get("participants")
                 ))
 
             return conversations
             
         except Exception as e:
             logger.error(f"Failed to get conversation thread: {e}")
+            return []
+    
+    async def get_conversation_by_id(self, conversation_id: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Retrieve all conversations with the given conversation_id.
+        
+        Args:
+            conversation_id: The conversation ID to retrieve
+            limit: Optional limit to return only the N most recent exchanges
+            
+        Returns:
+            Dict containing all conversation exchanges as events
+        """
+        try:
+            client = await self._get_es_client()
+            
+            # Search for all conversations with this ID
+            # Use a high default limit if none specified
+            search_limit = limit if limit else 1000
+            
+            query = {
+                "term": {
+                    "conversation_id": conversation_id
+                }
+            }
+            
+            # Sort by time_of_creation ascending
+            sort = [{"time_of_creation": {"order": "asc"}}]
+            
+            response = await client.search(
+                index=self.index_name,
+                query=query,
+                size=search_limit,
+                sort=sort
+            )
+            
+            if response['hits']['total']['value'] == 0:
+                return []
+            
+            # Extract all events - just pass through the raw data
+            events = []
+            for hit in response['hits']['hits']:
+                events.append(hit['_source'])
+            
+            # If limit is specified and we have more events, take only the N most recent
+            # Events are already sorted by time ascending, so take the last N
+            if limit and len(events) > limit:
+                events = events[-limit:]
+            
+            # Return just the array of events
+            return events
+            
+        except Exception as e:
+            logger.error(f"Failed to get conversation by ID: {e}")
             return []
     
     async def get_recent_conversations(self, user_id: str, site: str, limit: int = 50) -> List[Dict[str, Any]]:
@@ -492,7 +584,10 @@ class ElasticsearchStorageProvider(StorageProvider):
                     user_prompt=source.get("user_prompt", ""),
                     response=source.get("response", ""),
                     time_of_creation=datetime.fromisoformat(source.get("time_of_creation", "")),
-                    embedding=None # We don't return embeddings in search results
+                    embedding=None, # We don't return embeddings in search results
+                    summary=source.get("summary"),
+                    main_topics=source.get("main_topics"),
+                    participants=source.get("participants")
                 ))
 
             return conversations

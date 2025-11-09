@@ -53,18 +53,19 @@ class MCPHandler:
         is_notification = request_id is None
         
         logger.info(f"MCP request: method={method}, id={request_id}, is_notification={is_notification}")
-        print(f"=== MCP REQUEST: method={method}, id={request_id}, initialized={self.initialized}, handler_id={id(self)} ===")
-        
+        # Commented out verbose logging
+        # print(f"=== MCP REQUEST: method={method}, id={request_id}, initialized={self.initialized}, handler_id={id(self)} ===")
+
         try:
             # Route based on method
             if method == "initialize":
                 result = await self.handle_initialize(params)
-                print(f"=== INITIALIZE COMPLETE, sending response ===")
+                # print(f"=== INITIALIZE COMPLETE, sending response ===")
             elif method == "initialized" or method == "notifications/initialized":
                 # This is a notification, no response needed
                 self.initialized = True
                 logger.info("MCP server initialized")
-                print(f"=== SERVER MARKED AS INITIALIZED ===")
+                # print(f"=== SERVER MARKED AS INITIALIZED ===")
                 if not is_notification:
                     result = {"status": "ok"}
                 else:
@@ -76,7 +77,7 @@ class MCPHandler:
                 logger.info(f"tools/list called, initialized={self.initialized}")
                 result = await self.handle_tools_list(params)
             elif method == "tools/call":
-                print(f"=== TOOLS/CALL: initialized={self.initialized} ===")
+                # print(f"=== TOOLS/CALL: initialized={self.initialized} ===")
                 # Remove the initialization check - MCP clients might not send initialize first
                 # if not self.initialized:
                 #     raise Exception("Server not initialized")
@@ -187,6 +188,23 @@ class MCPHandler:
             }
         })
         
+        # Add who tool if who endpoint is enabled
+        if CONFIG.is_who_endpoint_enabled():
+            available_tools.append({
+                "name": "who",
+                "description": "Find the most relevant sites to answer a query by asking the who endpoint",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The question to find relevant sites for"
+                        }
+                    },
+                    "required": ["query"]
+                }
+            })
+        
         # TODO: Add additional NLWeb tools here when router integration is ready
         
         return {"tools": available_tools}
@@ -275,14 +293,15 @@ class MCPHandler:
         arguments = params.get("arguments", {})
         
         logger.info(f"MCP tool call: {tool_name} with args: {arguments}")
-        print(f"=== TOOL CALL: {tool_name} ===")
-        print(f"Arguments: {json.dumps(arguments, indent=2)}")
+        # Commented out verbose logging
+        # print(f"=== TOOL CALL: {tool_name} ===")
+        # print(f"Arguments: {json.dumps(arguments, indent=2)}")
         
         if tool_name == "ask":
             # Handle the main query tool
             query = arguments.get("query", "")
-            print(f"=== PROCESSING ASK TOOL ===")
-            print(f"Query: {query}")
+            # print(f"=== PROCESSING ASK TOOL ===")
+            # print(f"Query: {query}")
             sites = arguments.get("site", [])
             generate_mode = arguments.get("generate_mode", "list")
             
@@ -292,10 +311,9 @@ class MCPHandler:
             if sites:
                 query_params["site"] = sites if isinstance(sites, list) else [sites]
             query_params["generate_mode"] = [generate_mode] if generate_mode else ["list"]
-            
-            print(f"=== QUERY PARAMS BEING PASSED ===")
-            print(f"query_params: {query_params}")
-            
+            # print(f"=== QUERY PARAMS BEING PASSED ===")
+            # print(f"query_params: {query_params}")
+
             # Create a response accumulator
             response_content = []
             
@@ -314,16 +332,16 @@ class MCPHandler:
             capture_chunk = ChunkCapture()
             
             # Process the query using NLWebHandler with a timeout
-            print(f"=== CREATING NLWebHandler ===")
-            print(f"Query params: {query_params}")
+            # print(f"=== CREATING NLWebHandler ===")
+            # print(f"Query params: {query_params}")
             handler = NLWebHandler(query_params, capture_chunk)
             try:
-                print(f"=== CALLING handler.runQuery() ===")
-                # Add a 10-second timeout for MCP requests
-                result = await asyncio.wait_for(handler.runQuery(), timeout=10.0)
-                print(f"=== HANDLER RETURNED: {result} ===")
+                # print(f"=== CALLING handler.runQuery() ===")
+                # Add a 30-second timeout for MCP requests
+                result = await asyncio.wait_for(handler.runQuery(), timeout=30.0)
+                # print(f"=== HANDLER RETURNED: {result} ===")
             except asyncio.TimeoutError:
-                logger.warning("MCP tool call timed out after 10 seconds")
+                logger.warning("MCP tool call timed out after 30 seconds")
                 return {
                     "content": [
                         {
@@ -381,13 +399,124 @@ class MCPHandler:
                     "isError": True
                 }
         
+        elif tool_name == "who":
+            # Handle the who tool if enabled
+            if not CONFIG.is_who_endpoint_enabled():
+                return {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "The 'who' endpoint is disabled in the configuration"
+                        }
+                    ],
+                    "isError": True
+                }
+            
+            # Get the query from arguments
+            query = arguments.get("query", "")
+            if not query:
+                return {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Query parameter is required for the 'who' tool"
+                        }
+                    ],
+                    "isError": True
+                }
+            
+            try:
+                from core.whoHandler import WhoHandler
+                
+                # Set up query params for who handler
+                who_query_params = {"query": [query]}
+                
+                # Create a response accumulator
+                response_content = []
+                
+                class ChunkCapture:
+                    async def write_stream(self, data, end_response=False):
+                        # Convert data to string
+                        if isinstance(data, dict):
+                            chunk = json.dumps(data)
+                        elif isinstance(data, bytes):
+                            chunk = data.decode('utf-8')
+                        else:
+                            chunk = str(data)
+                        response_content.append(chunk)
+                
+                capture_chunk = ChunkCapture()
+                
+                # Process the query using WhoHandler with a timeout
+                handler = WhoHandler(who_query_params, capture_chunk)
+                try:
+                    # Add a 30-second timeout for WHO requests (they can take longer)
+                    await asyncio.wait_for(handler.runQuery(), timeout=30.0)
+                    # Give a small delay to ensure async send_message tasks complete
+                    await asyncio.sleep(0.1)
+                except asyncio.TimeoutError:
+                    logger.warning("WHO tool call timed out after 30 seconds")
+                    return {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Request timed out. The WHO query is taking longer than expected. Please try a simpler query."
+                            }
+                        ],
+                        "isError": True
+                    }
+                
+                # Join all chunks
+                full_response = ''.join(response_content)
+                
+                # Debug logging
+                logger.info(f"WHO handler captured {len(response_content)} chunks")
+                logger.info(f"Total response length: {len(full_response)} characters")
+                if not full_response:
+                    logger.warning("WHO handler returned empty response!")
+                    # Check if results are in handler's final_ranked_answers
+                    if hasattr(handler, 'final_ranked_answers') and handler.final_ranked_answers:
+                        logger.info(f"Found {len(handler.final_ranked_answers)} results in handler.final_ranked_answers")
+                        # Format the results properly
+                        results = []
+                        for item in handler.final_ranked_answers[:10]:  # Top 10 results
+                            result = {
+                                "name": item.get("name", "Unknown"),
+                                "url": item.get("url", ""),
+                                "score": item.get("ranking", {}).get("score", 0),
+                                "description": item.get("ranking", {}).get("description", "")
+                            }
+                            results.append(result)
+                        full_response = json.dumps({"results": results}, indent=2)
+                
+                # Return MCP-formatted response
+                return {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": full_response if full_response else "No relevant sites found for your query."
+                        }
+                    ],
+                    "isError": False
+                }
+            except Exception as e:
+                logger.error(f"Error invoking who handler: {str(e)}")
+                return {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"Error invoking who handler: {str(e)}"
+                        }
+                    ],
+                    "isError": True
+                }
+        
         else:
             raise Exception(f"Unknown tool: {tool_name}")
 
 
 # Global MCP handler instance
 mcp_handler = MCPHandler()
-print(f"=== GLOBAL MCP HANDLER CREATED: id={id(mcp_handler)} ===")
 
 async def handle_mcp_request(query_params, body, send_response, send_chunk, streaming=False):
     """
@@ -405,10 +534,11 @@ async def handle_mcp_request(query_params, body, send_response, send_chunk, stre
         if body:
             try:
                 request_data = json.loads(body)
-                print(f"\n=== INCOMING MCP REQUEST ===")
-                print(f"Body: {json.dumps(request_data, indent=2)}")
-                print(f"===========================\n")
-                
+                # Commented out verbose logging
+                # print(f"\n=== INCOMING MCP REQUEST ===")
+                # print(f"Body: {json.dumps(request_data, indent=2)}")
+                # print(f"===========================\n")
+
                 # Validate JSON-RPC format
                 if "jsonrpc" not in request_data:
                     request_data["jsonrpc"] = "2.0"

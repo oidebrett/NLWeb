@@ -4,11 +4,12 @@ from aiohttp import web
 import logging
 import json
 from typing import Dict, Any
-from methods.whoHandler import WhoHandler
+from core.whoHandler import WhoHandler
 from methods.generate_answer import GenerateAnswer
 from webserver.aiohttp_streaming_wrapper import AioHttpStreamingWrapper
 from core.retriever import get_vector_db_client
 from core.utils.utils import get_param
+<<<<<<< HEAD
 from data_loading.db_load import loadJsonToDB, delete_site
 import json
 import asyncio
@@ -18,6 +19,8 @@ import os
 import tempfile
 import zipfile
 from pathlib import Path
+=======
+>>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
 from core.config import CONFIG
 
 logger = logging.getLogger(__name__)
@@ -30,10 +33,11 @@ def setup_api_routes(app: web.Application):
     # Query endpoints
     app.router.add_get('/ask', ask_handler)
     app.router.add_post('/ask', ask_handler)
-    
+
     # Info endpoints
     app.router.add_get('/who', who_handler)
     app.router.add_get('/sites', sites_handler)
+    app.router.add_get('/config', config_handler)
 
     # Site management endpoints
     app.router.add_post('/api/sites/add', add_site_handler)
@@ -127,9 +131,8 @@ async def handle_streaming_ask(request: web.Request, query_params: Dict[str, Any
             from core.baseHandler import NLWebHandler
             handler = NLWebHandler(query_params, wrapper)
             await handler.runQuery()
-        
-        # Send completion message
-        await wrapper.write_stream({"message_type": "complete"})
+
+        # Handler already sends end-nlweb-response, no need for additional complete message
         
     except Exception as e:
         logger.error(f"Error in streaming ask handler: {e}", exc_info=True)
@@ -168,17 +171,54 @@ async def handle_regular_ask(request: web.Request, query_params: Dict[str, Any])
 
 
 async def who_handler(request: web.Request) -> web.Response:
-    """Handle /who endpoint"""
+    """Handle /who endpoint with optional streaming support"""
     
     try:
         # Get query parameters
         query_params = dict(request.query)
         
-        # Run the who handler
-        handler = WhoHandler(query_params, None)
-        result = await handler.runQuery()
+        # Check if SSE streaming is requested
+        is_sse = request.get('is_sse', False)
+        streaming = get_param(query_params, "streaming", str, "False")
+        streaming = streaming not in ["False", "false", "0"]
         
-        return web.json_response(result)
+        if is_sse or streaming:
+            # Handle streaming response
+            response = web.StreamResponse(
+                status=200,
+                headers={
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                    'X-Accel-Buffering': 'no'
+                }
+            )
+            
+            await response.prepare(request)
+            
+            # Create aiohttp-compatible wrapper
+            wrapper = AioHttpStreamingWrapper(request, response, query_params)
+            await wrapper.prepare_response()
+            
+            try:
+                # Run the who handler with streaming
+                handler = WhoHandler(query_params, wrapper)
+                await handler.runQuery()
+
+                # Handler already sends end-nlweb-response, no need for additional complete message
+                
+            except Exception as e:
+                logger.error(f"Error in streaming who handler: {e}", exc_info=True)
+                await wrapper.send_error_response(500, str(e))
+            finally:
+                await wrapper.finish_response()
+            
+            return response
+        else:
+            # Handle non-streaming response
+            handler = WhoHandler(query_params, None)
+            result = await handler.runQuery()
+            return web.json_response(result)
         
     except Exception as e:
         logger.error(f"Error in who handler: {e}", exc_info=True)
@@ -190,27 +230,27 @@ async def who_handler(request: web.Request) -> web.Response:
 
 async def sites_handler(request: web.Request) -> web.Response:
     """Handle /sites endpoint to get available sites"""
-    
+
     try:
         # Get query parameters
         query_params = dict(request.query)
-        
+
         # Check if streaming is requested
         streaming = get_param(query_params, "streaming", str, "False")
         streaming = streaming not in ["False", "false", "0"]
-        
+
         # Create a retriever client
         retriever = get_vector_db_client(query_params=query_params)
-        
+
         # Get the list of sites
         sites = await retriever.get_sites()
-        
+
         # Prepare the response
         response_data = {
             "message-type": "sites",
             "sites": sites
         }
-        
+
         if streaming or request.get('is_sse', False):
             # Return as SSE
             response = web.StreamResponse(
@@ -228,7 +268,7 @@ async def sites_handler(request: web.Request) -> web.Response:
         else:
             # Return as JSON
             return web.json_response(response_data)
-            
+
     except Exception as e:
         logger.error(f"Error getting sites: {e}", exc_info=True)
         error_data = {
@@ -388,3 +428,21 @@ async def load_directory_to_db(directory_path: str, site_name: str) -> int:
                 continue
 
     return total_documents
+async def config_handler(request: web.Request) -> web.Response:
+    """Handle /config endpoint to get public configuration"""
+
+    try:
+        # Return only public configuration values
+        config_data = {
+            "nlweb_gateway": CONFIG.nlweb_gateway
+        }
+
+        return web.json_response(config_data)
+
+    except Exception as e:
+        logger.error(f"Error getting config: {e}", exc_info=True)
+        return web.json_response({
+            "error": f"Failed to get config: {str(e)}"
+        }, status=500)
+
+

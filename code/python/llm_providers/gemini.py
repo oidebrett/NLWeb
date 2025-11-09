@@ -16,13 +16,16 @@ import logging
 import asyncio
 from typing import Dict, Any, Optional
 
-from google import genai
+import google.generativeai as genai 
 from core.config import CONFIG
 import threading
 
 from llm_providers.llm_provider import LLMProvider
 from misc.logger.logging_config_helper import get_configured_logger, LogLevel
 logger = get_configured_logger("gemini")
+
+# Suppress verbose AFC logging from Google GenAI
+logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 
 class ConfigurationError(RuntimeError):
     """Raised when configuration is missing or invalid."""
@@ -32,8 +35,8 @@ class ConfigurationError(RuntimeError):
 class GeminiProvider(LLMProvider):
     """Implementation of LLMProvider for Google's Gemini API."""
     
+    _initialized = False
     _client_lock = threading.Lock()
-    _client = None
 
     @classmethod
     def get_api_key(cls) -> str:
@@ -55,23 +58,41 @@ class GeminiProvider(LLMProvider):
             if model_name:
                 return model_name
         # Default values if not found
-        default_model = "gemma-3n-e4b-it" if high_tier else "gemma-3n-e4b-it"
+        # For free tier, use gemini-1.5-flash which is available without API key
+        default_model = "gemini-1.5-flash" if not cls.get_api_key() else "gemini-2.0-flash"
         return default_model
 
     @classmethod
-    def get_client(cls):
-        """Get or create the GenAI client."""
+    def configure_gemini(cls):
+        """Ensure Gemini API is configured."""
         with cls._client_lock:
-            if cls._client is None:
+            if not cls._initialized:
                 api_key = cls.get_api_key()
                 if not api_key:
-                    error_msg = "Gemini API key not found in configuration"
-                    logger.error(error_msg)
-                    raise ConfigurationError(error_msg)
+                    # Try to use free tier without API key
+                    logger.info("Gemini API key not found, attempting to use free tier")
+                    try:
+                        genai.configure()  # Configure without API key
+                        cls._initialized = True
+                        logger.info("Gemini configured with free tier (no API key)")
+                    except Exception as e:
+                        error_msg = f"Failed to configure Gemini without API key: {e}"
+                        logger.error(error_msg)
+                        raise ConfigurationError(error_msg)
+                else:
+                    genai.configure(api_key=api_key)
+                    cls._initialized = True
+                    logger.debug("Gemini configured successfully with API key")
+        return True
 
-                cls._client = genai.Client(api_key=api_key)
-                logger.debug("Gemini client initialized successfully")
-            return cls._client
+    @classmethod
+    def get_client(cls):
+        """
+        Implementation of abstract method from LLMProvider.
+        For Gemini, we don't use a client object, just ensure configuration.
+        """
+        cls.configure_gemini()
+        return None  # No client object needed for new Gemini API
 
     @classmethod
     def clean_response(cls, content: str) -> Dict[str, Any]:
@@ -123,52 +144,109 @@ class GeminiProvider(LLMProvider):
         schema: Dict[str, Any],
         model: Optional[str] = None,
         temperature: float = 0.7,
-        max_tokens: int = 2048,
-        timeout: float = 8.0,
+        max_tokens: int = 20000,
+        timeout: float = 60.0,
         high_tier: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         """Async chat completion using Google GenAI."""
         # If model not provided, get it from config
         model_to_use = model if model else self.get_model_from_config(high_tier)
-        
-        # Get the GenAI client
-        client = self.get_client()
+
+        # Ensure Gemini is configured
+        self.configure_gemini()
 
         system_prompt = f"""Provide a response that matches this JSON schema: {json.dumps(schema)}"""
         
         logger.debug(f"Sending completion request to Gemini API with model: {model_to_use}")
         
-        # Map max_tokens to max_output_tokens
-        max_output_tokens = kwargs.get("max_output_tokens", max_tokens)
-        
+        # create the model
+        model_instance = genai.GenerativeModel(
+            model_to_use,
+            system_instruction=system_prompt
+        )
+
         config = {
             "temperature": temperature,
-            "max_output_tokens": max_output_tokens,
-            "system_instruction": system_prompt,
+            "max_output_tokens": max_tokens,
             # "response_mime_type": "application/json",
         }
         # logger.debug(f"\t\tRequest config: {config}")
         # logger.debug(f"\t\tPrompt content: {prompt}...")  # Log first 100 chars
         try:
+            print(f"\n=== GEMINI DEBUG ===")
+            print(f"Model: {model_to_use}")
+            print(f"Temperature: {temperature}")
+            print(f"Timeout: {timeout} seconds")
+            print(f"Prompt length: {len(prompt)} chars")
+            print(f"First 200 chars of prompt: {prompt[:200]}...")
+            
             response = await asyncio.wait_for(
                 asyncio.to_thread(
-                    lambda: client.models.generate_content(
-                        model=model_to_use,
-                        contents=prompt,
-                        config=config
+                    lambda: model_instance.generate_content(
+                        prompt,
+                        generation_config=config
                     )
                 ),
                 timeout=timeout
             )
-            if not response or not hasattr(response, 'text') or \
-               not response.text:
-                logger.error("Invalid or empty response from Gemini")
-                return {}
+            
+            print(f"Response received: {response is not None}")
+            if response:
+                print(f"Has text attr: {hasattr(response, 'text')}")
+                if hasattr(response, 'text'):
+                    print(f"Text is not None: {response.text is not None}")
+                    if response.text:
+                        print(f"Text length: {len(response.text)}")
+                        print(f"First 200 chars of response: {response.text[:200]}...")
+                # Debug: print all attributes of response
+                print(f"Response attributes: {dir(response)}")
+                if hasattr(response, 'candidates'):
+                    print(f"Candidates: {response.candidates}")
+                    if response.candidates and len(response.candidates) > 0:
+                        candidate = response.candidates[0]
+                        print(f"First candidate content: {candidate.content}")
+                        if candidate.content and hasattr(candidate.content, 'parts'):
+                            print(f"Content parts: {candidate.content.parts}")
+                            if candidate.content.parts:
+                                for i, part in enumerate(candidate.content.parts):
+                                    print(f"Part {i}: {part}")
+                        print(f"Finish reason: {candidate.finish_reason if hasattr(candidate, 'finish_reason') else 'N/A'}")
+                if hasattr(response, 'prompt_feedback'):
+                    print(f"Prompt feedback: {response.prompt_feedback}")
+            
+            # Try to extract text from response or candidates
+            content = None
+            if response:
+                # First try the text attribute
+                if hasattr(response, 'text') and response.text:
+                    content = response.text
+                # If text is empty, try to extract from candidates
+                elif hasattr(response, 'candidates') and response.candidates:
+                    for candidate in response.candidates:
+                        if candidate.content and hasattr(candidate.content, 'parts') and candidate.content.parts:
+                            # Extract text from parts
+                            text_parts = []
+                            for part in candidate.content.parts:
+                                if hasattr(part, 'text'):
+                                    text_parts.append(part.text)
+                                elif isinstance(part, str):
+                                    text_parts.append(part)
+                            if text_parts:
+                                content = ' '.join(text_parts)
+                                break
+            
+            if not content:
+                logger.error("Invalid or empty response from Gemini - no content extracted")
+                print("=== END GEMINI DEBUG (ERROR) ===\n")
+                # Return empty dict with score 0 for WHO ranking
+                return {"score": 0, "description": "Failed to get response from Gemini"}
+            
             logger.debug("Received response from Gemini API")
-            logger.debug(f"\t\tResponse content: {response.text}...")  # Log first 100 chars
-            # Extract the response text
-            content = response.text
+            logger.debug(f"\t\tResponse content: {content[:100]}...")  # Log first 100 chars
+            print(f"Extracted content length: {len(content)}")
+            print(f"First 200 chars of extracted content: {content[:200]}...")
+            print("=== END GEMINI DEBUG (SUCCESS) ===\n")
             return self.clean_response(content)
         except asyncio.TimeoutError:
             logger.error(

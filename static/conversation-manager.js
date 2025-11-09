@@ -1,261 +1,246 @@
+import { Message } from './schemas.js';
+import indexedStorage from './indexed-storage.js';
+
 class ConversationManager {
+  /**
+   * Field Name Standardization for Timestamps:
+   * 
+   * We use 'created_at' as the standard field name on the client side for consistency.
+   * However, the server may send either:
+   * - 'created_at' (from Conversation model)
+   * - 'time_of_creation' (from ConversationEntry model)
+   * 
+   * We handle both field names for backwards compatibility and to support different
+   * server data models. When processing server data, we always check for both names
+   * and normalize to 'created_at' in our client-side conversation objects.
+   */
   constructor() {
     this.conversations = [];
+    this.storage = indexedStorage; // Use IndexedDB storage
   }
+  
+  
 
   async loadConversations(selectedSite, elements) {
-    console.log('ConversationManager: Loading conversations for site:', selectedSite);
-    
-    // Check if user is logged in
-    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-    const authToken = localStorage.getItem('authToken');
-    
-    if (authToken && userInfo && (userInfo.id || userInfo.email)) {
-      // User is logged in, load conversations from server
-      try {
-        const userId = userInfo.id || userInfo.email;
-        const site = selectedSite;
-        const baseUrl = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
-        const url = `${baseUrl}/api/conversations?user_id=${encodeURIComponent(userId)}&site=${encodeURIComponent(site)}&limit=50`;
-        
-        const response = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${authToken}`
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Convert server conversations to our format
-          this.conversations = this.convertServerConversations(data.conversations);
-          
-          // Also check localStorage for any unsaved conversations
-          this.mergeLocalConversations(selectedSite);
-          
-          console.log('Loaded', this.conversations.length, 'conversations from server');
-        } else {
-          console.error('Failed to load conversations from server:', response.status);
-          // Fall back to localStorage
-          this.loadLocalConversations(selectedSite);
-        }
-      } catch (error) {
-        console.error('Error loading conversations from server:', error);
-        // Fall back to localStorage
-        this.loadLocalConversations(selectedSite);
-      }
-    } else {
-      // User not logged in, use localStorage only
-      this.loadLocalConversations(selectedSite);
-    }
+    // Load conversations from IndexedDB
+    // Server is only contacted when joining via share link
+    await this.loadLocalConversations(selectedSite);
   }
 
-  loadLocalConversations(selectedSite) {
-    const saved = localStorage.getItem('nlweb-modern-conversations');
-    if (saved) {
-      try {
-        const allConversations = JSON.parse(saved);
-        console.log('ConversationManager: Found', allConversations.length, 'stored conversations');
+  async loadLocalConversations(selectedSite = null) {
+    this.conversations = [];
+
+    try {
+      // Load all messages from IndexedDB
+      const allMessages = await this.storage.getAllMessages();
         
-        // Filter out empty conversations
-        let filteredConversations = allConversations.filter(conv => conv.messages && conv.messages.length > 0);
-        console.log('ConversationManager: After filtering empty conversations:', filteredConversations.length);
+        // Group messages by conversation_id to reconstruct conversations
+        const conversationMap = {};
         
-        // If a specific site is selected, filter by site
-        if (selectedSite && selectedSite !== 'all') {
-          filteredConversations = filteredConversations.filter(conv => 
-            conv.site === selectedSite || 
-            (conv.siteInfo && conv.siteInfo.site === selectedSite)
-          );
-          console.log('ConversationManager: After filtering by site', selectedSite, ':', filteredConversations.length);
-        }
+        allMessages.forEach(msg => {
+          const convId = msg.conversation_id;
+          if (!convId) return;
+          
+          if (!conversationMap[convId]) {
+            conversationMap[convId] = {
+              id: convId,
+              messages: [],
+              timestamp: msg.timestamp,
+              site: msg.content?.site || 'all',
+              mode: msg.content?.mode || 'list',
+              title: 'New chat'
+            };
+          }
+          
+          // Convert Message object to plain object for backward compatibility with rest of the code
+          const msgData = msg instanceof Message ? msg.toDict() : msg;
+          msgData.db_saved = true; // Mark as saved since it came from the database
+          conversationMap[convId].messages.push(msgData);
+          
+          // Update conversation metadata only from user messages
+          // Assistant messages should not change the conversation's site or mode
+          if (msg.sender_type === 'user' || msg.message_type == 'user') {
+            const msgSite = msg.content?.site;
+            const msgMode = msg.content?.mode;
+            const msgQuery = msg.content?.query;
+            if (msgSite) conversationMap[convId].site = msgSite;
+            if (msgMode) conversationMap[convId].mode = msgMode;
+            // Use the query as title if available
+            if (msgQuery && msgQuery !== '') {
+              conversationMap[convId].title = msgQuery.substring(0, 50);
+            }
+          }
+          // Update timestamp to be the latest message
+          if (msg.timestamp > conversationMap[convId].timestamp) {
+            conversationMap[convId].timestamp = msg.timestamp;
+          }
+       //   console.log(conversationMap[convId]);
+        });
         
-        this.conversations = filteredConversations;
-        // Save the cleaned list back
-        this.saveConversations();
-      } catch (e) {
-        console.error('Error loading conversations:', e);
-        this.conversations = [];
-      }
-    } else {
-      console.log('ConversationManager: No stored conversations found');
+        // Convert map to array
+        let conversations = Object.values(conversationMap);
+        
+        // Don't filter by site - show all conversations regardless of selected site
+        // The selected site only affects new queries, not which conversations are shown
+        
+        // Sort messages within each conversation by timestamp
+        conversations.forEach(conv => {
+          conv.messages.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+        });
+        
+        // Sort conversations by timestamp (most recent first)
+        conversations.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        // Filter by site if specified
+        this.conversations = selectedSite ? conversations.filter(c => c.site === selectedSite) : conversations;
+    } catch (e) {
+      console.error('Error loading conversations from IndexedDB:', e);
       this.conversations = [];
     }
   }
 
-  convertServerConversations(serverConversations) {
-    // Convert server format to local format
-    // Server returns flat array of ConversationEntry objects
-    const conversationMap = new Map();
-    
-    // Group conversations by thread_id
-    serverConversations.forEach(entry => {
-      const threadId = entry.thread_id;
-      if (!conversationMap.has(threadId)) {
-        conversationMap.set(threadId, {
-          id: threadId,
-          title: '',
-          timestamp: 0,
-          site: entry.site,
-          siteInfo: {
-            site: entry.site,
-            mode: 'list'
-          },
-          messages: []
-        });
-      }
-      
-      const conversation = conversationMap.get(threadId);
-      const timestamp = new Date(entry.timestamp).getTime();
-      
-      // Add user message
-      conversation.messages.push({
-        content: entry.user_prompt,
-        type: 'user',
-        timestamp: timestamp
-      });
-      
-      // Add assistant message
-      conversation.messages.push({
-        content: entry.response,
-        type: 'assistant',
-        timestamp: timestamp + 1
-      });
-      
-      // Update conversation timestamp to latest message
-      if (timestamp > conversation.timestamp) {
-        conversation.timestamp = timestamp;
-      }
-      
-      // Set title from first user prompt if not set
-      if (!conversation.title && entry.user_prompt) {
-        conversation.title = entry.user_prompt.substring(0, 50) + 
-                           (entry.user_prompt.length > 50 ? '...' : '');
-      }
-    });
-    
-    // Convert map to array and sort by timestamp
-    const convertedConversations = Array.from(conversationMap.values());
-    return convertedConversations.sort((a, b) => b.timestamp - a.timestamp);
-  }
 
-  mergeLocalConversations(selectedSite) {
-    // Check if there are any conversations in localStorage that aren't on the server
-    const saved = localStorage.getItem('nlweb-modern-conversations');
-    if (saved) {
-      try {
-        const localConversations = JSON.parse(saved);
-        const serverIds = new Set(this.conversations.map(c => c.id));
-        
-        // Add any local conversations that aren't on the server
-        localConversations.forEach(localConv => {
-          if (!serverIds.has(localConv.id) && localConv.messages && localConv.messages.length > 0) {
-            // Check site filter
-            const convSite = localConv.site || (localConv.siteInfo && localConv.siteInfo.site) || 'all';
-            if (selectedSite === 'all' || convSite === selectedSite) {
-              this.conversations.push(localConv);
-            }
-          }
-        });
-        
-        // Sort by timestamp
-        this.conversations.sort((a, b) => b.timestamp - a.timestamp);
-      } catch (e) {
-        console.error('Error merging local conversations:', e);
-      }
-    }
-  }
 
-  async migrateLocalConversations() {
-    // Migrate local conversations to server when user logs in
-    const saved = localStorage.getItem('nlweb-modern-conversations');
-    if (!saved) return;
-    
+  async saveConversations() {
     try {
-      const localConversations = JSON.parse(saved);
-      if (!localConversations || localConversations.length === 0) return;
-      
-      const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-      const authToken = localStorage.getItem('authToken');
-      const userId = userInfo.id || userInfo.email;
-      
-      if (!userId || !authToken) return;
-      
-      // Convert local conversations to server format
-      const conversationsToMigrate = [];
-      
-      localConversations.forEach(conv => {
-        if (!conv.messages || conv.messages.length === 0) return;
+      // Save messages from each conversation to IndexedDB
+      for (const conv of this.conversations) {
+        // Skip conversation history searches
+        if (conv.site === 'conv_history') {
+          continue;
+        }
         
-        // Convert to server format - extract user/assistant message pairs
-        for (let i = 0; i < conv.messages.length - 1; i += 2) {
-          const userMsg = conv.messages[i];
-          const assistantMsg = conv.messages[i + 1];
+        // Save messages - only save new messages that haven't been persisted yet
+        if (conv.messages && conv.messages.length > 0) {
+          const messagesToSave = [];
           
-          if (userMsg.type === 'user' && assistantMsg && assistantMsg.type === 'assistant') {
-            conversationsToMigrate.push({
-              thread_id: conv.id,
-              user_id: userId,
-              user_prompt: userMsg.content,
-              response: assistantMsg.content,
-              timestamp: new Date(userMsg.timestamp || Date.now()).toISOString(),
-              site: conv.site || 'all'
-            });
+          for (const msg of conv.messages) {
+            // Skip messages that are already saved (they have a db_saved flag)
+            if (msg.db_saved) {
+              continue;
+            }
+            
+            // Ensure each message has required fields
+            if (!msg.conversation_id) {
+              msg.conversation_id = conv.id;
+            }
+            
+            // Only save messages that have IDs
+            if (!msg.message_id) {
+              // Skip messages without IDs (like 'complete' messages)
+              continue;
+            }
+
+            // Convert to Message object before saving
+            const messageObj = Message.fromDict(msg);
+            messagesToSave.push(messageObj);
+            
+            // Mark the original message as saved
+            msg.db_saved = true;
+          }
+          
+          // Only save if there are new messages
+          if (messagesToSave.length > 0) {
+            await this.storage.saveMessages(messagesToSave);
           }
         }
-      });
-      
-      if (conversationsToMigrate.length === 0) return;
-      
-      console.log('Migrating', conversationsToMigrate.length, 'conversation entries to server');
-      
-      // Send to server
-      const baseUrl = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
-      const response = await fetch(`${baseUrl}/api/conversations`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: JSON.stringify({
-          conversations: conversationsToMigrate
-        })
-      });
-      
-      if (response.ok) {
-        console.log('Successfully migrated conversations to server');
-        // Clear local storage after successful migration
-        localStorage.removeItem('nlweb-modern-conversations');
-      } else {
-        console.error('Failed to migrate conversations:', response.status);
       }
-    } catch (error) {
-      console.error('Error migrating conversations:', error);
+    } catch (e) {
+      console.error('Error saving conversations to IndexedDB:', e);
     }
   }
 
-  saveConversations() {
-    // Only save conversations that have messages
-    const conversationsToSave = this.conversations.filter(conv => conv.messages && conv.messages.length > 0);
-    localStorage.setItem('nlweb-modern-conversations', JSON.stringify(conversationsToSave));
-  }
-
-  loadConversation(id, chatInterface) {
-    const conversation = this.conversations.find(c => c.id === id);
-    if (!conversation) return;
+  async getConversationWithMessages(id) {
+    // Guard against undefined or invalid IDs
+    if (!id) {
+      return null;
+    }
     
+    const conversation = this.conversations.find(c => c.id === id);
+    if (!conversation) {
+      return null;
+    }
+    
+    // Load messages from IndexedDB if not already loaded
+    if (!conversation.messages || conversation.messages.length === 0) {
+      try {
+        conversation.messages = await this.storage.getMessages(id);
+      } catch (e) {
+        console.error('Error loading messages from IndexedDB:', e);
+        conversation.messages = [];
+      }
+    }
+    
+    return conversation;
+  }
+  
+  async loadConversation(id, chatInterface) {
+    const conversation = await this.getConversationWithMessages(id);
+    if (!conversation) {
+      return;
+    }
+    
+    // Delegate to chat interface's own loadConversation if it has one
+    if (chatInterface.loadConversation) {
+      await chatInterface.loadConversation(id);
+      return;
+    }
+    
+    // Otherwise handle basic loading
     chatInterface.currentConversationId = id;
+    
+    // Check if this is a server conversation (starts with conv_) or local
+    if (id.startsWith('conv_')) {
+      // This is a server conversation, we can reconnect to it
+      chatInterface.wsConversationId = id;
+    } else {
+      // This is a local conversation, we'll need to create it on server when sending first message
+      chatInterface.wsConversationId = null;
+    }
     
     // Restore the site selection for this conversation
     if (conversation.site) {
-      chatInterface.selectedSite = conversation.site;
+      // Check if using state object (UnifiedChatInterface) or direct property
+      if (chatInterface.state) {
+        chatInterface.state.selectedSite = conversation.site;
+      } else {
+        chatInterface.selectedSite = conversation.site;
+      }
       // Update the UI to reflect the site
-      if (chatInterface.elements.chatSiteInfo) {
-        chatInterface.elements.chatSiteInfo.textContent = `Asking ${conversation.site}`;
+      const siteInfo = document.getElementById('chat-site-info');
+      if (siteInfo) {
+        siteInfo.textContent = `Asking ${conversation.site}`;
       }
       // Update site selector icon if it exists
       if (chatInterface.siteSelectorIcon) {
         chatInterface.siteSelectorIcon.title = `Site: ${conversation.site}`;
+      }
+    }
+    
+    // Restore the mode selection for this conversation
+    if (conversation.mode) {
+      // Check if using state object (UnifiedChatInterface) or direct property
+      if (chatInterface.state) {
+        chatInterface.state.selectedMode = conversation.mode;
+      } else {
+        chatInterface.selectedMode = conversation.mode;
+      }
+      // Update mode selector UI if it exists
+      const modeSelectorIcon = document.getElementById('mode-selector-icon');
+      if (modeSelectorIcon) {
+        modeSelectorIcon.title = `Mode: ${conversation.mode.charAt(0).toUpperCase() + conversation.mode.slice(1)}`;
+      }
+      // Update selected state in dropdown
+      const modeDropdown = document.getElementById('mode-dropdown');
+      if (modeDropdown) {
+        const modeItems = modeDropdown.querySelectorAll('.mode-dropdown-item');
+        modeItems.forEach(item => {
+          if (item.getAttribute('data-mode') === conversation.mode) {
+            item.classList.add('selected');
+          } else {
+            item.classList.remove('selected');
+          }
+        });
       }
     }
     
@@ -264,23 +249,53 @@ class ConversationManager {
     
     // Rebuild context arrays from conversation history
     chatInterface.prevQueries = conversation.messages
-      .filter(m => m.type === 'user')
+      .filter(m => (m.sender_type === 'user') || (m.message_type === 'user' && !m.sender_type))
       .slice(-10)
       .map(m => m.content);
     
     chatInterface.lastAnswers = [];
-    const assistantMessages = conversation.messages.filter(m => m.type === 'assistant');
+    const assistantMessages = conversation.messages.filter(m => (m.sender_type === 'assistant') || (m.message_type === 'assistant' && !m.sender_type));
     if (assistantMessages.length > 0) {
-      // Get the last assistant message
-      const lastAssistant = assistantMessages[assistantMessages.length - 1];
-      if (lastAssistant.content) {
-        chatInterface.lastAnswers.push(lastAssistant.content);
-      }
+      // Extract answers from assistant messages
+      assistantMessages.slice(-20).forEach(msg => {
+        if (msg.parsedAnswers && msg.parsedAnswers.length > 0) {
+          chatInterface.lastAnswers.push(...msg.parsedAnswers);
+        }
+      });
+      // Keep only last 20 answers
+      chatInterface.lastAnswers = chatInterface.lastAnswers.slice(-20);
     }
     
-    // Restore messages to UI
-    conversation.messages.forEach(msg => {
-      chatInterface.addMessageToUI(msg.content, msg.type, false);
+    // Clear messages container first
+    chatInterface.elements.messagesContainer.innerHTML = '';
+    
+    // Sort messages by timestamp
+    const sortedMessages = [...conversation.messages].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    
+    // Replay all messages in timestamp order
+    sortedMessages.forEach((msg) => {
+      if (!msg.content) {
+        return;
+      }
+      
+      // Check if content is an object (new format) or string (legacy)
+      if (typeof msg.content === 'object') {
+        // This is a server-format message, replay through handler
+        chatInterface.handleStreamData(msg.content);
+      } else {
+        // Legacy format - try to handle
+        try {
+          // Try to construct a message object from legacy format
+          const messageObj = {
+            message_type: msg.message_type,
+            content: msg.content,
+            timestamp: msg.timestamp
+          };
+          chatInterface.handleStreamData(messageObj);
+        } catch {
+          // Failed to handle legacy message
+        }
+      }
     });
     
     // Update title
@@ -292,18 +307,75 @@ class ConversationManager {
     // Hide centered input and show regular chat input
     chatInterface.hideCenteredInput();
     
+    // Connect to WebSocket for server conversations
+    if (id.startsWith('conv_') && chatInterface.connectWebSocket) {
+      // This is a server conversation, connect to it
+      chatInterface.connectWebSocket(id).then(() => {
+      }).catch(() => {
+        // Reset wsConversationId if connection fails
+        chatInterface.wsConversationId = null;
+      });
+    }
+    
     // Scroll to bottom
     setTimeout(() => {
       chatInterface.scrollToBottom();
     }, 100);
   }
 
-  deleteConversation(conversationId, chatInterface) {
-    // Remove from conversations array
-    this.conversations = this.conversations.filter(conv => conv.id !== conversationId);
+  async deleteConversation(conversationId, chatInterface) {
+    try {
+      // Delete from IndexedDB
+      await this.storage.deleteConversation(conversationId);
+      
+      // Remove from conversations array
+      this.conversations = this.conversations.filter(conv => conv.id !== conversationId);
+    } catch (e) {
+      console.error('Error deleting conversation from IndexedDB:', e);
+    }
     
-    // Save updated list
-    this.saveConversations();
+    // If this is a server conversation (starts with conv_), also delete from server
+    if (conversationId && conversationId.startsWith('conv_')) {
+      try {
+        // Get user ID if available
+        const userInfo = localStorage.getItem('userInfo');
+        let userId = null;
+        if (userInfo) {
+          try {
+            const parsed = JSON.parse(userInfo);
+            userId = parsed.id || parsed.user_id;
+          } catch (e) {
+            console.error('Error parsing userInfo:', e);
+          }
+        }
+        
+        // Call server API to delete conversation
+        const params = new URLSearchParams({
+          conversation_id: conversationId
+        });
+        if (userId) {
+          params.append('user_id', userId);
+        }
+        
+        const response = await fetch(`/api/conversation/delete?${params}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Failed to delete conversation from server:', errorData);
+          // Continue with local deletion even if server fails
+        } else {
+          console.log(`Conversation ${conversationId} deleted from server`);
+        }
+      } catch (error) {
+        console.error('Error deleting conversation from server:', error);
+        // Continue with local deletion even if server fails
+      }
+    }
     
     // Update UI
     chatInterface.updateConversationsList();
@@ -315,18 +387,32 @@ class ConversationManager {
   }
 
   updateConversationsList(chatInterface, container = null) {
-    // Use provided container or default to the sidebar conversations list
-    const targetContainer = container || chatInterface.elements.conversationsList;
+    // Use provided container or try to find the conversations list element
+    const targetContainer = container || document.getElementById('conversations-list');
+
     if (!targetContainer) {
-      console.warn('No target container found for conversations list');
       return;
     }
-    
+
     targetContainer.innerHTML = '';
+
+    // Filter conversations
+    const conversationsWithContent = this.conversations.filter(conv => {
+      // Must have an ID
+      if (!conv.id) {
+        return false;
+      }
+      // For server conversations (conv_*), show them even without messages
+      if (conv.id.startsWith('conv_')) {
+        return true;
+      }
+      // For local conversations, must have messages
+      const hasMessages = conv.messages && conv.messages.length > 0;
+      if (!hasMessages) {
+      }
+      return hasMessages;
+    });
     
-    // Only show conversations that have messages
-    const conversationsWithContent = this.conversations.filter(conv => conv.messages && conv.messages.length > 0);
-    console.log('Updating conversations list with', conversationsWithContent.length, 'conversations');
     
     // Group conversations by site
     const conversationsBySite = {};
@@ -349,30 +435,46 @@ class ConversationManager {
     sites.forEach(site => {
       const conversations = conversationsBySite[site];
       
-      // Create site header
-      const siteHeader = document.createElement('div');
-      siteHeader.className = 'site-group-header';
-      
-      // Add site name
-      const siteName = document.createElement('span');
-      siteName.textContent = site;
-      siteHeader.appendChild(siteName);
-      
-      // Add chevron icon
-      const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      chevron.setAttribute('class', 'chevron');
-      chevron.setAttribute('viewBox', '0 0 24 24');
-      chevron.setAttribute('fill', 'none');
-      chevron.setAttribute('stroke', 'currentColor');
-      chevron.setAttribute('stroke-width', '2');
-      chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
-      siteHeader.appendChild(chevron);
-      
-      targetContainer.appendChild(siteHeader);
-      
+      // Check if this is a dropdown container (which only shows one site)
+      const isDropdown = container && container.classList.contains('nlweb-dropdown-conversations-list');
+
+      // Create site group wrapper
+      const siteGroup = document.createElement('div');
+      siteGroup.className = 'site-group';
+
       // Create conversations container for this site
       const conversationsContainer = document.createElement('div');
-      conversationsContainer.className = 'conversations-container';
+      conversationsContainer.className = 'site-conversations';
+
+      // Only show site header if not in dropdown
+      if (!isDropdown) {
+        // Create site header
+        const siteHeader = document.createElement('div');
+        siteHeader.className = 'site-group-header';
+
+        // Add site name (cleaned up for display)
+        const siteName = document.createElement('span');
+        siteName.textContent = this.cleanSiteName(site);
+        siteHeader.appendChild(siteName);
+
+        // Add chevron icon
+        const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        chevron.setAttribute('class', 'chevron');
+        chevron.setAttribute('viewBox', '0 0 24 24');
+        chevron.setAttribute('fill', 'none');
+        chevron.setAttribute('stroke', 'currentColor');
+        chevron.setAttribute('stroke-width', '2');
+        chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
+        siteHeader.appendChild(chevron);
+
+        siteGroup.appendChild(siteHeader);
+
+        // Add click handler to toggle conversations visibility
+        siteHeader.addEventListener('click', () => {
+          conversationsContainer.classList.toggle('collapsed');
+          siteHeader.classList.toggle('collapsed');
+        });
+      }
       
       // Sort conversations by timestamp (most recent first)
       conversations.sort((a, b) => b.timestamp - a.timestamp);
@@ -380,24 +482,12 @@ class ConversationManager {
       conversations.forEach(conv => {
         const convItem = document.createElement('div');
         convItem.className = 'conversation-item';
+        convItem.dataset.conversationId = conv.id;  // Add the data attribute for the click handler
         if (conv.id === chatInterface.currentConversationId) {
           convItem.classList.add('active');
         }
         
-        // Create conversation content container
-        const convContent = document.createElement('div');
-        convContent.className = 'conversation-content';
-        
-        // Title span
-        const titleSpan = document.createElement('span');
-        titleSpan.className = 'conversation-title';
-        titleSpan.textContent = conv.title || 'Untitled';
-        titleSpan.addEventListener('click', () => this.loadConversation(conv.id, chatInterface));
-        convContent.appendChild(titleSpan);
-        
-        convItem.appendChild(convContent);
-        
-        // Delete button
+        // Delete button (now on the left)
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'conversation-delete';
         deleteBtn.innerHTML = '×';
@@ -408,21 +498,43 @@ class ConversationManager {
         });
         convItem.appendChild(deleteBtn);
         
+        // Create conversation content container
+        const convContent = document.createElement('div');
+        convContent.className = 'conversation-content';
+        
+        // Title span
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'conversation-title';
+        titleSpan.textContent = conv.title || 'Untitled';
+        titleSpan.addEventListener('click', async () => {
+          await this.loadConversation(conv.id, chatInterface);
+        });
+        convContent.appendChild(titleSpan);
+        
+        convItem.appendChild(convContent);
+        
         conversationsContainer.appendChild(convItem);
       });
       
-      targetContainer.appendChild(conversationsContainer);
-      
-      // Add click handler to toggle conversations visibility
-      siteHeader.addEventListener('click', () => {
-        conversationsContainer.style.display = 
-          conversationsContainer.style.display === 'none' ? 'block' : 'none';
-        chevron.style.transform = 
-          conversationsContainer.style.display === 'none' ? 'rotate(-90deg)' : '';
-      });
+      siteGroup.appendChild(conversationsContainer);
+      targetContainer.appendChild(siteGroup);
     });
   }
 
+  // Helper method to clean up site names for display
+  cleanSiteName(site) {
+    if (!site) return site;
+    
+    // Remove common domain suffixes
+    return site
+      .replace(/\.myshopify\.com$/, '')
+      .replace(/\.com$/, '')
+      .replace(/\.org$/, '')
+      .replace(/\.net$/, '')
+      .replace(/\.io$/, '')
+      .replace(/\.co$/, '');
+  }
+  
   // Helper method to get conversations
   getConversations() {
     return this.conversations;
@@ -445,7 +557,90 @@ class ConversationManager {
       Object.assign(conversation, updates);
     }
   }
+
+  // Add a message to storage
+  async addMessage(conversationId, message) {
+    try {
+      
+      // Ensure message has required fields
+      if (!message.conversation_id) {
+        message.conversation_id = conversationId;
+      }
+      
+      // Use the message_id from the server - no generation needed
+      if (!message.message_id) {
+        console.warn('Message missing message_id from server in addMessage:', message);
+      }
+      
+      // Note: We don't save the message here - it's saved in batch by saveConversations()
+      // The message object will be converted to Message class when saved
+      
+      // Don't save here - messages are saved in batch by saveConversations()
+      // The message is added to the conversation's messages array by the caller
+      
+      // Update conversation metadata only (don't push to messages array - caller handles that)
+      const conversation = this.findConversation(conversationId);
+      if (conversation) {
+        // Update conversation timestamp
+        if (message.timestamp > conversation.timestamp) {
+          conversation.timestamp = message.timestamp;
+        }
+        
+        // Update title from first user message
+        if (((message.sender_type === 'user') || (message.message_type === 'user' && !message.sender_type)) && conversation.title === 'New chat') {
+          const content = typeof message.content === 'string' ? message.content : (message.content?.query || message.content?.content || 'New chat');
+          conversation.title = content.substring(0, 50);
+          // Title update is now handled in memory only - will be reconstructed from messages on next load
+        }
+      }
+    } catch (e) {
+      console.error('Error adding message to IndexedDB:', e);
+    }
+  }
+
+  // Update a message in storage
+  async updateMessage(messageId, updates) {
+    try {
+      // Get the message from IndexedDB
+      const allMessages = await this.storage.getAllMessages();
+      const message = allMessages.find(m => m.message_id === messageId);
+      
+      if (message) {
+        // Update the message
+        Object.assign(message, updates);
+        await this.storage.updateMessage(message);
+        
+        // Update in-memory if conversation is loaded
+        const conversation = this.findConversation(message.conversation_id);
+        if (conversation && conversation.messages) {
+          const memoryMsg = conversation.messages.find(m => m.message_id === messageId);
+          if (memoryMsg) {
+            Object.assign(memoryMsg, updates);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error updating message in IndexedDB:', e);
+    }
+  }
+
+  // Delete a message from storage
+  async deleteMessage(messageId, conversationId) {
+    try {
+      // Delete from IndexedDB
+      await this.storage.deleteMessage(messageId);
+      
+      // Update in-memory conversation
+      const conversation = this.findConversation(conversationId);
+      if (conversation && conversation.messages) {
+        conversation.messages = conversation.messages.filter(m => m.message_id !== messageId);
+      }
+    } catch (e) {
+      console.error('Error deleting message from IndexedDB:', e);
+    }
+  }
 }
 
 // Export the class
 export { ConversationManager };
+export default ConversationManager;

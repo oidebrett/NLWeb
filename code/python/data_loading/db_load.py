@@ -120,7 +120,15 @@ async def delete_site_from_database(site: str, database: str = None):
     
     # Use the wrapper function for deletion
     deleted_count = await delete_documents_by_site(site, query_params=query_params)
-    
+
+    try:
+        from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
+        fga_checker = FGAPermissionChecker()
+        fga_checker.delete_site(site)
+        print(f"Deleted FGA permissions for docs in site: {site}")
+    except Exception as e:
+        print(f"⚠️ Failed to delete FGA tuples: {e}")
+
     print(f"Deleted {deleted_count} documents for site '{site}'")
     return deleted_count
 
@@ -557,7 +565,7 @@ async def process_rss_feed(file_path: str, site: str) -> List[Dict[str, Any]]:
         traceback.print_exc()
         return []
 
-async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int = 100, delete_existing: bool = False, database: str = None):
+async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int = 100, delete_existing: bool = False, database: str = None, fgaPermissionUser: str = None):
     """
     Load data from a file with precomputed embeddings into the database.
     
@@ -572,6 +580,7 @@ async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int 
         batch_size: Number of documents to process and upload in each batch
         delete_existing: Whether to delete existing entries for this site before loading
         database: Specific database endpoint to use (if None, uses preferred endpoint)
+        fgaPermissionUser: User to grant FGA permissions to (if any)
     """
     # Check if this is a URL
     is_url_path = await is_url(file_path)
@@ -659,7 +668,19 @@ async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int 
                         print(f"Uploading batch {batch_idx+1} of {total_batches} ({len(batch_documents)} documents)")
                         await upload_documents(batch_documents, query_params=query_params)
                         print(f"Successfully uploaded batch {batch_idx+1}")
-                        
+
+                        # ✅ New FGA integration section (only runs if fgaPermissionUser is set)
+                        if fgaPermissionUser:
+                            try:
+                                from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
+                                fga_checker = FGAPermissionChecker()
+                                urls = [doc["url"] for doc in batch_documents if "url" in doc]
+                                await fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
+                                print(f"Added FGA permissions for {len(urls)} docs for user '{fgaPermissionUser}'")
+                            except Exception as e:
+                                print(f"⚠️ Failed to add FGA tuples: {e}")
+
+
                         total_documents += len(batch_documents)
                         batch_documents = []
             except Exception as e:
@@ -680,7 +701,7 @@ async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int 
             except Exception:
                 pass
 
-async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_existing: bool = False, force_recompute: bool = False, database: str = None):
+async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_existing: bool = False, force_recompute: bool = False, database: str = None, fgaPermissionUser: str = None):
     """
     Load data from a file, compute embeddings, and store in the database.
     
@@ -698,6 +719,7 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
         delete_existing: Whether to delete existing entries for this site before loading
         force_recompute: Whether to force recomputation of embeddings
         database: Specific database endpoint to use (if None, uses preferred endpoint)
+        fgaPermissionUser: User to grant FGA permissions to (if any)
     """
     # Check if this is a URL
     is_url_path = await is_url(file_path)
@@ -737,7 +759,7 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
         # If embeddings are detected, switch to loadJsonWithEmbeddingsToDB
         if has_embeddings and not force_recompute:
             print(f"File already contains embeddings, switching to direct loading mode...")
-            return await loadJsonWithEmbeddingsToDB(resolved_path, site, batch_size, delete_existing, endpoint_name)
+            return await loadJsonWithEmbeddingsToDB(resolved_path, site, batch_size, delete_existing, endpoint_name, fgaPermissionUser)
         
         # Check for existing embeddings file if not forcing recomputation
         embeddings_path = get_embeddings_file_path(os.path.basename(original_path))
@@ -754,7 +776,7 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
             
             if use_existing:
                 # Use the existing file with embeddings
-                return await loadJsonWithEmbeddingsToDB(embeddings_path, site, batch_size, delete_existing, endpoint_name)
+                return await loadJsonWithEmbeddingsToDB(embeddings_path, site, batch_size, delete_existing, endpoint_name, fgaPermissionUser)
             else:
                 print(f"Proceeding to compute new embeddings for {original_path}")
         
@@ -886,7 +908,18 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
                             print(f"Uploading batch {batch_idx+1} of {total_batches} ({len(docs_with_embeddings)} documents)")
                             await upload_documents(docs_with_embeddings, query_params=query_params)
                             print(f"Successfully uploaded batch {batch_idx+1}")
-                            
+
+                            # ✅ New FGA integration section (only runs if fgaPermissionUser is set)
+                            if fgaPermissionUser:
+                                try:
+                                    from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
+                                    fga_checker = FGAPermissionChecker()
+                                    urls = [doc["url"] for doc in docs_with_embeddings if "url" in doc]
+                                    await fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
+                                    print(f"Added FGA permissions for {len(urls)} docs for user '{fgaPermissionUser}'")
+                                except Exception as e:
+                                    print(f"⚠️ Failed to add FGA tuples: {e}")
+
                             total_documents += len(docs_with_embeddings)
                         except Exception as e:
                             print(f"Error processing batch: {str(e)}")

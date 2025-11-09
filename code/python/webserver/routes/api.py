@@ -300,6 +300,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
         site_name = None
         rss_url = None
         zip_path = None
+        user_name = None
 
         if request.content_type.startswith("application/json"):
             # JSON payload (URL case)
@@ -310,6 +311,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
 
             site_name = data.get("name")
             rss_url = data.get("url")
+            user_email = data.get("userEmail")
 
         elif request.content_type.startswith("multipart/"):
             # File upload (ZIP case)
@@ -351,7 +353,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
                 old_isatty = sys.stdin.isatty
                 sys.stdin.isatty = lambda: False
                 try:
-                    documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                    documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False, fgaPermissionUser=user_email)
                 finally:
                     sys.stdin.isatty = old_isatty
             else:
@@ -367,7 +369,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
                     if os.path.isdir(single_entry):
                         extract_dir = single_entry  # point into the actual root folder
 
-                documents_added = await load_directory_to_db(extract_dir, site_name)
+                documents_added = await load_directory_to_db(extract_dir, site_name, user_email=user_email)
 
         if documents_added > 0:
             return web.json_response({
@@ -423,7 +425,7 @@ async def delete_site_handler(request: web.Request) -> web.Response:
             "error": "Internal server error"
         }, status=500)
 
-async def load_directory_to_db(directory_path: str, site_name: str) -> int:
+async def load_directory_to_db(directory_path: str, site_name: str, user_email: str = None) -> int:
     """
     Load all files from a directory into the database.
     Returns the total number of documents added.
@@ -439,7 +441,7 @@ async def load_directory_to_db(directory_path: str, site_name: str) -> int:
         if os.path.isfile(file_path):
             logger.info(f"Processing file: {file_path}")
             try:
-                documents_added = await loadJsonToDB(file_path, site_name, force_recompute=False)
+                documents_added = await loadJsonToDB(file_path, site_name, force_recompute=False, fgaPermissionUser=user_email)
                 total_documents += documents_added
                 logger.info(f"Added {documents_added} documents from {file_path}")
             except Exception as e:

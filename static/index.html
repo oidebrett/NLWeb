@@ -220,6 +220,8 @@
           <input type="text" id="new-site-name-url" name="name" required>
           <label for="new-site-url">Url (only RSS supported for now):</label>
           <input type="url" id="new-site-url" name="url" required>
+          <label for="new-site-permission-user">Restrict to user email (* means everyone):</label>
+          <input type="text" id="new-site-permission-user" defaultValue="*" name="user" value="*" required>
           <button type="submit" id="add-site-btn-url">Add Site</button>
         </form>
       </div>
@@ -229,6 +231,8 @@
           <input type="text" id="new-site-name-dir" name="name" required>
           <label for="new-site-dir">Upload Json:</label>
           <input type="file" id="new-site-dir" name="zipfile" accept=".zip" required>
+          <label for="new-site-permission-user">Restrict to user email(* means everyone):</label>
+          <input type="text" id="new-site-permission-user" defaultValue="*" name="user" value="*" required>
           <button type="submit" id="add-site-btn-dir">Add Site</button>
         </form>
       </div>

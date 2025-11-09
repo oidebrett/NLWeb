@@ -2441,11 +2441,13 @@ export class UnifiedChatInterface {
     const nameInputId = `new-site-name-${type}`;
     const valueInputId = `new-site-${type}`; // 'url' or file input id
     const buttonId = `add-site-btn-${type}`;
+    const userInputId = 'new-site-permission-user';
 
     const form = document.getElementById(formId);
     const nameInput = document.getElementById(nameInputId);
     const valueInput = document.getElementById(valueInputId);
     const addButton = document.getElementById(buttonId);
+    const userInput = form.querySelector(`#${userInputId}`);
 
     if (!form || !nameInput || !valueInput || !addButton) {
       console.error(`Could not find all elements for site type '${type}'`);
@@ -2461,6 +2463,15 @@ export class UnifiedChatInterface {
         (type === 'url' ? 'URL' : 'choose a zip file') +
         '.'
       );
+      return;
+    }
+
+    const userEmail = userInput.value.trim();
+    // ✅ Validate email or "*"
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (userEmail !== "*" && !emailRegex.test(userEmail)) {
+      alert("Please enter a valid email address or *");
+      userInput.focus();
       return;
     }
 
@@ -2483,6 +2494,7 @@ export class UnifiedChatInterface {
           body: JSON.stringify({
             name: siteName,
             url: siteValue,
+            userEmail: userEmail,
           }),
         });
       } else {

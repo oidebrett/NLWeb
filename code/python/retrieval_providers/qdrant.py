@@ -216,7 +216,20 @@ class QdrantVectorClient(RetrievalClientBase):
         except Exception as e:
             logger.error(f"Error checking if collection '{collection_name}' exists: {str(e)}")
             return False
-    
+
+    async def ensure_payload_index(self, client, collection_name: str):
+        try:
+            await client.create_payload_index(
+                collection_name=collection_name,
+                field_name="site",
+                field_schema=models.PayloadSchemaType.KEYWORD
+            )
+            logger.info("Created payload index for 'site'")
+        except UnexpectedResponse as e:
+            # Already exists — ignore
+            if "already exists" not in str(e):
+                raise
+
     async def create_collection(self, collection_name: Optional[str] = None, 
                               vector_size: int = 1536) -> bool:
         """
@@ -330,6 +343,8 @@ class QdrantVectorClient(RetrievalClientBase):
         else:
             logger.info(f"Collection '{collection_name}' does not exist. Creating it...")
             await self.create_collection(collection_name, vector_size)
+            client = await self._get_qdrant_client()
+            await self.ensure_payload_index(client, collection_name)                        
             return False
     
     async def delete_documents_by_site(

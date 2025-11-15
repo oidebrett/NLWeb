@@ -1,10 +1,10 @@
-write_endpoint: qdrant_local
+write_endpoint: qdrant_url
 
 endpoints:
 
 #Azure endpoints
   azure_ai_search:
-    enabled: true
+    enabled: false
     api_key_env: AZURE_VECTOR_SEARCH_API_KEY
     api_endpoint_env: AZURE_VECTOR_SEARCH_ENDPOINT
     index_name: embeddings1536
@@ -27,7 +27,7 @@ endpoints:
 
   # Bing Web Search API for real-time web search
   bing_search:
-    enabled: true
+    enabled: false
     # API key for Bing Web Search API
     api_key_env: BING_API_KEY
     # Bing API endpoint (optional, defaults to standard Bing API)
@@ -114,7 +114,7 @@ endpoints:
 
   # Option 1: Local file-based Qdrant storage
   qdrant_local:
-    enabled: true
+    enabled: false
     # Use local file-based storage with a specific path
     database_path: "../data/db"
     # Set the collection name to use
@@ -124,7 +124,7 @@ endpoints:
     
   # Option 2: Remote Qdrant server
   qdrant_url:
-    enabled: false
+    enabled: true
     # Connect to a Qdrant server at a specific URL
     api_endpoint_env: QDRANT_URL
     # Optional API key for authentication

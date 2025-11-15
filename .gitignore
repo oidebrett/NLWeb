@@ -453,6 +453,7 @@ old_code/set_keys.sh
 /static/ta/ba
 static/.DS_Store
 
+.vscode/
 # Deployment archives
 *_deploy_*.zip
 nlwm_deploy_*.zip

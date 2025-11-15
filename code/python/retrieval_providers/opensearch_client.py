@@ -13,7 +13,8 @@ from typing import List, Dict, Union, Optional, Any
 import httpx
 
 from core.config import CONFIG
-from core.retriever import RetrievalClientBasefrom core.embedding import get_embedding
+from core.retriever import RetrievalClientBase
+from core.embedding import get_embedding
 from misc.logger.logging_config_helper import get_configured_logger
 from misc.logger.logger import LogLevel
 

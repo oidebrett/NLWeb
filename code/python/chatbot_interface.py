@@ -21,7 +21,7 @@ from mcp.types import (
 )
 
 # Default server settings
-DEFAULT_SERVER_URL = "http://localhost:8000"
+DEFAULT_SERVER_URL = "http://localhost:8910"
 DEFAULT_ENDPOINT = "/mcp"
 
 async def forward_to_nlweb(function_name: str, arguments: Dict[str, Any], server_url: str, endpoint: str) -> Dict[str, Any]:

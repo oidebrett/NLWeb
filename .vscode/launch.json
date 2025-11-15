@@ -13,6 +13,20 @@
              ],
             "cwd": "/home/ivob/Projects/NLWebProjects/dev/NLWeb/code/python",
             "python": "/home/ivob/Projects/NLWebProjects/dev/NLWeb/myenv/bin/python"
+         },
+        {
+             "name": "FGAPermissionChecker",
+             "type": "python",
+             "request": "launch",
+             "program": "methods/FGAPermissionChecker.py",
+             "console": "integratedTerminal",
+             "envFile": "${workspaceFolder}/.env",
+             "args": [
+                 ""
+             ],
+            "cwd": "/home/ivob/Projects/NLWebProjects/dev/NLWeb/code/python",
+            "python": "/home/ivob/Projects/NLWebProjects/dev/NLWeb/myenv/bin/python"
          }
+         
      ]
  }

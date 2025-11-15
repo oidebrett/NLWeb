@@ -86,3 +86,7 @@ pdf2image>=1.17.0
 
 #For FGA
 openfga_sdk>=0.9.8
+
+# For sentence-transformers
+sentence-transformers>=5.1.2
+brotli

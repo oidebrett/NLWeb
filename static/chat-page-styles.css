@@ -881,7 +881,6 @@ input:checked + .toggle-slider .toggle-label-right {
   .chat-input-wrapper {
     padding: 16px;
   }
-
   .connection-toggle {
     order: -1;
   }
@@ -1006,4 +1005,8 @@ input:checked + .toggle-slider .toggle-label-right {
 }
 .crawler-link:hover {
   text-decoration: underline;
+
+  .connection-toggle {
+    order: -1;
+  }
 }

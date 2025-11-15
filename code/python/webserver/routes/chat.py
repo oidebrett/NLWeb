@@ -208,7 +208,7 @@ async def create_conversation_handler(request: web.Request) -> web.Response:
             logger.info(f"NLWeb handler available: {nlweb_handler is not None}")
             if nlweb_handler:
                 config = ParticipantConfig(
-                    timeout=20,
+                    timeout=30,
                     human_messages_context=5,
                     nlweb_messages_context=1
                 )
@@ -1121,7 +1121,7 @@ async def websocket_handler(request: web.Request) -> web.WebSocketResponse:
                             nlweb_handler = request.app.get('nlweb_handler')
                             if nlweb_handler:
                                 config = ParticipantConfig(
-                                    timeout=20,
+                                    timeout=30,
                                     human_messages_context=5,
                                     nlweb_messages_context=1
                                 )
@@ -1290,7 +1290,7 @@ async def websocket_handler(request: web.Request) -> web.WebSocketResponse:
                                 nlweb_handler = request.app.get('nlweb_handler')
                                 if nlweb_handler:
                                     config = ParticipantConfig(
-                                        timeout=20,
+                                        timeout=30,
                                         human_messages_context=5,
                                         nlweb_messages_context=1
                                     )
@@ -1429,7 +1429,7 @@ async def sse_message_handler(request: web.Request) -> web.StreamResponse:
                 nlweb_handler = request.app.get('nlweb_handler')
                 if nlweb_handler:
                     config = ParticipantConfig(
-                        timeout=20,
+                        timeout=30,
                         human_messages_context=5,
                         nlweb_messages_context=1
                     )

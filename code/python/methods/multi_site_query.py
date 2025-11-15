@@ -54,7 +54,7 @@ class MultiSiteQueryHandler:
             
             who_endpoint = getattr(CONFIG.nlweb, 'who_endpoint', 'http://localhost:8000/who') if hasattr(CONFIG, 'nlweb') else 'http://localhost:8000/who'
             # Ask queries should go to localhost where this server is running
-            ask_base_url = 'http://localhost:8000'
+            ask_base_url = 'http://localhost:8910'
             print(f"[Using who_endpoint: {who_endpoint}")
             
             sites_to_query = []

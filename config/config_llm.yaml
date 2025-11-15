@@ -1,4 +1,5 @@
 preferred_endpoint: openai
+#preferred_endpoint: ollama
 
 endpoints:
   anthropic:
@@ -74,3 +75,21 @@ endpoints:
     models:
       high: claude-3-5-sonnet
       low: llama3.1-8b
+
+  nexa:
+    api_key_env: NEXA_API_KEY
+    api_endpoint_env: NEXA_ENDPOINT
+    llm_type: nexa
+    models:
+      high: ggml-org/Qwen3-1.7B-GGUF
+      low: ggml-org/Qwen3-1.7B-GGUF
+
+  ollama:
+    api_endpoint_env: OLLAMA_URL
+    api_key_env: ""
+    llm_type: ollama
+    models:
+      high: kimi-k2:1t-cloud
+      low: kimi-k2:1t-cloud
+
+       

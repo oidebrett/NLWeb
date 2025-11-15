@@ -125,8 +125,8 @@ class ConversationStorageConfig:
     password: Optional[str] = None
     connection_string: Optional[str] = None
     # Other settings
-    vector_size: int = 1536
-    vector_dimensions: int = 1536
+    vector_size: int = 384
+    vector_dimensions: int = 384
     partition_key: Optional[str] = None
     max_conversations: Optional[int] = None
     ttl_seconds: Optional[int] = None
@@ -479,7 +479,10 @@ class AppConfig:
         
         # Load required info enabled flag
         required_info_enabled = self._get_config_value(data.get("required_info_enabled"), True)
-        
+
+        # Load upload docs in chat interface by enabled flag
+        upload_docs_enabled = self._get_config_value(data.get("upload_docs_enabled"), False)
+
         # Load aggregation enabled flag
         aggregation_enabled = self._get_config_value(data.get("aggregation_enabled"), False)
         
@@ -489,10 +492,6 @@ class AppConfig:
         # Load who_endpoint from config
         who_endpoint = self._get_config_value(data.get("who_endpoint"), "http://localhost:8000/who")
         
-
-        # Load upload docs in chat interface by enabled flag
-        upload_docs_enabled = self._get_config_value(data.get("upload_docs_enabled"), False)
-
         # Load headers from config
         headers = data.get("headers", {})
         
@@ -639,15 +638,14 @@ class AppConfig:
     def is_required_info_enabled(self) -> bool:
         """Check if required info checking is enabled."""
         return self.nlweb.required_info_enabled if hasattr(self, 'nlweb') else True
-    
+
     def is_aggregation_enabled(self) -> bool:
         """Check if aggregation functionality is enabled."""
         return self.nlweb.aggregation_enabled if hasattr(self, 'nlweb') else False
     
     def is_who_endpoint_enabled(self) -> bool:
         """Check if the who endpoint is enabled."""
-        return self.nlweb.who_endpoint_enabled if hasattr(self, 'nlweb') else True
-    
+        return self.nlweb.who_endpoint_enabled if hasattr(self, 'nlweb') else True    
 
     def is_upload_docs_enabled(self) -> bool:
         """Check if upload documents in chat interface functionality is enabled."""

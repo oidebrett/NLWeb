@@ -40,7 +40,7 @@ aggregation_enabled: true
 who_endpoint_enabled: true
 
 # Endpoint for /who requests to get relevant sites
-who_endpoint: "http://localhost:8000/who"
+who_endpoint: "http://localhost:8910/who"
 
 # Headers for HTTP requests
 headers:
@@ -70,6 +70,12 @@ chatbot_instructions:
 #  data_retention: "Data provided may be retained for up to 1 day."
 #  ui_component: "This field may be used to provide a link to the web components that can be used to display the results."
 
+# API Keys
+api_keys:
+  google_maps: GOOGLE_MAPS_API_KEY  # Set via environment variable
+
+# Ability to upload documents in the chat interface
+upload_docs_enabled: UPLOAD_DOCS_ENABLED
 # Chat configuration
 chat:
   storage:

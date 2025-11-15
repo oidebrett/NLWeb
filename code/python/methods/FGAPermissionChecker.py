@@ -1,37 +1,36 @@
+import os
 import asyncio
 import threading
 import uuid
-import os
-from dotenv import load_dotenv
 from itertools import islice
-from openfga_sdk import OpenFgaClient, ClientConfiguration
+from dotenv import load_dotenv
+from misc.logger.logging_config_helper import get_configured_logger
+
+from openfga_sdk import ClientConfiguration, FgaObject, OpenFgaClient
 from openfga_sdk.credentials import Credentials, CredentialConfiguration
 from openfga_sdk.client.models import (
     ClientBatchCheckItem,
     ClientBatchCheckRequest,
-    ClientListObjectsRequest,
-    ClientTuple,
     ClientWriteRequest,
+    ClientTuple,
+    ClientListObjectsRequest,
 )
-from misc.logger.logging_config_helper import get_configured_logger
+from openfga_sdk.client.models.list_users_request import ClientListUsersRequest, UserTypeFilter
 
-logger = get_configured_logger("fga-permissions")
+logger = get_configured_logger("FGAPermissionChecker")
 
 
 class FGAPermissionChecker:
-    """Handles OpenFGA permission checks and site/document tuple management."""
-
     _loop = None
     _thread = None
     _client = None
     _options = None
 
     # -------------------------------------------------------------
-    # Initialization helpers
+    # Initialization
     # -------------------------------------------------------------
     @classmethod
     def _ensure_background_loop(cls):
-        """Ensure a persistent asyncio loop for background tasks."""
         if cls._loop is None or not cls._loop.is_running():
             cls._loop = asyncio.new_event_loop()
 
@@ -41,14 +40,11 @@ class FGAPermissionChecker:
 
             cls._thread = threading.Thread(target=run_loop, args=(cls._loop,), daemon=True)
             cls._thread.start()
-
         return cls._loop
 
     @classmethod
     async def _create_client_async(cls):
-        """Initialize FGA client asynchronously."""
         load_dotenv()
-
         creds = Credentials(
             method="client_credentials",
             configuration=CredentialConfiguration(
@@ -68,31 +64,23 @@ class FGAPermissionChecker:
 
         cls._client = OpenFgaClient(config)
         cls._options = {"authorization_model_id": os.getenv("FGA_MODEL_ID")}
-        logger.info("✅ FGA client initialized successfully")
+        logger.info("✅ OpenFGA client initialized successfully")
 
     @classmethod
     def _init_client_in_loop(cls):
-        """Run client creation coroutine in background loop."""
         loop = cls._ensure_background_loop()
         future = asyncio.run_coroutine_threadsafe(cls._create_client_async(), loop)
         future.result()
 
     def __init__(self):
-        """Ensure client initialization only once."""
         if self._client is None:
             self._init_client_in_loop()
 
     # -------------------------------------------------------------
-    # Utility functions
+    # Helpers
     # -------------------------------------------------------------
     @staticmethod
-    def url_to_doc_id(url: str) -> str:
-        """Convert URL to deterministic UUID-based doc ID."""
-        return str(uuid.uuid5(uuid.NAMESPACE_URL, url))
-
-    @staticmethod
     def chunk_list(iterable, size):
-        """Yield successive chunks of a list."""
         it = iter(iterable)
         while True:
             chunk = list(islice(it, size))
@@ -100,23 +88,60 @@ class FGAPermissionChecker:
                 break
             yield chunk
 
+    @staticmethod
+    def url_to_doc_id(url: str) -> str:
+        return f"doc:{uuid.uuid5(uuid.NAMESPACE_URL, url)}"
+
     # -------------------------------------------------------------
-    # Core filtering
+    # Add document + site permission tuples
     # -------------------------------------------------------------
-    async def _filter_allowed_docs_async(self, user: str, urls: list[str]) -> set[str]:
-        """Run FGA batch checks safely in chunks and return allowed URLs."""
+    async def _add_doc_permissions_async(self, user: str, urls: list[str], site: str, relation: str = "viewer"):
+        if not urls:
+            return
+
+        tuples = []
+        for url in urls:
+            try:
+                obj = self.url_to_doc_id(url)
+                # user → doc
+                tuples.append(ClientTuple(user=f"user:{user}", relation=relation, object=obj))
+                # site → doc (ownership link)
+                tuples.append(ClientTuple(user=f"site:{site}", relation="parent_site", object=obj))
+            except Exception as e:
+                logger.warning(f"⚠️ Skipping invalid URL {url}: {e}")
+                pass
+
+        if not tuples:
+            return
+
+        unique_tuples = list({(t.user, t.relation, t.object): t for t in tuples}.values())
+
+        for batch_num, batch in enumerate(self.chunk_list(unique_tuples, 20), start=1):
+            try:
+                await self._client.write(ClientWriteRequest(writes=batch), self._options)
+                logger.info(f"✅ Added batch {batch_num} ({len(batch)}) tuples for user={user}, site={site}")
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to write FGA batch {batch_num}: {e}")
+                await asyncio.sleep(0.3)
+
+    def add_doc_permissions(self, user: str, urls: list[str], site: str, relation: str = "viewer"):
+        loop = self._ensure_background_loop()
+        fut = asyncio.run_coroutine_threadsafe(self._add_doc_permissions_async(user, urls, site, relation), loop)
+        return fut.result()
+
+    # -------------------------------------------------------------
+    # Filter allowed URLs
+    # -------------------------------------------------------------
+    async def _filter_allowed_urls_async(self, user: str, urls: list[str]) -> set[str]:
         if not urls:
             return set()
 
         allowed = set()
+
         for batch_num, batch in enumerate(self.chunk_list(urls, 20), start=1):
             try:
                 checks = [
-                    ClientBatchCheckItem(
-                        user=f"user:{user}",
-                        relation="viewer",
-                        object=f"doc:{self.url_to_doc_id(url)}",
-                    )
+                    ClientBatchCheckItem(user=f"user:{user}", relation="viewer", object=self.url_to_doc_id(url))
                     for url in batch
                 ]
 
@@ -128,137 +153,136 @@ class FGAPermissionChecker:
                     if getattr(res, "allowed", False):
                         allowed.add(batch[i])
 
-                logger.debug(f"✅ Processed FGA batch {batch_num} ({len(batch)} items)")
+                logger.debug(f"✅ Checked batch {batch_num} ({len(batch)})")
             except Exception as e:
                 logger.warning(f"⚠️ FGA batch_check failed on batch {batch_num}: {e}")
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.3)
+
         return allowed
 
     def filter_allowed_urls(self, user: str, urls: list[str]) -> set[str]:
-        """Synchronous wrapper for FGA filtering."""
         loop = self._ensure_background_loop()
-        fut = asyncio.run_coroutine_threadsafe(self._filter_allowed_docs_async(user, urls), loop)
+        fut = asyncio.run_coroutine_threadsafe(self._filter_allowed_urls_async(user, urls), loop)
         return fut.result()
 
-    # -------------------------------------------------------------
-    # Tuple creation (document permissions)
-    # -------------------------------------------------------------
-    # -------------------------------------------------------------
-    # Tuple creation (document permissions) — with batching
-    # -------------------------------------------------------------
-    async def _add_doc_permissions_async(self, user: str, urls: list[str], site: str, relation: str = "viewer"):
-        """
-        Add FGA tuples linking each doc to a user and its site.
-        Batches writes to stay under the API rate limit (max 20 tuples per request).
-        """
-        if not urls:
-            return
-
-        # Build all tuples first
-        all_tuples = []
-        for url in urls:
-            try:
-                doc_id = self.url_to_doc_id(url)
-                all_tuples.append(ClientTuple(user=f"user:{user}", relation=relation, object=f"doc:{doc_id}"))
-                all_tuples.append(ClientTuple(user=f"site:{site}", relation="parent_site", object=f"doc:{doc_id}"))
-            except Exception as e:
-                logger.warning(f"⚠️ Skipping invalid URL {url}: {e}")
-
-        if not all_tuples:
-            logger.debug("No valid tuples to add.")
-            return
-
-        # Split into batches of 20
-        def chunk_list(iterable, size):
-            it = iter(iterable)
-            while True:
-                chunk = list(islice(it, size))
-                if not chunk:
-                    break
-                yield chunk
-
-        total = len(all_tuples)
-        success_count = 0
-        batch_num = 0
-
-        for batch in chunk_list(all_tuples, 20):
-            batch_num += 1
-            try:
-                body = ClientWriteRequest(writes=batch)
-                await self._client.write(body, self._options)
-                success_count += len(batch)
-                logger.info(f"✅ Batch {batch_num}: Added {len(batch)} tuples ({success_count}/{total}) for site={site}, user={user}")
-            except Exception as e:
-                logger.warning(f"⚠️ Batch {batch_num} failed: {e}")
-                await asyncio.sleep(0.3)  # brief pause to handle rate-limiting
-
-        logger.info(f"✅ Completed adding {success_count}/{total} tuples for site={site}, user={user}")
-        return success_count
-
-    def add_doc_permissions(self, user: str, urls: list[str], site: str):
-        """Public sync wrapper for adding doc+site tuples."""
-        loop = self._ensure_background_loop()
-        fut = asyncio.run_coroutine_threadsafe(self._add_doc_permissions_async(user, urls, site), loop)
-        return fut.result()
+    def _extract_user_id(self, u):
+        # Handle dict-based response
+        if isinstance(u, dict):
+            return (
+                u.get("object", {}).get("id")
+                or u.get("id")  # fallback if no 'object' wrapper
+            )
+        
+        # Handle SDK object (FgaObject or similar)
+        inner_obj = getattr(u, "object", None)
+        if inner_obj:
+            return getattr(inner_obj, "id", None)
+        
+        # Final fallback
+        return getattr(u, "id", None)
 
     # -------------------------------------------------------------
-    # Site deletion (cleanup)
+    # Delete site and all associated doc tuples
     # -------------------------------------------------------------
     async def _delete_site_async(self, site: str):
-        """Delete all FGA tuples related to a given site."""
+        """Optimized deletion of a site and its related document/user tuples with rate-limit handling."""
+        import random
+
+        async def safe_write_with_backoff(request, max_retries=5):
+            """Write request with exponential backoff on 429s."""
+            delay = 0.5
+            for attempt in range(max_retries):
+                try:
+                    return await self._client.write(request, self._options)
+                except Exception as e:
+                    if e.status == 429 or "rate limit" in str(e).lower():
+                        logger.warning(f"⚠️ Rate limit hit (attempt {attempt+1}), backing off {delay:.1f}s...")
+                        await asyncio.sleep(delay + random.uniform(0, 0.3))
+                        delay = min(delay * 2, 5.0)
+                        continue
+                    raise
+                except Exception as e:
+                    logger.warning(f"⚠️ Write failed: {e}")
+                    await asyncio.sleep(delay)
+            logger.error("❌ Exceeded max retries for write request")
+
         try:
-            response = await self._client.list_objects(
+            # 1️⃣ Get all docs linked to this site
+            resp = await self._client.list_objects(
                 ClientListObjectsRequest(user=f"site:{site}", relation="parent_site", type="doc"),
                 self._options,
             )
-            docs = getattr(response, "objects", [])
+            docs = getattr(resp, "objects", [])
             if not docs:
-                logger.info(f"No FGA docs found for site '{site}'")
+                logger.info(f"No docs found for site '{site}'")
                 return
 
-            deletes = [
-                ClientTuple(user=f"site:{site}", relation="parent_site", object=doc)
-                for doc in docs
-            ]
-            body = ClientWriteRequest(deletes=deletes)
-            await self._client.write(body, self._options)
-            logger.info(f"✅ Deleted {len(deletes)} tuples for site '{site}'")
+            logger.info(f"Found {len(docs)} docs for site '{site}'")
+
+            # 2️⃣ Delete all site→doc parent_site tuples in batches
+            site_doc_tuples = [ClientTuple(user=f"site:{site}", relation="parent_site", object=doc) for doc in docs]
+            for batch in self.chunk_list(site_doc_tuples, 100):
+                await safe_write_with_backoff(ClientWriteRequest(deletes=batch))
+                await asyncio.sleep(0.2)
+
+            # 3️⃣ Gather all user→doc viewer tuples concurrently (limited concurrency)
+            sem = asyncio.Semaphore(5)
+
+            async def fetch_users_for_doc(doc):
+                async with sem:
+                    try:
+                        doc_id = doc.split("doc:")[-1]
+                        resp = await self._client.list_users(
+                            ClientListUsersRequest(
+                                relation="viewer",
+                                object=FgaObject(type="doc", id=doc_id),
+                                user_filters=[UserTypeFilter(type="user")],
+                            ),
+                            self._options,
+                        )
+                        users = getattr(resp, "users", [])
+                        return [(doc, u) for u in users]
+                    except Exception as e:
+                        logger.warning(f"⚠️ list_users failed for {doc}: {e}")
+                        return []
+
+            logger.info("Fetching all user→doc viewer relationships...")
+            all_user_doc_pairs = []
+            results = await asyncio.gather(*(fetch_users_for_doc(d) for d in docs))
+            for r in results:
+                all_user_doc_pairs.extend(r)
+
+            logger.info(f"Collected {len(all_user_doc_pairs)} user→doc viewer tuples to delete")
+
+            # 4️⃣ Delete all user→doc tuples in large batches
+            delete_tuples = []
+            for doc, user in all_user_doc_pairs:
+                user_id = self._extract_user_id(user)
+                if not user_id:
+                    continue
+                delete_tuples.append(ClientTuple(user=f"user:{user_id}", relation="viewer", object=doc))
+
+            for batch in self.chunk_list(delete_tuples, 100):
+                await safe_write_with_backoff(ClientWriteRequest(deletes=batch))
+                await asyncio.sleep(0.2)
+
+            logger.info(f"✅ Deleted all tuples for site '{site}' successfully")
+
         except Exception as e:
             logger.error(f"❌ Error deleting FGA tuples for site '{site}': {e}")
 
+
     def delete_site(self, site: str):
-        """Public synchronous wrapper for deleting site tuples."""
         loop = self._ensure_background_loop()
         fut = asyncio.run_coroutine_threadsafe(self._delete_site_async(site), loop)
         return fut.result()
 
-    # -------------------------------------------------------------
-    # Site inspection / debug
-    # -------------------------------------------------------------
-    async def _print_site_structure_async(self, site: str):
-        """Print all tuples and docs related to a site for debugging."""
-        try:
-            logger.info(f"🔍 Inspecting FGA structure for site '{site}'...")
-            response = await self._client.list_objects(
-                ClientListObjectsRequest(user=f"site:{site}", relation="parent_site", type="doc"),
-                self._options,
-            )
-            docs = getattr(response, "objects", [])
-            if not docs:
-                logger.info(f"No documents linked to site '{site}'.")
-                return
 
-            logger.info(f"📄 Site '{site}' has {len(docs)} linked documents:")
-            for doc in docs:
-                logger.info(f"  • {doc}")
-
-            return docs
-        except Exception as e:
-            logger.error(f"❌ Failed to print site structure for '{site}': {e}")
-            return []
-
-    def print_site_structure(self, site: str):
-        """Public sync wrapper to print all docs under a site."""
-        loop = self._ensure_background_loop()
-        fut = asyncio.run_coroutine_threadsafe(self._print_site_structure_async(site), loop)
-        return fut.result()
+if __name__ == "__main__":
+    try:
+        fga_checker = FGAPermissionChecker()
+        site = "Greenway"
+        fga_checker.delete_site(site)
+        print(f"Deleted FGA permissions for docs in site: {site}")
+    except Exception as e:
+        print(f"⚠️ Failed to delete FGA tuples: {e}")

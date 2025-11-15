@@ -311,9 +311,19 @@ def _extract_site_info(item: Dict[str, Any]) -> Dict[str, Any]:
     
     # If domain not in schema_object, try to extract from url parameter
     if not domain:
+        from urllib.parse import urlparse, parse_qs
         url_field = item.get('url', '')
-        if 'site=' in url_field:
-            domain = url_field.split('site=')[1].split('&')[0]
+
+        # Extract the value of the 'site' query parameter
+        parsed = urlparse(url_field)
+        params = parse_qs(parsed.query)
+        site_value = params.get('site', [''])[0]
+
+        # Parse the 'site' value to get only the domain
+        domain = urlparse('https://' + site_value).netloc or site_value.split('/')[0]
+
+#        if 'site=' in url_field:
+#            domain = url_field.split('site=')[1].split('&')[0]
     
     site_info = {
         'domain': domain,

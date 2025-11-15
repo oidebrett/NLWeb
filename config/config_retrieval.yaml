@@ -134,18 +134,6 @@ endpoints:
     # Specify the database type
     db_type: qdrant
 
-  # Option 3: Remote Qdrant server with FGA
-  qdrant_fga:
-    enabled: false
-    # Connect to a Qdrant server at a specific URL
-    api_endpoint_env: QDRANT_URL
-    # Optional API key for authentication
-    api_key_env: QDRANT_API_KEY
-    # Set the collection name to use
-    index_name: nlweb_collection
-    # Specify the database type
-    db_type: qdrant_fga
-
   # Shopify MCP endpoint for product search across Shopify stores
   shopify:
     enabled: false

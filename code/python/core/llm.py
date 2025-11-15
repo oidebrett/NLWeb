@@ -48,6 +48,7 @@ _llm_type_packages = {
     "snowflake": ["httpx>=0.28.1"],
     "huggingface": ["huggingface_hub>=0.31.0"],
     "ollama": ["ollama>=0.5.1"],
+    "nexa": ["openai>=1.12.0"],
 }
 
 # Cache for installed packages
@@ -146,6 +147,9 @@ def _get_provider(llm_type: str):
         elif llm_type == "ollama":
             from llm_providers.ollama import provider as ollama_provider
             _loaded_providers[llm_type] = ollama_provider
+        elif llm_type == "nexa":
+            from llm_providers.nexa import provider as nexa_provider
+            _loaded_providers[llm_type] = nexa_provider
         else:
             raise ValueError(f"Unknown LLM type: {llm_type}")
             
@@ -159,7 +163,7 @@ async def ask_llm(
     schema: Dict[str, Any],
     provider: Optional[str] = None,
     level: str = "low",
-    timeout: int = 8,
+    timeout: int = 30,
     query_params: Optional[Dict[str, Any]] = None,
     max_length: int = 512
 ) -> Dict[str, Any]:

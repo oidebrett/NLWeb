@@ -99,7 +99,7 @@ class WhoHandler (NLWebHandler) :
             logger.debug(f"Cache miss for query: {query}")
             items = await search(
                     query,
-                    site='all',  # Use the sites collection
+                    site='nlweb_sites',  # Use the sites collection
                     query_params=self.query_params,
                     num_results=20
                 )

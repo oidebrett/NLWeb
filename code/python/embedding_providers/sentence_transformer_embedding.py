@@ -42,7 +42,7 @@ def get_embedding_model(model_override: Optional[str] = None) -> SentenceTransfo
             # Use override model if provided, otherwise use configured model
             model_name = model_override or get_model_name()
             try:
-                embedding_model = SentenceTransformer(model_name, device="cpu")
+                embedding_model = SentenceTransformer(model_name, device="cuda")
                 logger.info(f"Loaded SentenceTransformer model: {model_name}")
             except Exception as e:
                 logger.exception(f"Failed to load SentenceTransformer model: {model_name}")

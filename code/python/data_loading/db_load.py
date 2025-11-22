@@ -822,17 +822,21 @@ async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int 
                         await upload_documents(batch_documents, query_params=query_params)
                         print(f"Successfully uploaded batch {batch_idx+1}")
 
-                        # ✅ New FGA integration section (only runs if fgaPermissionUser is set)
-                        if fgaPermissionUser:
-                            try:
-                                from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
-                                fga_checker = FGAPermissionChecker()
-                                urls = [doc["url"] for doc in batch_documents if "url" in doc]
-                                fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
-                                print(f"Added FGA permissions for {len(urls)} docs for user '{fgaPermissionUser}'")
-                            except Exception as e:
-                                print(f"⚠️ Failed to add FGA tuples: {e}")
+                        # ✅ Always run FGA integration
+                        try:
+                            from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
+                            fga_checker = FGAPermissionChecker()
 
+                            # Use provided user, otherwise default to "*"
+                            fga_user = fgaPermissionUser if fgaPermissionUser else "*"
+
+                            urls = [doc["url"] for doc in batch_documents if "url" in doc]
+                            fga_checker.add_doc_permissions(fga_user, urls, site)
+
+                            print(f"Added FGA permissions for {len(urls)} docs for user '{fga_user}'")
+
+                        except Exception as e:
+                            print(f"⚠️ Failed to add FGA tuples: {e}")
 
                         total_documents += len(batch_documents)
                         batch_documents = []
@@ -1071,17 +1075,22 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
                             await upload_documents(docs_with_embeddings, query_params=query_params)
                             print(f"Successfully uploaded batch {batch_idx+1}")
 
-                            # ✅ New FGA integration section (only runs if fgaPermissionUser is set)
-                            if fgaPermissionUser:
-                                try:
-                                    from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
-                                    fga_checker = FGAPermissionChecker()
-                                    urls = [doc["url"] for doc in docs_with_embeddings if "url" in doc]
-                                    fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
-                                    print(f"Added FGA permissions for {len(urls)} docs for user '{fgaPermissionUser}'")
-                                except Exception as e:
-                                    print(f"⚠️ Failed to add FGA tuples: {e}")
+                            # ✅ Always run FGA integration
+                            try:
+                                from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
+                                fga_checker = FGAPermissionChecker()
 
+                                # Default to "*" if no user specified
+                                fga_user = fgaPermissionUser if fgaPermissionUser else "*"
+
+                                urls = [doc["url"] for doc in docs_with_embeddings if "url" in doc]
+                                fga_checker.add_doc_permissions(fga_user, urls, site)
+
+                                print(f"Added FGA permissions for {len(urls)} docs for user '{fga_user}'")
+
+                            except Exception as e:
+                                print(f"⚠️ Failed to add FGA tuples: {e}")
+                                
                             total_documents += len(docs_with_embeddings)
                         except Exception as e:
                             print(f"Error processing batch: {str(e)}")

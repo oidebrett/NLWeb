@@ -16,6 +16,7 @@ from openfga_sdk.client.models import (
     ClientListObjectsRequest,
 )
 from openfga_sdk.client.models.list_users_request import ClientListUsersRequest, UserTypeFilter
+import re
 
 logger = get_configured_logger("FGAPermissionChecker")
 
@@ -80,6 +81,22 @@ class FGAPermissionChecker:
     # Helpers
     # -------------------------------------------------------------
     @staticmethod
+    def normalize_site_name(site: str) -> str:
+        """
+        Normalize site names to be FGA-safe by removing invalid characters.
+
+        Rules:
+        - Replace ':' with '_'
+        - Remove trailing or leading whitespace
+        - Convert to lowercase
+        - Collapse any sequences of invalid characters to a single '_'
+        """
+        site = site.strip().lower()
+        site = site.replace(":", "_")
+        site = re.sub(r"[^a-z0-9._-]", "_", site)  # ensures only safe chars remain
+        return site
+    
+    @staticmethod
     def chunk_list(iterable, size):
         it = iter(iterable)
         while True:
@@ -125,6 +142,7 @@ class FGAPermissionChecker:
                 await asyncio.sleep(0.3)
 
     def add_doc_permissions(self, user: str, urls: list[str], site: str, relation: str = "viewer"):
+        site = self.normalize_site_name(site)
         loop = self._ensure_background_loop()
         fut = asyncio.run_coroutine_threadsafe(self._add_doc_permissions_async(user, urls, site, relation), loop)
         return fut.result()
@@ -273,6 +291,7 @@ class FGAPermissionChecker:
 
 
     def delete_site(self, site: str):
+        site = self.normalize_site_name(site)
         loop = self._ensure_background_loop()
         fut = asyncio.run_coroutine_threadsafe(self._delete_site_async(site), loop)
         return fut.result()

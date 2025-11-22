@@ -123,6 +123,14 @@ async def delete_site_from_database(site: str, database: str = None):
     # Use the wrapper function for deletion
     deleted_count = await delete_documents_by_site(site, query_params=query_params)
 
+    try:
+        from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
+        fga_checker = FGAPermissionChecker()
+        fga_checker.delete_site(site)
+        print(f"Deleted FGA permissions for docs in site: {site}")
+    except Exception as e:
+        print(f"⚠️ Failed to delete FGA tuples: {e}")
+
     print(f"Deleted {deleted_count} documents for site '{site}'")
     return deleted_count
 

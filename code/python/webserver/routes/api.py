@@ -414,14 +414,6 @@ async def delete_site_handler(request: web.Request) -> web.Response:
         async with db_lock:
             await delete_site(site_name)
 
-        try:
-            from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
-            fga_checker = FGAPermissionChecker()
-            fga_checker.delete_site(site_name)
-            print(f"Deleted FGA permissions for docs in site: {site_name}")
-        except Exception as e:
-            print(f"⚠️ Failed to delete FGA tuples: {e}")
-
         logger.info(f"Successfully deleted site '{site_name}'")
         return web.json_response({
             "status": "success"

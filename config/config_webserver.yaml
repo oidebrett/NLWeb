@@ -12,7 +12,8 @@ homepage: static/index.html
 
 # NLWeb gateway endpoint for routing queries to sites
 # Used by who.html to construct links to site-specific queries
-nlweb_gateway: nlwm.azurewebsites.net
+#nlweb_gateway: nlwm.azurewebsites.net
+nlweb_gateway: localhost:8910
 
 # Additional optional configurations
 server:

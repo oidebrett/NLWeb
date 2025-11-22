@@ -66,7 +66,7 @@ def init():
                     from retrieval_providers.shopify_mcp import ShopifyMCPClient
                     _preloaded_modules[db_type] = ShopifyMCPClient
                 elif db_type == "cloudflare_autorag":
-                    from code.python.retrieval_providers.cf_autorag_client import (
+                    from retrieval_providers.cf_autorag_client import (
                         CloudflareAutoRAGClient,
                     )
 

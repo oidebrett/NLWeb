@@ -101,8 +101,8 @@ class NLWebConfig:
     aggregation_enabled: bool = False  # Enable or disable aggregation functionality
     who_endpoint_enabled: bool = True  # Enable or disable the who endpoint
     api_keys: Dict[str, str] = field(default_factory=dict)  # API keys for external services
-    upload_docs_enabled: bool = False  # Enable or disable document upload in chat interface
     who_endpoint: str = "http://localhost:8000/who"  # Endpoint for /who requests
+    upload_docs_enabled: bool = False  # Enable or disable document upload in chat interface
 
 @dataclass
 class ConversationStorageConfig:
@@ -125,8 +125,8 @@ class ConversationStorageConfig:
     password: Optional[str] = None
     connection_string: Optional[str] = None
     # Other settings
-    vector_size: int = 1536
-    vector_dimensions: int = 1536
+    vector_size: int = 384
+    vector_dimensions: int = 384
     partition_key: Optional[str] = None
     max_conversations: Optional[int] = None
     ttl_seconds: Optional[int] = None
@@ -479,13 +479,10 @@ class AppConfig:
         
         # Load required info enabled flag
         required_info_enabled = self._get_config_value(data.get("required_info_enabled"), True)
-<<<<<<< HEAD
 
         # Load upload docs in chat interface by enabled flag
         upload_docs_enabled = self._get_config_value(data.get("upload_docs_enabled"), False)
 
-=======
-        
         # Load aggregation enabled flag
         aggregation_enabled = self._get_config_value(data.get("aggregation_enabled"), False)
         
@@ -494,8 +491,7 @@ class AppConfig:
         
         # Load who_endpoint from config
         who_endpoint = self._get_config_value(data.get("who_endpoint"), "http://localhost:8000/who")
-        
->>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
+
         # Load headers from config
         headers = data.get("headers", {})
         
@@ -530,15 +526,11 @@ class AppConfig:
             analyze_query_enabled=analyze_query_enabled,
             decontextualize_enabled=decontextualize_enabled,
             required_info_enabled=required_info_enabled,
-<<<<<<< HEAD
-            api_keys=api_keys,
-            upload_docs_enabled=upload_docs_enabled
-=======
             aggregation_enabled=aggregation_enabled,
             who_endpoint_enabled=who_endpoint_enabled,
             api_keys=api_keys,
-            who_endpoint=who_endpoint
->>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
+            who_endpoint=who_endpoint,
+            upload_docs_enabled=upload_docs_enabled
         )
     
     def get_chatbot_instructions(self, instruction_type: str = "search_results") -> str:
@@ -646,23 +638,19 @@ class AppConfig:
     def is_required_info_enabled(self) -> bool:
         """Check if required info checking is enabled."""
         return self.nlweb.required_info_enabled if hasattr(self, 'nlweb') else True
-<<<<<<< HEAD
 
     def is_upload_docs_enabled(self) -> bool:
         """Check if upload documents in chat interface functionality is enabled."""
         return self.nlweb.upload_docs_enabled if hasattr(self, 'nlweb') else False
 
-=======
-    
     def is_aggregation_enabled(self) -> bool:
         """Check if aggregation functionality is enabled."""
         return self.nlweb.aggregation_enabled if hasattr(self, 'nlweb') else False
     
     def is_who_endpoint_enabled(self) -> bool:
         """Check if the who endpoint is enabled."""
-        return self.nlweb.who_endpoint_enabled if hasattr(self, 'nlweb') else True
-    
->>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
+        return self.nlweb.who_endpoint_enabled if hasattr(self, 'nlweb') else True    
+
     def load_sites_config(self, path: str = "sites.xml"):
         """Load site configurations from XML file."""
         # Build the full path to the config file using the config directory

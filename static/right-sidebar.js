@@ -343,6 +343,31 @@ function initRightSidebar() {
   }
 }
 
+function populateUserEmailField() {
+  try {
+    const storedUser = localStorage.getItem("userInfo");
+    if (storedUser) {
+      const { email } = JSON.parse(storedUser);
+      if (email) {
+        const emailInputs = document.querySelectorAll("#new-site-permission-user");
+        emailInputs.forEach(input => input.value = email);
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to populate user email:", err);
+  }
+}
+
+// Run once on page load
+document.addEventListener("DOMContentLoaded", populateUserEmailField);
+
+// Also run whenever userInfo is updated in localStorage
+window.addEventListener("storage", (event) => {
+  if (event.key === "userInfo") {
+    populateUserEmailField();
+  }
+});
+
 // Auto-initialize
 initRightSidebar();
 

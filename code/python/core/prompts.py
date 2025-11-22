@@ -339,7 +339,7 @@ class PromptRunner:
     def __init__(self, handler):
         self.handler = handler
 
-    async def run_prompt(self, prompt_name, level="low", verbose=False, timeout=8):
+    async def run_prompt(self, prompt_name, level="low", verbose=False, timeout=20):
         prompt_runner_logger.info(f"Running prompt: {prompt_name} with level={level}, timeout={timeout}s")
         
         try:

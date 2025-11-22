@@ -27,7 +27,7 @@ endpoints:
 
   # Bing Web Search API for real-time web search
   bing_search:
-    enabled: true
+    enabled: false
     # API key for Bing Web Search API
     api_key_env: BING_API_KEY
     # Bing API endpoint (optional, defaults to standard Bing API)
@@ -136,7 +136,7 @@ endpoints:
 
   # Shopify MCP endpoint for product search across Shopify stores
   shopify:
-    enabled: true
+    enabled: false
     db_type: shopify_mcp
     # Note: mcp_endpoint will be dynamically set based on the site being queried
     name: Shopify MCP Search
@@ -147,7 +147,6 @@ endpoints:
     api_endpoint_env: SNOWFLAKE_ACCOUNT_URL
     index_name: SNOWFLAKE_CORTEX_SEARCH_SERVICE
     db_type: snowflake_cortex_search
-<<<<<<< HEAD
 
   cloudflare_autorag:
     enabled: false
@@ -155,5 +154,3 @@ endpoints:
     api_endpoint_env: CLOUDFLARE_AUTORAG_ENDPOINT
     index_name: CLOUDFLARE_RAG_ID_ENV
     db_type: cloudflare_autorag
-=======
->>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4

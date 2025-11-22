@@ -9,7 +9,6 @@ from methods.generate_answer import GenerateAnswer
 from webserver.aiohttp_streaming_wrapper import AioHttpStreamingWrapper
 from core.retriever import get_vector_db_client
 from core.utils.utils import get_param
-<<<<<<< HEAD
 from data_loading.db_load import loadJsonToDB, delete_site
 import json
 import asyncio
@@ -19,8 +18,6 @@ import os
 import tempfile
 import zipfile
 from pathlib import Path
-=======
->>>>>>> 0646d0716a947792b52729bbe01054d38c3893b4
 from core.config import CONFIG
 
 logger = logging.getLogger(__name__)
@@ -278,6 +275,24 @@ async def sites_handler(request: web.Request) -> web.Response:
         return web.json_response(error_data, status=500)
 
 
+async def config_handler(request: web.Request) -> web.Response:
+    """Handle /config endpoint to get public configuration"""
+
+    try:
+        # Return only public configuration values
+        config_data = {
+            "nlweb_gateway": CONFIG.nlweb_gateway
+        }
+
+        return web.json_response(config_data)
+
+    except Exception as e:
+        logger.error(f"Error getting config: {e}", exc_info=True)
+        return web.json_response({
+            "error": f"Failed to get config: {str(e)}"
+        }, status=500)
+
+
 async def add_site_handler(request: web.Request) -> web.Response:
     """Handle /api/sites/add endpoint for adding new sites from URL or zip upload"""
 
@@ -285,6 +300,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
         site_name = None
         rss_url = None
         zip_path = None
+        user_name = None
 
         if request.content_type.startswith("application/json"):
             # JSON payload (URL case)
@@ -295,6 +311,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
 
             site_name = data.get("name")
             rss_url = data.get("url")
+            user_email = data.get("userEmail")
 
         elif request.content_type.startswith("multipart/"):
             # File upload (ZIP case)
@@ -333,7 +350,12 @@ async def add_site_handler(request: web.Request) -> web.Response:
         documents_added = 0
         async with db_lock:
             if rss_url:
-                documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False)
+                old_isatty = sys.stdin.isatty
+                sys.stdin.isatty = lambda: False
+                try:
+                    documents_added = await loadJsonToDB(rss_url, site_name, batch_size = 50, force_recompute=False, fgaPermissionUser=user_email)
+                finally:
+                    sys.stdin.isatty = old_isatty
             else:
                 import zipfile, tempfile
                 extract_dir = tempfile.mkdtemp()
@@ -347,7 +369,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
                     if os.path.isdir(single_entry):
                         extract_dir = single_entry  # point into the actual root folder
 
-                documents_added = await load_directory_to_db(extract_dir, site_name)
+                documents_added = await load_directory_to_db(extract_dir, site_name, user_email=user_email)
 
         if documents_added > 0:
             return web.json_response({
@@ -403,7 +425,7 @@ async def delete_site_handler(request: web.Request) -> web.Response:
             "error": "Internal server error"
         }, status=500)
 
-async def load_directory_to_db(directory_path: str, site_name: str) -> int:
+async def load_directory_to_db(directory_path: str, site_name: str, user_email: str = None) -> int:
     """
     Load all files from a directory into the database.
     Returns the total number of documents added.
@@ -419,7 +441,7 @@ async def load_directory_to_db(directory_path: str, site_name: str) -> int:
         if os.path.isfile(file_path):
             logger.info(f"Processing file: {file_path}")
             try:
-                documents_added = await loadJsonToDB(file_path, site_name, force_recompute=False)
+                documents_added = await loadJsonToDB(file_path, site_name, batch_size = 50, force_recompute=False, fgaPermissionUser=user_email)
                 total_documents += documents_added
                 logger.info(f"Added {documents_added} documents from {file_path}")
             except Exception as e:
@@ -428,21 +450,3 @@ async def load_directory_to_db(directory_path: str, site_name: str) -> int:
                 continue
 
     return total_documents
-async def config_handler(request: web.Request) -> web.Response:
-    """Handle /config endpoint to get public configuration"""
-
-    try:
-        # Return only public configuration values
-        config_data = {
-            "nlweb_gateway": CONFIG.nlweb_gateway
-        }
-
-        return web.json_response(config_data)
-
-    except Exception as e:
-        logger.error(f"Error getting config: {e}", exc_info=True)
-        return web.json_response({
-            "error": f"Failed to get config: {str(e)}"
-        }, status=500)
-
-

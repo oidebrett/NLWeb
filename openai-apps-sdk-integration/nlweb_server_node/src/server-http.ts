@@ -1,21 +1,28 @@
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+// server.ts
+import {
+  createServer,
+  type IncomingMessage,
+  type ServerResponse,
+} from "node:http";
 import { URL } from "node:url";
+import { z } from "zod";
+import fetch from "node-fetch";
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
   CallToolRequestSchema,
   ListResourcesRequestSchema,
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { z } from "zod";
-import fetch from "node-fetch";
 
-// Configuration
-const NLWEB_APPSDK_BASE_URL = process.env.NLWEB_APPSDK_BASE_URL || "http://localhost:8100";
+// Configuration (preserve your environment-driven config)
+const NLWEB_APPSDK_BASE_URL =
+  process.env.NLWEB_APPSDK_BASE_URL || "http://localhost:8100";
 const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT || "30000", 10);
 
-// Widget configuration (following pizzaz pattern)
+// ------------------------ Widget configuration ------------------------
 type NLWebWidget = {
   id: string;
   title: string;
@@ -31,11 +38,10 @@ function widgetMeta(widget: NLWebWidget) {
     "openai/toolInvocation/invoking": widget.invoking,
     "openai/toolInvocation/invoked": widget.invoked,
     "openai/widgetAccessible": true,
-    "openai/resultCanProduceWidget": true
+    "openai/resultCanProduceWidget": true,
   } as const;
 }
 
-// Widget for regular Schema.org results
 const nlwebListWidget: NLWebWidget = {
   id: "nlweb-list",
   title: "NLWeb Results",
@@ -49,7 +55,6 @@ const nlwebListWidget: NLWebWidget = {
   `.trim(),
 };
 
-// Widget for all visualizations (charts, maps, embedded content, etc.)
 const nlwebVisualizationWidget: NLWebWidget = {
   id: "nlweb-visualization",
   title: "NLWeb Visualizations",
@@ -63,42 +68,42 @@ const nlwebVisualizationWidget: NLWebWidget = {
   `.trim(),
 };
 
-// Determine which widget to use based on response content
+// Decide which widget to use based on structuredContent
 function selectWidget(response: NLWebResponse): NLWebWidget {
   const results = response.structuredContent?.results || [];
-  
-  // Check if this is a visualization response (has html/script for rendering)
-  // This works for Data Commons, custom charts, embedded visualizations, etc.
-  const hasVisualization = results.some(result => 
-    result.visualizationType ||  // Explicitly marked as visualization
-    result.html ||                // Has HTML content to render
-    result.script                 // Has script to execute
+
+  const hasVisualization = results.some(
+    (result) =>
+      Boolean(result.visualizationType) ||
+      Boolean(result.html) ||
+      Boolean(result.script)
   );
-  
-  // Debug logging
-  console.log('Widget Selection Debug:', {
+
+  // Debug log similar to your original
+  console.log("Widget Selection Debug:", {
     resultCount: results.length,
     hasVisualization,
-    firstResult: results[0] ? {
-      hasVisualizationType: !!results[0].visualizationType,
-      hasHtml: !!results[0].html,
-      hasScript: !!results[0].script,
-      type: results[0]['@type']
-    } : null,
-    selectedWidget: hasVisualization ? 'visualization' : 'list'
+    firstResult: results[0]
+      ? {
+          hasVisualizationType: !!results[0].visualizationType,
+          hasHtml: !!results[0].html,
+          hasScript: !!results[0].script,
+          type: results[0]["@type"],
+        }
+      : null,
+    selectedWidget: hasVisualization ? "visualization" : "list",
   });
-  
+
   return hasVisualization ? nlwebVisualizationWidget : nlwebListWidget;
 }
 
-// Input schema for nlweb_ask tool (following pizzaz pattern)
+// ------------------------ NLWeb API shapes & call ------------------------
 const NLWebAskInputSchema = z.object({
   query: z.string().describe("The question or search query"),
   site: z.string().optional().describe("Optional site to search"),
   mode: z.enum(["list", "summarize", "generate"]).optional().describe("The type of response to generate"),
   prev: z.array(z.string()).optional().describe("Previous conversation context"),
 });
-
 type NLWebAskInput = z.infer<typeof NLWebAskInputSchema>;
 
 interface NLWebBlock {
@@ -125,21 +130,15 @@ interface NLWebResponse {
   content: Array<{ type: string; text: string }>;
 }
 
-// Call NLWeb /ask endpoint
 async function callNLWebAsk(params: NLWebAskInput): Promise<NLWebResponse> {
-  // Build query parameters for GET request
   const queryParams = new URLSearchParams({
     query: params.query,
     streaming: "false",
   });
-  
-  if (params.site) {
-    queryParams.set("site", params.site);
-  }
-  if (params.mode) {
-    queryParams.set("mode", params.mode);
-  }
-  
+
+  if (params.site) queryParams.set("site", params.site);
+  if (params.mode) queryParams.set("mode", params.mode);
+
   const url = `${NLWEB_APPSDK_BASE_URL}/ask?${queryParams.toString()}`;
 
   const controller = new AbortController();
@@ -148,9 +147,7 @@ async function callNLWebAsk(params: NLWebAskInput): Promise<NLWebResponse> {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        "Accept": "application/json",
-      },
+      headers: { Accept: "application/json" },
       signal: controller.signal,
     });
 
@@ -163,43 +160,42 @@ async function callNLWebAsk(params: NLWebAskInput): Promise<NLWebResponse> {
       );
     }
 
-    const data = await response.json() as NLWebResponse;
-    
-    // Debug: Log the full response structure
-    console.log('=== NLWeb API Response ===');
-    console.log('structuredContent keys:', Object.keys(data.structuredContent || {}));
-    console.log('results count:', data.structuredContent?.results?.length || 0);
-    console.log('content count:', data.content?.length || 0);
+    const data = (await response.json()) as NLWebResponse;
+
+    // Helpful debug logs (keeps parity with original)
+    console.log("=== NLWeb API Response ===");
+    console.log("structuredContent keys:", Object.keys(data.structuredContent || {}));
+    console.log("results count:", data.structuredContent?.results?.length || 0);
+    console.log("content count:", data.content?.length || 0);
     if (data.structuredContent?.results?.length > 0) {
-      console.log('First result keys:', Object.keys(data.structuredContent.results[0]));
-      console.log('First result @type:', data.structuredContent.results[0]['@type']);
-      console.log('First result has html:', !!data.structuredContent.results[0].html);
-      console.log('First result has script:', !!data.structuredContent.results[0].script);
-      console.log('First result has visualizationType:', !!data.structuredContent.results[0].visualizationType);
-      console.log('First result (full):', JSON.stringify(data.structuredContent.results[0], null, 2));
+      console.log("First result keys:", Object.keys(data.structuredContent.results[0]));
+      console.log("First result @type:", data.structuredContent.results[0]["@type"]);
+      console.log("First result has html:", !!data.structuredContent.results[0].html);
+      console.log("First result has script:", !!data.structuredContent.results[0].script);
+      console.log("First result has visualizationType:", !!data.structuredContent.results[0].visualizationType);
+      console.log("First result (full):", JSON.stringify(data.structuredContent.results[0], null, 2));
     }
-    console.log('========================');
-    
-    // Validate response structure
+    console.log("========================");
+
     if (!data.structuredContent || !data.content) {
       throw new Error("Invalid response format from NLWeb adapter");
     }
 
     return data;
-  } catch (error) {
+  } catch (err) {
     clearTimeout(timeoutId);
-    
-    if (error instanceof Error) {
-      if (error.name === "AbortError") {
+
+    if (err instanceof Error) {
+      if (err.name === "AbortError") {
         throw new Error(`Request timeout after ${REQUEST_TIMEOUT}ms`);
       }
-      throw error;
+      throw err;
     }
     throw new Error("Unknown error occurred while calling NLWeb");
   }
 }
 
-// Create and configure the MCP server
+// ------------------------ Create MCP Server (preserve logic) ------------------------
 function createNLWebServer(): Server {
   const server = new Server(
     {
@@ -214,12 +210,12 @@ function createNLWebServer(): Server {
     }
   );
 
-  // Register both UI widget resources (following pizzaz pattern)
   const allWidgets = [nlwebListWidget, nlwebVisualizationWidget];
-  
+
+  // List resources (widgets)
   server.setRequestHandler(ListResourcesRequestSchema, async () => {
     return {
-      resources: allWidgets.map(widget => ({
+      resources: allWidgets.map((widget) => ({
         uri: widget.templateUri,
         mimeType: "text/html+skybridge",
         name: widget.title,
@@ -229,8 +225,9 @@ function createNLWebServer(): Server {
     };
   });
 
+  // Read resource (return widget HTML)
   server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-    const widget = allWidgets.find(w => w.templateUri === request.params.uri);
+    const widget = allWidgets.find((w) => w.templateUri === request.params.uri);
     if (widget) {
       return {
         contents: [
@@ -246,14 +243,14 @@ function createNLWebServer(): Server {
     throw new Error(`Resource not found: ${request.params.uri}`);
   });
 
-  // Register the nlweb tool - single tool that returns appropriate widget based on results
+  // List tools
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools: [
         {
           name: "nlweb-search",
           title: "NLWeb Search",
-          description: 
+          description:
             "Query NLWeb to search and analyze information from configured data sources. " +
             "Returns structured results (Schema.org data) or visualizations (charts, maps, rankings, embedded content). " +
             "Use mode='list' by default unless user specifically asks to 'generate' or 'summarize'.",
@@ -266,12 +263,14 @@ function createNLWebServer(): Server {
               },
               site: {
                 type: "string",
-                description: "Optional site to search (e.g., 'datacommons'). Use the bare site name without domain extension (e.g., 'datacommons' not 'datacommons.org', 'seriouseats' not 'seriouseats.com')",
+                description:
+                  "Optional site to search (e.g., 'datacommons'). Use the bare site name without domain extension.",
               },
               mode: {
                 type: "string",
                 enum: ["list", "summarize", "generate"],
-                description: "Response generation mode. Use 'list' (default) to show structured results. Only use 'summarize' if user explicitly asks for a summary, or 'generate' if user asks to generate new content.",
+                description:
+                  "Response generation mode. Use 'list' (default) to show structured results. Only use 'summarize' if user explicitly asks for a summary, or 'generate' if user asks to generate new content.",
                 default: "list",
               },
               prev: {
@@ -282,23 +281,21 @@ function createNLWebServer(): Server {
             },
             required: ["query"],
           },
-          // Use nlweb-list widget by default (will be overridden dynamically)
           _meta: widgetMeta(nlwebListWidget),
         },
       ],
     };
   });
 
+  // Call tool (nlweb-search)
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (request.params.name === "nlweb-search") {
       try {
         const params = NLWebAskInputSchema.parse(request.params.arguments);
         const response = await callNLWebAsk(params);
 
-        // Dynamically select widget based on response type
         const widget = selectWidget(response);
 
-        // Create embedded widget resource (following pizzaz pattern)
         const widgetResource = {
           type: "resource" as const,
           resource: {
@@ -308,8 +305,6 @@ function createNLWebServer(): Server {
           },
         };
 
-        // Return AppSDK-compatible response with structuredContent passed to UI via toolOutput
-        // The structuredContent becomes available to the UI via useWidgetProps() as window.openai.toolOutput
         return {
           content: response.content,
           structuredContent: response.structuredContent,
@@ -322,10 +317,9 @@ function createNLWebServer(): Server {
         if (error instanceof z.ZodError) {
           throw new Error(`Invalid input parameters: ${error.message}`);
         }
-        
+
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        
-        // Return error in AppSDK format
+
         return {
           content: [
             {
@@ -337,118 +331,90 @@ function createNLWebServer(): Server {
         };
       }
     }
-    
+
     throw new Error(`Unknown tool: ${request.params.name}`);
   });
 
   return server;
 }
 
-type SessionRecord = {
-  server: Server;
-  transport: SSEServerTransport;
-};
+// ------------------------ HTTP transport + server ------------------------
 
-const sessions = new Map<string, SessionRecord>();
-
-const ssePath = "/mcp";
-const postPath = "/mcp/messages";
-
-async function handleSseRequest(res: ServerResponse) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  const server = createNLWebServer();
-  const transport = new SSEServerTransport(postPath, res);
-  const sessionId = transport.sessionId;
-
-  sessions.set(sessionId, { server, transport });
-
-  let isClosing = false;
-
-  transport.onclose = async () => {
-    if (isClosing) return;
-    isClosing = true;    
-    sessions.delete(sessionId);
-    await server.close();
-  };
-
-  transport.onerror = (error) => {
-    console.error("SSE transport error", error);
-  };
-
+// Helper to parse JSON body from IncomingMessage
+async function parseJsonBody(req: IncomingMessage): Promise<any> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of req) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  if (chunks.length === 0) return {};
+  const raw = Buffer.concat(chunks).toString();
   try {
-    await server.connect(transport);
-  } catch (error) {
-    sessions.delete(sessionId);
-    console.error("Failed to start SSE session", error);
-    if (!res.headersSent) {
-      res.writeHead(500).end("Failed to establish SSE connection");
-    }
+    return JSON.parse(raw);
+  } catch {
+    // If client sends non-JSON or empty, return empty object
+    return {};
   }
 }
 
-async function handlePostMessage(
-  req: IncomingMessage,
-  res: ServerResponse,
-  url: URL
-) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "content-type");
-  const sessionId = url.searchParams.get("sessionId");
-
-  if (!sessionId) {
-    res.writeHead(400).end("Missing sessionId query parameter");
-    return;
-  }
-
-  const session = sessions.get(sessionId);
-
-  if (!session) {
-    res.writeHead(404).end("Unknown session");
-    return;
-  }
-
-  try {
-    await session.transport.handlePostMessage(req, res);
-  } catch (error) {
-    console.error("Failed to process message", error);
-    if (!res.headersSent) {
-      res.writeHead(500).end("Failed to process message");
-    }
-  }
-}
-
-const portEnv = Number(process.env.PORT ?? 8000);
-const port = Number.isFinite(portEnv) ? portEnv : 8000;
+const PORT = Number(process.env.PORT ?? 8000);
 
 const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
-  if (!req.url) {
-    res.writeHead(400).end("Missing URL");
-    return;
+  try {
+    if (!req.url) {
+      res.writeHead(400).end("Missing URL");
+      return;
+    }
+
+    const url = new URL(req.url, `http://${req.headers.host ?? "localhost"}`);
+
+    // CORS preflight for /mcp
+    if (req.method === "OPTIONS" && url.pathname === "/mcp") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "content-type",
+      });
+      res.end();
+      return;
+    }
+
+    if (req.method === "POST" && url.pathname === "/mcp") {
+      // parse body (we pass parsed JSON to transport.handleRequest)
+      const body = await parseJsonBody(req);
+
+      // create server and transport per request
+      const server = createNLWebServer();
+      const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: undefined,
+        enableJsonResponse: true,
+      });
+
+      // Ensure transport closed if client disconnects
+      res.on("close", () => {
+        try {
+          transport.close();
+        } catch (e) {
+          // ignore
+        }
+      });
+
+      await server.connect(transport);
+      await transport.handleRequest(req, res, body);
+      return;
+    }
+
+    // Not found
+    res.writeHead(404).end("Not Found");
+  } catch (err) {
+    console.error("Unhandled error in HTTP server:", err);
+    if (!res.headersSent) {
+      res.writeHead(500).end("Internal Server Error");
+    } else {
+      try {
+        res.end();
+      } catch {}
+    }
   }
-
-  const url = new URL(req.url, `http://${req.headers.host ?? "localhost"}`);
-
-  if (req.method === "OPTIONS" && (url.pathname === ssePath || url.pathname === postPath)) {
-    res.writeHead(204, {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "content-type"
-    });
-    res.end();
-    return;
-  }
-
-  if (req.method === "GET" && url.pathname === ssePath) {
-    await handleSseRequest(res);
-    return;
-  }
-
-  if (req.method === "POST" && url.pathname === postPath) {
-    await handlePostMessage(req, res, url);
-    return;
-  }
-
-  res.writeHead(404).end("Not Found");
 });
 
 httpServer.on("clientError", (err: Error, socket) => {
@@ -456,10 +422,8 @@ httpServer.on("clientError", (err: Error, socket) => {
   socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
 });
 
-httpServer.listen(port, () => {
-  console.log(`NLWeb MCP server listening on http://localhost:${port}`);
+httpServer.listen(PORT, () => {
+  console.log(`NLWeb MCP server (Streamable HTTP) listening on http://localhost:${PORT}/mcp`);
   console.log(`  NLWEB_APPSDK_BASE_URL: ${NLWEB_APPSDK_BASE_URL}`);
   console.log(`  REQUEST_TIMEOUT: ${REQUEST_TIMEOUT}ms`);
-  console.log(`  SSE stream: GET http://localhost:${port}${ssePath}`);
-  console.log(`  Message post endpoint: POST http://localhost:${port}${postPath}?sessionId=...`);
 });

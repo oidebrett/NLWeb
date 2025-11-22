@@ -279,10 +279,19 @@ class FGAPermissionChecker:
 
 
 if __name__ == "__main__":
-    try:
-        fga_checker = FGAPermissionChecker()
-        site = "Greenway"
-        fga_checker.delete_site(site)
-        print(f"Deleted FGA permissions for docs in site: {site}")
-    except Exception as e:
-        print(f"⚠️ Failed to delete FGA tuples: {e}")
+    
+    checker = FGAPermissionChecker()
+
+    print("Installing FGA CLI")
+    print("sudo apt install ./fga_VERSION_linux_386.deb")
+    print("fga --version")
+    print("export FGA_STORE_ID=<STORE_ID>")
+    print("export FGA_CLIENT_ID=<CLIENT_ID>")
+    print("export FGA_CLIENT_SECRET=<CLIENT_SECRET>")
+    print("export FGA_API_URL=https://api.eu1.fga.dev")
+    print("export FGA_API_AUDIENCE=https://api.eu1.fga.dev/")
+    print("export FGA_API_TOKEN_ISSUER='auth.fga.dev'")
+    print("fga model get")
+    print("fga tuple read --store-id=$FGA_STORE_ID --output-format=simple-json --max-pages=0 > tuples.json")
+    print("fga tuple delete --store-id=$FGA_STORE_ID --file=tuples.json")
+

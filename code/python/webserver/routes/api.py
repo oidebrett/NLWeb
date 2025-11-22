@@ -353,7 +353,7 @@ async def add_site_handler(request: web.Request) -> web.Response:
                 old_isatty = sys.stdin.isatty
                 sys.stdin.isatty = lambda: False
                 try:
-                    documents_added = await loadJsonToDB(rss_url, site_name, force_recompute=False, fgaPermissionUser=user_email)
+                    documents_added = await loadJsonToDB(rss_url, site_name, batch_size = 50, force_recompute=False, fgaPermissionUser=user_email)
                 finally:
                     sys.stdin.isatty = old_isatty
             else:
@@ -441,7 +441,7 @@ async def load_directory_to_db(directory_path: str, site_name: str, user_email: 
         if os.path.isfile(file_path):
             logger.info(f"Processing file: {file_path}")
             try:
-                documents_added = await loadJsonToDB(file_path, site_name, force_recompute=False, fgaPermissionUser=user_email)
+                documents_added = await loadJsonToDB(file_path, site_name, batch_size = 50, force_recompute=False, fgaPermissionUser=user_email)
                 total_documents += documents_added
                 logger.info(f"Added {documents_added} documents from {file_path}")
             except Exception as e:

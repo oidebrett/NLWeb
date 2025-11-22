@@ -32,6 +32,8 @@ from core.retriever import get_vector_db_client, upload_documents, delete_docume
 # Import RSS to Schema converter
 import data_loading.rss2schema as rss2schema
 
+import re
+
 # Define URL extractor function since json_url_extractor module is not available
 def process_line(line):
     """
@@ -309,7 +311,17 @@ async def detect_file_type(file_path: str) -> Tuple[str, bool]:
                     '<entry>' in content or
                     'xmlns:itunes' in content):
                     return 'rss', has_embeddings
-                
+
+            # --- NEW ADDITION ---
+            # Detect sitemap XML format
+            if '<urlset' in content or '<sitemapindex' in content:
+                return 'sitemap', has_embeddings
+
+            # Detect robots.txt based on filename signature or content
+            if os.path.basename(file_path).lower() == 'robots.txt' or 'User-agent:' in content:
+                return 'robots', has_embeddings
+            # --- END ADDITION ---
+
             # If we get here, it's probably regular XML, not RSS
             return 'xml', has_embeddings
         except Exception as e:
@@ -565,6 +577,147 @@ async def process_rss_feed(file_path: str, site: str) -> List[Dict[str, Any]]:
         traceback.print_exc()
         return []
 
+async def process_sitemap(file_path: str, site: str) -> List[Dict[str, Any]]:
+    """
+    Process a sitemap.xml file into document objects.
+    Extracts URLs and builds schema documents similar to RSS entries.
+    """
+
+    print(f"Processing Sitemap: {file_path}")
+
+    documents = []
+
+    try:
+        from xml.etree import ElementTree as ET
+
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+        ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+
+        # Extract URLs (both standard sitemap and sitemap_index)
+        urls = [loc.text.strip() for loc in root.findall('.//sm:url/sm:loc', ns)]
+        urls += [loc.text.strip() for loc in root.findall('.//sm:sitemap/sm:loc', ns)]
+
+        print(f"Extracted {len(urls)} URLs from sitemap")
+
+        for url in urls:
+            # Build lightweight schema.org compatible doc like RSS feed items
+            schema = await extract_schema_json_from_url(url)
+
+            doc = {
+                "id": str(hash(url) % (2**63)),
+                "schema_json": json.dumps(schema, ensure_ascii=False),
+                "url": url,
+                "name": schema.get("name", url),
+                "site": site
+            }
+            documents.append(doc)
+
+        return documents
+
+    except Exception as e:
+        print(f"⚠️ Error processing sitemap file {file_path}: {e}")
+        return []
+
+async def process_robots(file_path: str, site: str) -> List[Dict[str, Any]]:
+    """
+    Process robots.txt and convert discovered sitemap URLs into document objects.
+    """
+
+    print(f"Processing robots.txt: {file_path}")
+    documents = []
+
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.lower().startswith("sitemap:"):
+                    sitemap_url = line.split(":", 1)[1].strip()
+
+                    doc = {
+                        "id": str(hash(sitemap_url) % (2**63)),
+                        "schema_json": json.dumps({"sitemap_url": sitemap_url}, ensure_ascii=False),
+                        "url": sitemap_url,
+                        "name": f"Sitemap: {sitemap_url}",
+                        "site": site
+                    }
+                    documents.append(doc)
+
+        print(f"Extracted {len(documents)} sitemap references from robots.txt")
+        return documents
+
+    except Exception as e:
+        print(f"⚠️ Error processing robots.txt {file_path}: {e}")
+        return []
+
+async def extract_schema_json_from_url(url: str) -> dict:
+    content, _ = await fetch_url(url)
+
+    # ---------- 1️⃣ Attempt JSON-LD extraction ----------
+    match = re.search(
+        r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+        content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if match:
+        raw_json = match.group(1).strip()
+
+        try:
+            schema = json.loads(raw_json)
+            # If multiple JSON objects, use the first meaningful one
+            if isinstance(schema, list) and schema:
+                schema = schema[0]
+
+            # Ensure required fields
+            schema.setdefault("url", url)
+            schema.setdefault("name", schema.get("headline") or url)
+
+            return schema
+
+        except Exception as e:
+            print(f"⚠ JSON-LD detected but could not parse at {url}: {e}")
+
+    # ---------- 2️⃣ Fallback: Extract Basic Metadata ----------
+    title_match = re.search(r'<title>(.*?)</title>', content, re.IGNORECASE | re.DOTALL)
+    title = title_match.group(1).strip() if title_match else None
+
+    # meta description
+    desc_match = re.search(
+        r'<meta[^>]*name=["\']description["\'][^>]*content=["\'](.*?)["\']',
+        content,
+        re.IGNORECASE | re.DOTALL
+    )
+    description = desc_match.group(1).strip() if desc_match else None
+
+    # OpenGraph Title
+    og_title_match = re.search(
+        r'<meta[^>]*property=["\']og:title["\'][^>]*content=["\'](.*?)["\']',
+        content,
+        re.IGNORECASE | re.DOTALL
+    )
+    if og_title_match and not title:
+        title = og_title_match.group(1).strip()
+
+    # OpenGraph description
+    og_desc_match = re.search(
+        r'<meta[^>]*property=["\']og:description["\'][^>]*content=["\'](.*?)["\']',
+        content,
+        re.IGNORECASE | re.DOTALL
+    )
+    if og_desc_match and not description:
+        description = og_desc_match.group(1).strip()
+
+    # ---------- 3️⃣ Build Lightweight Schema Fallback ----------
+    fallback_schema = {
+        "@type": "WebPage",
+        "url": url,
+        "name": title or url,
+        "description": description or ""
+    }
+
+    print(f"⚠ No valid schema.org JSON found at {url}. Using fallback metadata.")
+    return fallback_schema
+
 async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int = 100, delete_existing: bool = False, database: str = None, fgaPermissionUser: str = None):
     """
     Load data from a file with precomputed embeddings into the database.
@@ -675,7 +828,7 @@ async def loadJsonWithEmbeddingsToDB(file_path: str, site: str, batch_size: int 
                                 from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
                                 fga_checker = FGAPermissionChecker()
                                 urls = [doc["url"] for doc in batch_documents if "url" in doc]
-                                await fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
+                                fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
                                 print(f"Added FGA permissions for {len(urls)} docs for user '{fgaPermissionUser}'")
                             except Exception as e:
                                 print(f"⚠️ Failed to add FGA tuples: {e}")
@@ -815,10 +968,19 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
         if file_type == 'csv':
             # Process standard CSV file
             all_documents = await process_csv_file(resolved_path, site)
-        elif file_type == 'rss' or (file_type == 'xml' and ('/feed' in original_path.lower() or '/rss' in original_path.lower())):
-            # Process RSS/Atom feed
+
+        elif file_type == 'rss':
             print("Processing as RSS feed...")
             all_documents = await process_rss_feed(resolved_path, site)
+
+        elif file_type == 'sitemap':
+            print("Processing as Sitemap...")
+            all_documents = await process_sitemap(resolved_path, site)
+
+        elif file_type == 'robots':
+            print("Processing as robots.txt...")
+            all_documents = await process_robots(resolved_path, site)
+                                         
         else:
             # Default to JSON processing
             # Read all lines from the file
@@ -915,7 +1077,7 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
                                     from methods.FGAPermissionChecker import FGAPermissionChecker  # adjust import path if needed
                                     fga_checker = FGAPermissionChecker()
                                     urls = [doc["url"] for doc in docs_with_embeddings if "url" in doc]
-                                    await fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
+                                    fga_checker.add_doc_permissions(fgaPermissionUser, urls, site)
                                     print(f"Added FGA permissions for {len(urls)} docs for user '{fgaPermissionUser}'")
                                 except Exception as e:
                                     print(f"⚠️ Failed to add FGA tuples: {e}")

@@ -491,7 +491,7 @@ class AppConfig:
         
         # Load who_endpoint from config
         who_endpoint = self._get_config_value(data.get("who_endpoint"), "http://localhost:8000/who")
-        
+
         # Load headers from config
         headers = data.get("headers", {})
         
@@ -639,6 +639,10 @@ class AppConfig:
         """Check if required info checking is enabled."""
         return self.nlweb.required_info_enabled if hasattr(self, 'nlweb') else True
 
+    def is_upload_docs_enabled(self) -> bool:
+        """Check if upload documents in chat interface functionality is enabled."""
+        return self.nlweb.upload_docs_enabled if hasattr(self, 'nlweb') else False
+
     def is_aggregation_enabled(self) -> bool:
         """Check if aggregation functionality is enabled."""
         return self.nlweb.aggregation_enabled if hasattr(self, 'nlweb') else False
@@ -646,10 +650,6 @@ class AppConfig:
     def is_who_endpoint_enabled(self) -> bool:
         """Check if the who endpoint is enabled."""
         return self.nlweb.who_endpoint_enabled if hasattr(self, 'nlweb') else True    
-
-    def is_upload_docs_enabled(self) -> bool:
-        """Check if upload documents in chat interface functionality is enabled."""
-        return self.nlweb.upload_docs_enabled if hasattr(self, 'nlweb') else False
 
     def load_sites_config(self, path: str = "sites.xml"):
         """Load site configurations from XML file."""

@@ -550,6 +550,14 @@ class QdrantVectorClient(RetrievalClientBase):
             
             # Ensure collection exists before searching
             collection_created = not await self.ensure_collection_exists(collection_name, len(embedding))
+
+            # Create payload index for efficient filtering
+            await client.create_payload_index(
+                collection_name=collection_name,
+                field_name="site",
+                field_schema=models.PayloadSchemaType.KEYWORD
+            )
+
             if collection_created:
                 logger.info(f"Collection '{collection_name}' was just created. Returning empty results.")
                 results = []

@@ -304,6 +304,105 @@ class FGAPermissionChecker:
         fut = asyncio.run_coroutine_threadsafe(self._delete_site_async(site), loop)
         return fut.result()
 
+    # -------------------------------------------------------------
+    # Delete specific URLs (documents) for a site
+    # -------------------------------------------------------------
+    async def _delete_urls_async(self, site: str, urls: list[str]):
+        """Delete specific document tuples for a site (site→doc and user→doc)."""
+
+        import random
+
+        async def safe_write_with_backoff(request, max_retries=5):
+            delay = 0.5
+            for attempt in range(max_retries):
+                try:
+                    return await self._client.write(request, self._options)
+                except Exception as e:
+                    if getattr(e, "status", None) == 429 or "rate limit" in str(e).lower():
+                        logger.warning(f"⚠️ Rate limit hit (attempt {attempt+1}), retry in {delay:.1f}s...")
+                        await asyncio.sleep(delay + random.uniform(0, 0.3))
+                        delay = min(delay * 2, 5.0)
+                        continue
+                    raise
+            logger.error("❌ Max retries exceeded for write request")
+
+        try:
+            if not urls:
+                logger.info("No URLs provided for partial deletion.")
+                return
+
+            site = self.normalize_site_name(site)
+
+            # Convert URLs → doc identifiers
+            doc_ids = [f"doc:{self.url_to_filename(url)}" for url in urls]
+
+            logger.info(f"Deleting {len(doc_ids)} doc tuples for {site}...")
+
+            # -------------------------------
+            # 1️⃣ Delete site → doc tuples
+            # -------------------------------
+            site_doc_tuples = [
+                ClientTuple(user=f"site:{site}", relation="parent_site", object=doc_id)
+                for doc_id in doc_ids
+            ]
+
+            for batch in self.chunk_list(site_doc_tuples, 100):
+                await safe_write_with_backoff(ClientWriteRequest(deletes=batch))
+                await asyncio.sleep(0.2)
+
+            logger.info(f"Removed {len(doc_ids)} site→doc tuples.")
+
+            # -------------------------------
+            # 2️⃣ Fetch and remove user→doc viewer tuples
+            # -------------------------------
+
+            sem = asyncio.Semaphore(5)
+
+            async def fetch_users_for_doc(doc):
+                async with sem:
+                    try:
+                        doc_hash = doc.replace("doc:", "")
+                        resp = await self._client.list_users(
+                            ClientListUsersRequest(
+                                relation="viewer",
+                                object=FgaObject(type="doc", id=doc_hash),
+                                user_filters=[UserTypeFilter(type="user")],
+                            ),
+                            self._options,
+                        )
+                        users = getattr(resp, "users", [])
+                        return [(doc, user) for user in users]
+                    except Exception as e:
+                        logger.warning(f"⚠️ list_users failed for {doc}: {e}")
+                        return []
+
+            logger.info("Fetching viewer tuples for removed docs...")
+
+            user_pairs_nested = await asyncio.gather(*(fetch_users_for_doc(doc) for doc in doc_ids))
+            all_user_doc_pairs = [pair for sub in user_pairs_nested for pair in sub]
+
+            logger.info(f"Found {len(all_user_doc_pairs)} viewer tuples to delete.")
+
+            delete_user_tuples = []
+            for doc, user in all_user_doc_pairs:
+                uid = self._extract_user_id(user)
+                if uid:
+                    delete_user_tuples.append(ClientTuple(user=f"user:{uid}", relation="viewer", object=doc))
+
+            for batch in self.chunk_list(delete_user_tuples, 100):
+                await safe_write_with_backoff(ClientWriteRequest(deletes=batch))
+                await asyncio.sleep(0.2)
+
+            logger.info(f"✅ Finished partial cleanup: {len(urls)} URLs removed for site '{site}'")
+
+        except Exception as e:
+            logger.error(f"❌ Error deleting tuples for URLs on site '{site}': {e}")
+
+    def delete_urls(self, site: str, urls: list[str]):
+        site = self.normalize_site_name(site)
+        loop = self._ensure_background_loop()
+        fut = asyncio.run_coroutine_threadsafe(self._delete_urls_async(site, urls), loop)
+        return fut.result()
 
 if __name__ == "__main__":
     

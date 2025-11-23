@@ -162,7 +162,23 @@ class VectorDBClientInterface(ABC):
             Number of documents deleted
         """
         pass
-    
+
+    @abstractmethod
+    async def delete_documents_by_urls(self, site: str, urls: List[str], **kwargs) -> int:
+        """
+        Delete all documents matching the specified site and urls.
+        
+        Args:
+            site: Site identifier
+            urls: List of urls
+            **kwargs: Additional parameters
+            
+        Returns:
+            Number of documents deleted
+        """
+        pass
+
+
     @abstractmethod
     async def upload_documents(self, documents: List[Dict[str, Any]], **kwargs) -> int:
         """
@@ -742,7 +758,44 @@ class VectorDBClient:
                     }
                 )
                 raise
-    
+
+    async def delete_documents_by_urls(self, site: str, urls: List[str], **kwargs) -> int:
+        """
+        Delete all documents matching the specified site and urls.
+        
+        Args:
+            site: Site identifier
+            urls: List of urls
+            **kwargs: Additional parameters
+            
+        Returns:
+            Number of documents deleted
+        """
+        if not self.write_endpoint:
+            raise ValueError("No write endpoint configured for delete operations")
+            
+        async with self._retrieval_lock:
+            logger.info(f"Deleting documents for site: {site} using write endpoint: {self.write_endpoint}")
+            
+            try:
+                client = await self.get_client(self.write_endpoint)
+                count = await client.delete_documents_by_urls(site, urls, **kwargs)
+                logger.info(f"Successfully deleted {count} documents for site: {site}")
+                return count
+            except Exception as e:
+                logger.exception(f"Error deleting documents for site {site}: {e}")
+                logger.log_with_context(
+                    LogLevel.ERROR,
+                    "Document deletion failed",
+                    {
+                        "error_type": type(e).__name__,
+                        "error_message": str(e),
+                        "site": site,
+                        "endpoint": self.write_endpoint
+                    }
+                )
+                raise
+
     async def upload_documents(self, documents: List[Dict[str, Any]], **kwargs) -> int:
         """
         Upload documents to the database.

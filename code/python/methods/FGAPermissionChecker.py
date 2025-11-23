@@ -190,7 +190,15 @@ class FGAPermissionChecker:
                 u.get("object", {}).get("id")
                 or u.get("id")  # fallback if no 'object' wrapper
             )
-        
+
+        # Check for wildcard attribute safely
+        wildcard = getattr(u, "wildcard", None)
+        # Check if wildcard exists and is a user
+        if wildcard is not None:
+            wildcard_type = getattr(wildcard, "type", None)
+            if wildcard_type == "user":
+                return "*"
+
         # Handle SDK object (FgaObject or similar)
         inner_obj = getattr(u, "object", None)
         if inner_obj:

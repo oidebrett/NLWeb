@@ -378,6 +378,87 @@ class QdrantVectorClient(RetrievalClientBase):
 
         return count
 
+    async def delete_documents_by_urls(
+        self,
+        site: str,
+        urls: List[str],
+        collection_name: Optional[str] = None
+    ) -> int:
+        """
+        Delete only specific document embeddings belonging to a site, given a URL list.
+
+        Args:
+            site (str): Site normalized name to match.
+            urls (List[str]): List of full URLs whose embeddings should be deleted.
+            collection_name (Optional[str]): Optional collection override.
+
+        Returns:
+            int: Number of vector entries deleted.
+        """
+
+        if not urls:
+            logger.info(f"No URLs provided for deletion for site '{site}'. Nothing to delete.")
+            return 0
+
+        collection_name = collection_name or self.default_collection_name
+        client = await self._get_qdrant_client()
+
+        # Ensure collection exists
+        if not await client.collection_exists(collection_name):
+            logger.warning(
+                f"Collection '{collection_name}' does not exist. No points to delete."
+            )
+            return 0
+
+        # Ensure we have supporting payload indexes
+        await client.create_payload_index(
+            collection_name=collection_name,
+            field_name="site",
+            field_schema=models.PayloadSchemaType.KEYWORD,
+        )
+
+        await client.create_payload_index(
+            collection_name=collection_name,
+            field_name="url",
+            field_schema=models.PayloadSchemaType.KEYWORD,
+        )
+
+        # Build deletion filter:
+        # - Must match site
+        # - URL must be in the provided list
+        filter_condition = models.Filter(
+            must=[
+                models.FieldCondition(key="site", match=models.MatchValue(value=site)),
+                models.FieldCondition(
+                    key="url",
+                    match=models.MatchAny(any=urls)
+                )
+            ]
+        )
+
+        # Count how many embedding vectors match before deletion
+        count_result = await client.count(
+            collection_name=collection_name,
+            count_filter=filter_condition
+        )
+        count = count_result.count
+
+        if count == 0:
+            logger.info(f"No embeddings found for provided URLs in '{site}'. Nothing to delete.")
+            return 0
+
+        logger.info(f"Deleting {count} document embeddings for site '{site}'...")
+
+        # Perform deletion
+        await client.delete(
+            collection_name=collection_name,
+            points_selector=filter_condition
+        )
+
+        logger.info(f"🧹 Successfully deleted {count} embeddings for {site} ({len(urls)} URLs).")
+
+        return count
+
     async def upload_documents(self, documents: List[Dict[str, Any]], 
                              collection_name: Optional[str] = None) -> int:
         """

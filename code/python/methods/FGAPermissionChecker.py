@@ -196,7 +196,7 @@ class FGAPermissionChecker:
         # Check if wildcard exists and is a user
         if wildcard is not None:
             wildcard_type = getattr(wildcard, "type", None)
-            if wildcard_type == "user":
+            if wildcard_type is not None and wildcard_type == "user":
                 return "*"
 
         # Handle SDK object (FgaObject or similar)

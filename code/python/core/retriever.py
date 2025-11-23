@@ -1300,3 +1300,26 @@ async def delete_documents_by_site(site: str,
     """
     client = get_vector_db_client(endpoint_name=endpoint_name, query_params=query_params)
     return await client.delete_documents_by_site(site, **kwargs)
+
+async def delete_documents_by_urls(site: str,
+                                  urls: List[str],
+                                  endpoint_name: Optional[str] = None,
+                                  query_params: Optional[Dict[str, Any]] = None,
+                                  **kwargs) -> int:
+    """
+    Delete all documents for a specific site from the database.
+    
+    Args:
+        site: Site identifier to delete documents for
+        endpoint_name: Optional name of the endpoint to use (overrides write_endpoint)
+        query_params: Optional query parameters for overriding endpoint
+        **kwargs: Additional parameters passed to the delete_documents_by_site method
+        
+    Returns:
+        Number of documents deleted
+        
+    Example:
+        count = await delete_documents_by_site("example.com")
+    """
+    client = get_vector_db_client(endpoint_name=endpoint_name, query_params=query_params)
+    return await client.delete_documents_by_urls(site, urls, **kwargs)

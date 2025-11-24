@@ -334,7 +334,7 @@ class FGAPermissionChecker:
             site = self.normalize_site_name(site)
 
             # Convert URLs → doc identifiers
-            doc_ids = [f"doc:{self.url_to_filename(url)}" for url in urls]
+            doc_ids = [f"{self.url_to_filename(url)}" for url in urls]
 
             logger.info(f"Deleting {len(doc_ids)} doc tuples for {site}...")
 

@@ -2,6 +2,12 @@
 // Format: site as key, array of detailed sample queries as value
 
 export const SITE_SAMPLE_QUERIES = {
+  "localhost:3010": [
+    "Documents from Google Drive",
+    "MCP Gateway Presentations",
+    "Digital Documents"
+  ]
+/*
   "hashipottery.com": [
     "Blue glaze tea cups for traditional Japanese tea ceremony",
     "Large ceramic plates with natural earth tone glazes for serving",
@@ -43,4 +49,5 @@ export const SITE_SAMPLE_QUERIES = {
     "diabetic friendly south indian snacks",
     "Udipi-chinese fusion recipes"
   ]
+*/
 };

@@ -762,6 +762,12 @@ export class UnifiedChatInterface {
       // Immediately close to prevent any reconnection attempts
       eventSource.close();
 
+      // Prevent false error if the stream ended gracefully
+      if (this.state.streamCompleted) {
+        this.state.streamCompleted = false; // reset for next request
+        return;
+      }
+
       // Only show error if we didn't get a proper completion
       if (!this.state.currentStreaming || !this.state.currentStreaming.hasReceivedContent) {
         this.showError('Failed to get response. Please try again.');
@@ -785,6 +791,8 @@ export class UnifiedChatInterface {
   // ========== Unified Stream Handling ==========
   
   startStreaming() {
+    this.state.streamCompleted = false;
+
     if (!this.state.currentStreaming) {
       const messagesContainer = this.dom.messages();
 
@@ -1328,6 +1336,10 @@ export class UnifiedChatInterface {
   
   endStreaming() {
     if (this.state.currentStreaming) {
+
+      // mark as gracefully completed
+      this.state.streamCompleted = true;
+
       // Check if no content was received and display a message
       const { context, textDiv, hasReceivedContent } = this.state.currentStreaming;
 

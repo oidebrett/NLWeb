@@ -115,6 +115,9 @@ class NLWebHandler:
         # Maximum number of results to return to the user
         self.max_results = get_param(query_params, "max_results", int, 10)
 
+        # Output format - can be "chatgptapp" for ChatGPT App spec v0.5 format
+        self.output_format = get_param(query_params, "output_format", str, "default")
+        
         # the items that have been retrieved from the vector database, could be before decontextualization.
         # See below notes on fasttrack
         self.retrieved_items = []

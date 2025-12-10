@@ -107,7 +107,11 @@ class MessageSender:
         """Send begin-nlweb-response message at the start of query processing."""
         if not (self.handler.streaming and self.handler.http_handler is not None):
             return
-            
+
+        # Skip for chatgptapp format
+        if hasattr(self.handler, 'output_format') and self.handler.output_format == 'chatgptapp':
+            return
+                    
         begin_message = {
             "message_type": "begin-nlweb-response",
             "conversation_id": self.handler.conversation_id,
@@ -129,7 +133,11 @@ class MessageSender:
         """
         if not (self.handler.streaming and self.handler.http_handler is not None):
             return
-            
+
+        # Skip for chatgptapp format
+        if hasattr(self.handler, 'output_format') and self.handler.output_format == 'chatgptapp':
+            return
+
         end_message = {
             "message_type": "end-nlweb-response",
             "conversation_id": self.handler.conversation_id,
@@ -297,10 +305,128 @@ class MessageSender:
             await self._send_headers_if_needed(is_streaming=True)
                 
             try:
-                await self.handler.http_handler.write_stream(message)
+                # For chatgptapp format, send _meta block first
+                if hasattr(self.handler, 'output_format') and self.handler.output_format == 'chatgptapp':
+                    if message.get('message_type') == 'result':
+                        await self._send_chatgptapp_meta_if_needed(message.get('conversation_id'))
+
+                # Transform to ChatGPT App format if requested
+                output_message = self._transform_to_output_format(message)
+
+                # Skip sending if transform returned None (e.g., for captured query_rewrite)
+                if output_message is not None:
+                    await self.handler.http_handler.write_stream(output_message)
             except Exception as e:
                 self.handler.connection_alive_event.clear()  # Use event instead of flag
         else:
             # Non-streaming mode: just store (already done above)
             # Send headers if not already sent
             await self._send_headers_if_needed(is_streaming=False)
+
+    async def _send_chatgptapp_meta_if_needed(self, conversation_id):
+        """Send _meta block once for chatgptapp format."""
+        if not hasattr(self.handler, '_chatgptapp_meta_sent') or not self.handler._chatgptapp_meta_sent:
+            self.handler._chatgptapp_meta_sent = True
+
+            meta_message = {
+                "_meta": {
+                    "openai/outputTemplate": "ui://widget/list.html",
+                    "nlweb/version": "0.5"
+                }
+            }
+
+            # Include conversation_id only if present and non-empty
+            if conversation_id:
+                meta_message["_meta"]["nlweb/conversationId"] = conversation_id
+
+            # Include decontextualized_query only if it differs from original query
+            if hasattr(self.handler, 'decontextualized_query') and self.handler.decontextualized_query:
+                # Skip if same as original query
+                if self.handler.decontextualized_query != self.handler.query:
+                    meta_message["_meta"]["nlweb/decontextualizedQuery"] = self.handler.decontextualized_query
+
+            try:
+                await self.handler.http_handler.write_stream(meta_message)
+            except Exception as e:
+                self.handler.connection_alive_event.clear()
+                raise
+
+    def _transform_to_output_format(self, message):
+        """
+        Transform message to requested output format (e.g., chatgptapp).
+        For chatgptapp format, only _meta and content messages are allowed.
+        All other message types are filtered out.
+        """
+        # Check if chatgptapp format is requested
+        if not hasattr(self.handler, 'output_format') or self.handler.output_format != 'chatgptapp':
+            return message
+
+        # For chatgptapp format, only allow 'result' message_type
+        # All other message types should be filtered out
+        message_type = message.get('message_type')
+        if message_type != 'result':
+            # Skip all non-result messages for chatgptapp format
+            # This includes: decontextualized_query, query_rewrite, asking_sites,
+            # site_querying, site_complete, site_error, intermediate_message,
+            # tool_selection, tool_routing, nlws, ensemble_result, etc.
+            return None
+
+        # Extract content (results array)
+        content = message.get('content', [])
+        if not content:
+            return None
+
+        # Transform each item: flatten schema_object fields and convert to grounding
+        transformed_content = []
+        for item in content:
+            transformed_item = self._transform_item_for_chatgptapp(item)
+            transformed_content.append(transformed_item)
+
+        # Transform content to resource format
+        resource_content = {
+            "content": [{
+                "type": "resource",
+                "resource": {
+                    "data": transformed_content
+                }
+            }]
+        }
+
+        return resource_content
+
+    def _transform_item_for_chatgptapp(self, item):
+        """
+        Transform a single item for chatgptapp format:
+        - Flatten schema_object fields to top level
+        - Replace schema_object with grounding field containing the URL
+        """
+        if not isinstance(item, dict):
+            return item
+
+        # Create a copy to avoid modifying original
+        transformed = dict(item)
+
+        # Check if schema_object exists
+        if 'schema_object' in transformed:
+            schema_obj = transformed['schema_object']
+
+            if isinstance(schema_obj, dict):
+                # Extract the URL for grounding (use item's url field)
+                url = transformed.get('url', '')
+
+                # Flatten all fields from schema_object to top level
+                for key, value in schema_obj.items():
+                    # Only add if not already present at top level
+                    if key not in transformed:
+                        transformed[key] = value
+
+                # If schema_object has @type and top level @type is "Item", replace with schema @type
+                if '@type' in schema_obj and transformed.get('@type') == 'Item':
+                    transformed['@type'] = schema_obj['@type']
+
+                # Replace schema_object with grounding
+                del transformed['schema_object']
+                if url:
+                    transformed['grounding'] = url
+
+        return transformed

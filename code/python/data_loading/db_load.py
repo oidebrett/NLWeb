@@ -13,6 +13,7 @@ import csv
 import asyncio
 import aiohttp
 import tempfile
+import hashlib
 import traceback
 from urllib.parse import urlparse
 
@@ -84,16 +85,26 @@ def get_embeddings_file_path(file_path: str) -> str:
     Generate the path for the equivalent file with embeddings.
     
     Args:
-        file_path: Path to the original file
+        file_path: Path to the original file (can be full URL or file path)
         
     Returns:
         Path to the file with embeddings
     """
-    # Extract the filename from the path (keep the same name)
+    # Extract the filename from the path
     file_name = os.path.basename(file_path)
     
-    # Generate a path in the embeddings folder (using the same filename)
-    embeddings_path = os.path.join(CONFIG.nlweb.json_with_embeddings_folder, file_name)
+    # Generate a unique hash from the full path to avoid collisions
+    # when different URLs have the same filename (e.g., multiple sites with rss.xml)
+    path_hash = hashlib.md5(file_path.encode()).hexdigest()[:8]
+    
+    # Split name and extension
+    name, ext = os.path.splitext(file_name)
+    
+    # Include the hash in the filename for uniqueness
+    unique_file_name = f"{name}_{path_hash}{ext}"
+    
+    # Generate a path in the embeddings folder (using unique filename)
+    embeddings_path = os.path.join(CONFIG.nlweb.json_with_embeddings_folder, unique_file_name)
     
     return embeddings_path
 
@@ -919,7 +930,8 @@ async def loadJsonToDB(file_path: str, site: str, batch_size: int = 100, delete_
             return await loadJsonWithEmbeddingsToDB(resolved_path, site, batch_size, delete_existing, endpoint_name, fgaPermissionUser)
         
         # Check for existing embeddings file if not forcing recomputation
-        embeddings_path = get_embeddings_file_path(os.path.basename(original_path))
+        # Use the original URL (or original_path) to generate unique hash, not basename
+        embeddings_path = get_embeddings_file_path(original_path)
         
         if os.path.exists(embeddings_path) and not force_recompute:
             # In interactive mode, ask the user what to do

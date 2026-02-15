@@ -645,18 +645,18 @@ class QdrantVectorClient(RetrievalClientBase):
             else:
                 # Perform the search
                 search_result = (
-                    await client.search(
+                    await client.query_points(
                         collection_name=collection_name,
-                        query_vector=embedding,
+                        query=embedding,
                         limit=num_results,
                         query_filter=filter_condition,
                         with_payload=True,
                     )
                 )
-                
+
                 # Format the results
-                results = self._format_results(search_result)
-            
+                results = self._format_results(search_result.points)
+                            
             retrieve_time = time.time() - start_retrieve
             
             logger.log_with_context(
